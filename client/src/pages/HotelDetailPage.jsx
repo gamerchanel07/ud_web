@@ -5,7 +5,7 @@ import L from 'leaflet';
 import { hotelService, reviewService, favoriteService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { ReviewForm, ReviewList } from '../components/Review';
-import { Heart, MapPin, Star } from 'lucide-react';
+import { Heart, MapPin, Star, Phone, Facebook} from 'lucide-react';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -70,12 +70,10 @@ export const HotelDetailPage = () => {
   if (loading) {
     return <div className="text-center py-12 text-gray-300">Loading...</div>;
   }
-
   if (!hotel) {
     return <div className="text-center py-12 text-gray-300">Hotel not found</div>;
   }
 
-  // ✅ กันพัง map ทุกกรณี
   const galleryImages = Array.isArray(hotel.galleryImages)
     ? hotel.galleryImages
     : [];
@@ -205,14 +203,55 @@ export const HotelDetailPage = () => {
               {nearbyPlaces.map((p, idx) => (
                 <span
                   key={idx}
-                  className="bg-secondary text-white px-4 py-2 rounded-full text-sm"
-                >
+                  className="bg-secondary text-white px-4 py-2 rounded-full text-sm">
                   {p}
                 </span>
               ))}
             </div>
-          </div>
 
+              <div className='flex mt-4 text-left'>
+                <h2 className='text-xl font-bold text-gray-100'>Contact Information</h2>
+                {(hotel.phone || hotel.facebookUrl || hotel.lineId) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* PHONE */}
+                    {hotel.phone && (
+                      <div  className="bg-white/10 border border-white/20 rounded-lg p-4">
+                        <p className="text-sm text-gray-400 mb-1"><Phone size={16} className="inline mr-1" /> Phone</p>
+                        <a
+                          href={`tel:${hotel.phone}`}
+                          className="text-white font-medium hover:text-purple-400"
+                        >
+                          {hotel.phone}
+                        </a>
+                      </div>
+                    )}
+                    {/* FACEBOOK */}
+                    {hotel.facebookUrl && (
+                      <div className="bg-white/10 border border-white/20 rounded-lg p-4">
+                        <p className="text-sm text-gray-400 mb-1"><Facebook size={16} className="inline mr-1" /> Facebook</p>
+                        <a
+                          href={hotel.facebookUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-white font-medium hover:text-purple-400 break-all"
+                        >
+                          {hotel.facebookUrl}
+                        </a>
+                      </div>
+                    )}
+                    {/* LINE */}
+                    {hotel.lineId && (
+                      <div className="bg-white/10 border border-white/20 rounded-lg p-4">
+                        <p className="text-sm text-gray-400 mb-1">LINE</p>
+                        <span className="text-white font-medium">
+                          {hotel.lineId}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+          </div>
           {/* Map */}
           <div>
             <h2 className="text-2xl font-bold mb-4 text-gray-100">Location</h2>

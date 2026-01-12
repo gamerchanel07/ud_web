@@ -354,7 +354,7 @@ export const AdminPage = () => {
                       <div className="mb-4 grid grid-cols-2 md:grid-cols-3 gap-3">
                         {formData.galleryImages.map((img, idx) => (
                           <div key={idx} className="relative">
-                            <img src={img} alt={`Preview ${idx}`} className="w-full h-24 object-cover rounded" />
+                            <img src={img} alt={`Preview ${idx}`} className="w-full h-24 object-cover rounded"onError={(e) => {e.currentTarget.src = '/no-image.png';}}/>
                             <button
                               type="button"
                               onClick={() => removeImage(idx)}
@@ -384,9 +384,12 @@ export const AdminPage = () => {
                         onKeyDown={e => {
                           if (e.key === 'Enter') {
                             e.preventDefault();
+                            const url = e.target.value.trim();
+                            if (!url) return; // ไม่ให้ empty
+                            if (!url.startsWith('http')) return; //กัน URL มั่ว
                             setFormData(prev => ({
                               ...prev,
-                              galleryImages: [...prev.galleryImages, e.target.value]
+                              galleryImages: [...prev.galleryImages, url]
                             }));
                             e.target.value = '';
                           }

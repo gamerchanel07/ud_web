@@ -153,7 +153,7 @@ export const AnnouncementManagement = () => {
                 name="type"
                 value={formData.type}
                 onChange={handleInputChange}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100"
+                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-purple-400"
               >
                 <option value="info">Info 📢</option>
                 <option value="warning">Warning ⚠️</option>
