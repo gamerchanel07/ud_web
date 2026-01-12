@@ -17,18 +17,18 @@ const seedDB = async () => {
     // Seed sample hotels in Udon Thani
     const hotels = [
       {
-        name: 'Udon Valley Hotel',
+        name: 'The Cottage Hotel Udon Thani',
         description: 'Modern 3-star hotel near UD Town shopping center',
-        price: 1200,
-        location: 'UD Town Area',
-        latitude: 17.4086,
-        longitude: 102.7870,
-        imageUrl: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400',
+        price: 690,
+        location: 'ใกล้ถนนมิตรภาพ',
+        latitude: 17.422846425241005, 
+        longitude: 102.78976792656303,
+        imageUrl: 'https://www.chuwab.com/images/hotel/6/69/50069/91c18ce1d0cb02aa05939f5a5f63fcab.jpg',
         galleryImages: [
           'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800',
           'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800'
         ],
-        amenities: ['WiFi', 'Air Conditioning', 'Parking', 'Restaurant'],
+        amenities: ['WiFi', 'Air Conditioning'],
         hotelType: 'Business Hotel',
         nearbyPlaces: ['UD Town', 'Central Plaza'],
         distanceToTechCollege: 3.5,

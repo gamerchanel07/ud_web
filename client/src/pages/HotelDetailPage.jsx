@@ -17,6 +17,7 @@ L.Icon.Default.mergeOptions({
 export const HotelDetailPage = () => {
   const { id } = useParams();
   const { user } = useAuth();
+
   const [hotel, setHotel] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,15 +29,14 @@ export const HotelDetailPage = () => {
 
   const loadHotel = async () => {
     try {
-      const [hotelResponse, reviewsResponse] = await Promise.all([
+      const [hotelRes, reviewsRes] = await Promise.all([
         hotelService.getById(id),
         reviewService.getByHotel(id)
       ]);
-      setHotel(hotelResponse.data);
-      setReviews(reviewsResponse.data);
-      if (hotelResponse.data.isFavorited) {
-        setIsFavorited(true);
-      }
+
+      setHotel(hotelRes.data);
+      setReviews(reviewsRes.data || []);
+      setIsFavorited(!!hotelRes.data.isFavorited);
     } catch (err) {
       console.error('Failed to load hotel', err);
     } finally {
@@ -67,53 +67,89 @@ export const HotelDetailPage = () => {
     loadHotel();
   };
 
-  if (loading) return <div className="text-center py-12 text-gray-200">Loading...</div>;
-  if (!hotel) return <div className="text-center py-12 text-gray-300">Hotel not found</div>;
+  if (loading) {
+    return <div className="text-center py-12 text-gray-300">Loading...</div>;
+  }
+
+  if (!hotel) {
+    return <div className="text-center py-12 text-gray-300">Hotel not found</div>;
+  }
+
+  // ✅ กันพัง map ทุกกรณี
+  const galleryImages = Array.isArray(hotel.galleryImages)
+    ? hotel.galleryImages
+    : [];
+
+  const amenities = Array.isArray(hotel.amenities)
+    ? hotel.amenities
+    : [];
+
+  const nearbyPlaces = Array.isArray(hotel.nearbyPlaces)
+    ? hotel.nearbyPlaces
+    : [];
+
+  const heroImage =
+  hotel.imageUrl ||
+  (Array.isArray(hotel.galleryImages) && hotel.galleryImages.length > 0
+    ? hotel.galleryImages[0]
+    : null);
 
   return (
-    <div className="min-h-screen animate-fade-in">
-      {/* Header with Image */}
-      <div className="relative h-96 bg-gray-900 animate-slide-in-down">
-        {hotel.imageUrl && (
-          <img
-            src={hotel.imageUrl}
-            alt={hotel.name}
-            className="w-full h-full object-cover opacity-90"
-          />
-        )}
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div className="min-h-screen">
+      {/* Header Image */}
+      <div className="relative h-96 bg-gray-900">
+        <img
+          src={heroImage || '/no-image.png'}
+          alt={hotel.name}
+          className="w-full h-full object-cover opacity-90"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-40" />
       </div>
-
-      {/* Hotel Info */}
-      <div className="max-w-7xl mx-auto px-4 py-8 animate-slide-in-up">
-        <div className="flex justify-between items-start mb-4 animate-bounce-in">
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Title & Favorite */}
+        <div className="flex justify-between items-start mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-gray-100 mb-2">{hotel.name}</h1>
-            <p className="text-lg text-gray-300 mb-2 flex items-center gap-2">
-              <MapPin size={20} className="text-red-400" /> {hotel.location}
+            <h1 className="text-4xl font-bold text-gray-100 mb-2">
+              {hotel.name}
+            </h1>
+            <p className="text-lg text-gray-300 flex items-center gap-2">
+              <MapPin size={18} className="text-red-400" />
+              {hotel.location}
             </p>
           </div>
+
           <button
             onClick={handleFavoriteToggle}
-            className={`transition-transform hover:scale-110 ${isFavorited ? 'text-red-500' : 'text-gray-300'}`}
+            className={`transition-transform hover:scale-110 ${
+              isFavorited ? 'text-red-500' : 'text-gray-300'
+            }`}
           >
             <Heart size={48} fill={isFavorited ? 'currentColor' : 'none'} />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-stagger">
-          <div className="glass glass-lg p-4 hover-lift hover-glow">
-            <p className="text-gray-300 text-sm">Price per night</p>
-            <p className="text-3xl font-bold text-pink-300">฿{hotel.price}</p>
+        {/* Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="glass p-4">
+            <p className="text-gray-300 text-sm">Price / night</p>
+            <p className="text-3xl font-bold text-pink-300">
+              ฿{hotel.price}
+            </p>
           </div>
-          <div className="glass glass-lg p-4">
+
+          <div className="glass p-4">
             <p className="text-gray-300 text-sm">Rating</p>
             <p className="text-3xl font-bold text-yellow-400 flex items-center gap-2">
-              <Star size={32} className="fill-yellow-400" /> {hotel.avgRating}
+              <Star size={28} className="fill-yellow-400" />
+              {hotel.avgRating}
             </p>
-            <p className="text-sm text-gray-400">({hotel.reviewCount} reviews)</p>
+            <p className="text-sm text-gray-400">
+              ({hotel.reviewCount} reviews)
+            </p>
           </div>
-          <div className="glass glass-lg p-4">
+
+          <div className="glass p-4">
             <p className="text-gray-300 text-sm">Distance to Tech College</p>
             <p className="text-2xl font-bold text-purple-400">
               {hotel.distanceToTechCollege || 'N/A'} km
@@ -122,11 +158,11 @@ export const HotelDetailPage = () => {
         </div>
 
         {/* Gallery */}
-        {hotel.galleryImages && hotel.galleryImages.length > 0 && (
-          <div className="mb-8 animate-slide-in-left">
+        {galleryImages.length > 0 && (
+          <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4 text-gray-100">Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {hotel.galleryImages.map((img, idx) => (
+              {galleryImages.map((img, idx) => (
                 <img
                   key={idx}
                   src={img}
@@ -138,34 +174,40 @@ export const HotelDetailPage = () => {
           </div>
         )}
 
-        {/* Description and Amenities */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 animate-slide-in-right">
+        {/* Description + Amenities + Map */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <div className="md:col-span-2">
-            <h2 className="text-2xl font-bold mb-4 text-gray-100">Description</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-100">
+              Description
+            </h2>
             <p className="text-gray-200 leading-relaxed">
               {hotel.description || 'No description available'}
             </p>
 
-            <h3 className="text-xl font-bold mt-6 mb-4 text-gray-100">Amenities</h3>
+            <h3 className="text-xl font-bold mt-6 mb-4 text-gray-100">
+              Amenities
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {hotel.amenities && hotel.amenities.map((amenity, idx) => (
+              {amenities.map((a, idx) => (
                 <div
                   key={idx}
                   className="bg-primary text-white p-3 rounded-lg text-center"
                 >
-                  {amenity}
+                  {a}
                 </div>
               ))}
             </div>
 
-            <h3 className="text-xl font-bold mt-6 mb-4 text-gray-100">Nearby Places</h3>
+            <h3 className="text-xl font-bold mt-6 mb-4 text-gray-100">
+              Nearby Places
+            </h3>
             <div className="flex flex-wrap gap-2">
-              {hotel.nearbyPlaces && hotel.nearbyPlaces.map((place, idx) => (
+              {nearbyPlaces.map((p, idx) => (
                 <span
                   key={idx}
                   className="bg-secondary text-white px-4 py-2 rounded-full text-sm"
                 >
-                  {place}
+                  {p}
                 </span>
               ))}
             </div>
@@ -181,12 +223,13 @@ export const HotelDetailPage = () => {
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; OpenStreetMap contributors'
+                attribution="&copy; OpenStreetMap contributors"
               />
               <Marker position={[hotel.latitude, hotel.longitude]}>
                 <Popup>{hotel.name}</Popup>
               </Marker>
             </MapContainer>
+
             <a
               href={`https://www.google.com/maps?q=${hotel.latitude},${hotel.longitude}`}
               target="_blank"
@@ -199,7 +242,7 @@ export const HotelDetailPage = () => {
         </div>
 
         {/* Reviews */}
-        <div className="mb-8 animate-fade-in">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-100">Reviews</h2>
           <ReviewForm hotelId={hotel.id} onReviewAdded={handleReviewAdded} />
           <ReviewList reviews={reviews} onReviewDeleted={handleReviewAdded} />
@@ -208,3 +251,5 @@ export const HotelDetailPage = () => {
     </div>
   );
 };
+
+export default HotelDetailPage;

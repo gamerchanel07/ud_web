@@ -18,14 +18,26 @@ const logActivity = async (action, description, userId = null, targetId = null, 
   }
 };
 
-// Add hotel (admin only)
+
 exports.addHotel = async (req, res) => {
   try {
-    const { name, description, price, location, latitude, longitude, imageUrl, galleryImages, amenities, hotelType, nearbyPlaces, distanceToTechCollege } = req.body;
-
-    if (!name || !price || !location || !latitude || !longitude) {
-      return res.status(400).json({ message: 'Required fields: name, price, location, latitude, longitude' });
-    }
+    const {
+      name,
+      description,
+      price,
+      location,
+      latitude,
+      longitude,
+      hotelType,
+      distanceToTechCollege,
+      amenities,
+      nearbyPlaces,
+      imageUrl,
+      galleryImages,
+      phone,
+      facebookUrl,
+      lineId
+    } = req.body;
 
     const hotel = await Hotel.create({
       name,
@@ -34,45 +46,79 @@ exports.addHotel = async (req, res) => {
       location,
       latitude,
       longitude,
-      imageUrl,
-      galleryImages: galleryImages || [],
-      amenities: amenities || ['WiFi', 'Air Conditioning'],
-      hotelType: hotelType || 'Standard',
-      nearbyPlaces: nearbyPlaces || [],
+      hotelType,
       distanceToTechCollege,
-      rating: 0
+      amenities: amenities || [],
+      nearbyPlaces: nearbyPlaces || [],
+      imageUrl: imageUrl || null,
+      galleryImages: galleryImages || [],
+      phone,
+      facebookUrl,
+      lineId
     });
 
-    res.status(201).json({
-      message: 'Hotel added successfully',
-      hotel
-    });
+    res.status(201).json(hotel);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to add hotel', error: err.message });
+    console.error('ADD HOTEL ERROR:', err); // 👈 สำคัญ
+    res.status(500).json({ message: err.message });
   }
 };
+
 
 // Update hotel (admin only)
 exports.updateHotel = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
 
     const hotel = await Hotel.findByPk(id);
     if (!hotel) {
       return res.status(404).json({ message: 'Hotel not found' });
     }
 
-    await hotel.update(updates);
+    const {
+      name,
+      description,
+      price,
+      location,
+      latitude,
+      longitude,
+      hotelType,
+      distanceToTechCollege,
+      amenities,
+      nearbyPlaces,
+      imageUrl,
+      galleryImages,
+      phone,
+      facebookUrl,
+      lineId
+    } = req.body;
 
-    res.json({
-      message: 'Hotel updated successfully',
-      hotel
+    await hotel.update({
+      name,
+      description,
+      price,
+      location,
+      latitude,
+      longitude,
+      hotelType,
+      distanceToTechCollege,
+      amenities: amenities || [],
+      nearbyPlaces: nearbyPlaces || [],
+      imageUrl: imageUrl || null,
+      galleryImages: galleryImages || [],
+      phone,
+      facebookUrl,
+      lineId
     });
+
+    res.json(hotel);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update hotel', error: err.message });
+    console.error('UPDATE HOTEL ERROR:', err);
+    res.status(500).json({ message: err.message });
   }
 };
+
+
 
 // Delete hotel (admin only)
 exports.deleteHotel = async (req, res) => {
@@ -176,3 +222,4 @@ exports.updateUserPassword = async (req, res) => {
     res.status(500).json({ message: 'Failed to update password', error: err.message });
   }
 };
+

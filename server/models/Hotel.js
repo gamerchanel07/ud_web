@@ -36,7 +36,7 @@ const Hotel = sequelize.define('Hotel', {
     allowNull: false
   },
   imageUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   },
   galleryImages: {
@@ -66,7 +66,20 @@ const Hotel = sequelize.define('Hotel', {
   updatedAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
+  },
+  phone: {
+  type: DataTypes.STRING,
+  allowNull: true
+  },
+  facebookUrl: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  lineId: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
+
 });
 
 module.exports = Hotel;

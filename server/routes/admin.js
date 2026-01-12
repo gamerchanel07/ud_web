@@ -2,6 +2,8 @@ const express = require('express');
 const adminController = require('../controllers/adminController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 const { protect, authorize } = require('../middleware/auth');
+const { uploadSingle, uploadMultiple } = require('../middleware/upload');
+
 
 const router = express.Router();
 

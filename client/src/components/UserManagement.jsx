@@ -232,11 +232,10 @@ export const UserManagement = () => {
             <thead className="bg-gradient-to-r from-purple-500/30 to-pink-500/30 border-b border-white/20">
               <tr>
                 <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">ชื่อผู้ใช้</th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden sm:table-cell">ชื่อ</th>
                 <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden md:table-cell">อีเมล</th>
                 <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">บทบาท</th>
                 <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden lg:table-cell">วันเข้าร่วม</th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">การกระทำ</th>
+                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">แก้ไขชื่อ/เปลี่ยนรหัสผ่าน</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">

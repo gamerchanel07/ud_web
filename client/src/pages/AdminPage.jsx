@@ -8,9 +8,12 @@ import { UserManagement } from '../components/UserManagement';
 import { AnnouncementManagement } from '../components/AnnouncementManagement';
 import { ActivityLog } from '../components/ActivityLog';
 import { BarChart3, Building2, Users, Megaphone, Clipboard, Plus, X, Trash2, MapPin, Camera, Edit2 } from 'lucide-react';
+import { HotelList } from '../components/HotelCard';
+
 
 const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
+
 
 const AMENITIES_OPTIONS = [
   'WiFi',
@@ -36,19 +39,23 @@ export const AdminPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    location: '',
-    latitude: '',
-    longitude: '',
-    imageUrl: '',
-    galleryImages: [],
-    hotelType: 'Standard',
-    distanceToTechCollege: '',
-    amenities: []
-  });
-  const [imagePreview, setImagePreview] = useState(null);
+  name: '',
+  description: '',
+  price: '',
+  location: '',
+  latitude: '',
+  longitude: '',
+  imageUrl: '',          
+  galleryImages: [],     
+  hotelType: 'Standard Hotel',
+  distanceToTechCollege: '',
+  amenities: [],
+  nearbyPlaces: [],
+  phone: '',
+  facebookUrl: '',
+  lineId: ''
+});
+
 
   useEffect(() => {
     if (user?.role !== 'admin') {
@@ -69,6 +76,8 @@ export const AdminPage = () => {
     }
   };
 
+  const [editingHotel, setEditingHotel] = useState(null);
+  const [nearbyInput, setNearbyInput] = useState('');
   // Calculate distance from tech college
   const calculateDistance = (lat, lng) => {
     const R = 6371; // Earth's radius in km
@@ -94,25 +103,9 @@ export const AdminPage = () => {
         newData.distanceToTechCollege = calculateDistance(lat, lng);
       }
     }
-
     setFormData(newData);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImagePreview(event.target.result);
-        setFormData(prev => ({
-          ...prev,
-          imageUrl: event.target.result,
-          galleryImages: [...prev.galleryImages, event.target.result]
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const removeImage = (index) => {
     setFormData(prev => ({
@@ -129,7 +122,6 @@ export const AdminPage = () => {
         : [...prev.amenities, amenity]
     }));
   };
-
 
   const handleCoordinateChange = (e) => {
     const { value } = e.target;
@@ -152,51 +144,40 @@ export const AdminPage = () => {
     }
   };
 
-  const handleAddHotel = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.latitude || !formData.longitude) {
-      alert('Please enter latitude and longitude (e.g., 17.416, 102.789)');
-      return;
-    }
+  const handleSubmitHotel = async (e) => {
+  e.preventDefault();
 
-    try {
-      const submitData = {
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        location: formData.location,
-        latitude: parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
-        imageUrl: formData.imageUrl,
-        galleryImages: formData.galleryImages,
-        hotelType: formData.hotelType,
-        distanceToTechCollege: parseFloat(formData.distanceToTechCollege),
-        amenities: formData.amenities,
-        nearbyPlaces: []
-      };
-
-      await adminService.addHotel(submitData);
-      loadHotels();
-      setShowForm(false);
-      setImagePreview(null);
-      setFormData({
-        name: '',
-        description: '',
-        price: '',
-        location: '',
-        latitude: '',
-        longitude: '',
-        imageUrl: '',
-        galleryImages: [],
-        hotelType: 'Standard',
-        distanceToTechCollege: '',
-        amenities: []
-      });
-    } catch (err) {
-      alert('Failed to add hotel: ' + err.response?.data?.message);
-    }
+  const payload = {
+    name: formData.name,
+    description: formData.description,
+    price: Number(formData.price),
+    location: formData.location,
+    latitude: Number(formData.latitude),
+    longitude: Number(formData.longitude),
+    hotelType: formData.hotelType,
+    distanceToTechCollege: formData.distanceToTechCollege
+      ? Number(formData.distanceToTechCollege)
+      : null,
+    amenities: formData.amenities,
+    nearbyPlaces: formData.nearbyPlaces,
+    imageUrl: formData.imageUrl || null,
+    galleryImages: formData.galleryImages,
+    phone: formData.phone,
+    facebookUrl: formData.facebookUrl,
+    lineId: formData.lineId
   };
+
+  if (editingHotel) {
+    await adminService.updateHotel(editingHotel.id, payload);
+  } else {
+    await adminService.addHotel(payload);
+  }
+
+  setShowForm(false);
+  setEditingHotel(null);
+  loadHotels();
+};
+
 
   const handleDeleteHotel = async (hotelId) => {
     if (confirm(t('admin.deleteConfirm'))) {
@@ -209,6 +190,7 @@ export const AdminPage = () => {
     }
   };
 
+  
   return (
     <div className="min-h-screen animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
@@ -298,7 +280,7 @@ export const AdminPage = () => {
             {showForm && (
               <div className="glass glass-lg p-6 rounded-lg mb-8 animate-slide-in-down">
                 <h2 className="text-2xl font-bold text-purple-300 mb-6">{t('admin.addHotel')}</h2>
-                <form onSubmit={handleAddHotel} className="space-y-6">
+                <form onSubmit={handleSubmitHotel} className="space-y-6">
                   
                   {/* Basic Info */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -385,12 +367,32 @@ export const AdminPage = () => {
                       </div>
                     )}
 
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white text-sm file:text-purple-300 file:bg-purple-600/50 file:border-0 file:rounded file:mr-3"
-                    />
+                    {/* Main Image */}
+                      <input
+                        type="text"
+                        name="imageUrl"
+                        placeholder="หรือใส่ Image URL"
+                        value={formData.imageUrl}
+                        onChange={handleInputChange}
+                        className="bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
+                      />
+                      <br />
+                      {/* Gallery Upload */}
+                      <input
+                        type="text"
+                        placeholder="Gallery Image URL (กด Enter)"
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            setFormData(prev => ({
+                              ...prev,
+                              galleryImages: [...prev.galleryImages, e.target.value]
+                            }));
+                            e.target.value = '';
+                          }
+                        }}
+                        className="mt-2 bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
+                      />
                   </div>
 
                   {/* Amenities Selection */}
@@ -410,6 +412,41 @@ export const AdminPage = () => {
                       ))}
                     </div>
                   </div>
+                  {/* Nearby Places */}
+                      <div className="bg-white/5 p-4 rounded border border-white/10">
+                      <h3 className="text-purple-300 font-bold mb-4">Nearby Places</h3>
+
+                      <div className="flex gap-2 mb-3">
+                        <input
+                          value={nearbyInput}
+                          onChange={e => setNearbyInput(e.target.value)}
+                          placeholder="Add nearby place"
+                          className="flex-1 bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!nearbyInput) return;
+                            setFormData(prev => ({
+                              ...prev,
+                              nearbyPlaces: [...prev.nearbyPlaces, nearbyInput]
+                            }));
+                            setNearbyInput('');
+                          }}
+                          className="bg-purple-600 px-3 rounded"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {formData.nearbyPlaces.map((p, i) => (
+                    <span key={i} className="bg-purple-500/20 px-2 py-1 rounded text-sm">
+                      {p}
+                    </span>
+                  ))}
+                </div>
+              </div>
 
                   {/* Description */}
                   <textarea
@@ -421,62 +458,129 @@ export const AdminPage = () => {
                     rows="4"
                     required
                   />
+                  {/*CONTACT INFORMATION*/}
+                  <div className="bg-white/5 p-4 rounded border border-white/10 mt-6">
+                    <h3 className="text-purple-300 font-bold mb-4">
+                      Contact Information
+                    </h3>
 
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Phone number"
+                      value={formData.phone || ''}
+                      onChange={handleInputChange}
+                      className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white mb-3"
+                    />
+
+                    <input
+                      type="text"
+                      name="facebookUrl"
+                      placeholder="Facebook Page URL"
+                      value={formData.facebookUrl || ''}
+                      onChange={handleInputChange}
+                      className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white mb-3"
+                    />
+
+                    <input
+                      type="text"
+                      name="lineId"
+                      placeholder="LINE ID (ไม่ต้องใส่ @)"
+                      value={formData.lineId || ''}
+                      onChange={handleInputChange}
+                      className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white"
+                    />
+                  </div>
                   <button
                     type="submit"
                     className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-bold text-sm transition-all"
-                  >
-                    ✓ {t('admin.addHotel')}
+                  >✓ {t('admin.addHotel')}
                   </button>
                 </form>
               </div>
             )}
-
-
-
             {/* Hotels List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-stagger">
-              {loading ? (
-                <div className="text-center py-8 text-gray-200 animate-pulse text-sm md:text-base">Loading hotels...</div>
-              ) : (
-                hotels.map(hotel => (
-                  <div key={hotel.id} className="glass glass-lg p-4 md:p-6 rounded-lg card-enter hover-lift hover-glow">
-                    {hotel.imageUrl && (
-                      <img
-                        src={hotel.imageUrl}
-                        alt={hotel.name}
-                        className="w-full h-32 object-cover rounded mb-3 md:mb-4"
-                      />
-                    )}
-                    <h3 className="text-lg md:text-xl font-bold mb-2 text-gray-100 line-clamp-2">{hotel.name}</h3>
-                    <p className="text-gray-300 mb-2 text-sm md:text-base line-clamp-1">{hotel.location}</p>
-                    <p className="text-base md:text-lg font-bold text-pink-300 mb-2">฿{hotel.price}</p>
-                    <p className="text-yellow-400 mb-3 md:mb-4 text-sm md:text-base">
-                      ⭐ {hotel.avgRating || 0} ({hotel.reviewCount || 0})
-                    </p>
-
-                    <div className="flex gap-2 flex-col md:flex-row">
-                      <button
-                        onClick={() => navigate(`/hotel/${hotel.id}`)}
-                        className="flex-1 bg-primary text-white py-2 rounded hover:bg-blue-700 text-xs md:text-sm"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleDeleteHotel(hotel.id)}
-                        className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 text-xs md:text-sm flex items-center justify-center gap-1"
-                      >
-                        <Trash2 size={16} /> Delete
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+  {loading ? (
+    <div className="text-center py-8 text-gray-200 animate-pulse text-sm md:text-base">
+      Loading hotels...
+    </div>
+  ) : (
+    hotels.map(hotel => (
+      <div
+        key={hotel.id}
+        className="glass glass-lg p-4 md:p-6 rounded-lg card-enter hover-lift hover-glow"
+      >
+        {hotel.imageUrl && (
+          <img
+            src={hotel.imageUrl}
+            alt={hotel.name}
+            className="w-full h-32 object-cover rounded mb-3 md:mb-4"
+          />
         )}
 
+        <h3 className="text-lg md:text-xl font-bold mb-2 text-gray-100">
+          {hotel.name}
+        </h3>
 
+        <p className="text-gray-300 mb-2 text-sm md:text-base">
+          {hotel.location}
+        </p>
+
+        <p className="text-base md:text-lg font-bold text-pink-300 mb-2">
+          ฿{hotel.price}
+        </p>
+
+        <div className="flex gap-2 flex-col md:flex-row">
+          <button
+            onClick={() => navigate(`/hotel/${hotel.id}`)}
+            className="flex-1 bg-primary text-white py-2 rounded hover:bg-blue-700 text-xs md:text-sm"
+          >
+            View
+          </button>
+
+          {/* ✅ Edit – ใช้ hotel ได้เพราะอยู่ใน map */}
+          <button
+            onClick={() => {
+              setEditingHotel(hotel);
+              setFormData({
+                  name: hotel.name || '',
+                  description: hotel.description || '',
+                  price: hotel.price ?? '',
+                  location: hotel.location || '',
+                  latitude: hotel.latitude ?? '',
+                  longitude: hotel.longitude ?? '',
+                  imageUrl: hotel.imageUrl || '',
+                  galleryImages: hotel.galleryImages || [],
+                  hotelType: hotel.hotelType || 'Standard Hotel',
+                  distanceToTechCollege: hotel.distanceToTechCollege ?? '',
+                  amenities: hotel.amenities || [],
+                  nearbyPlaces: hotel.nearbyPlaces || [],
+                  phone: hotel.phone || '',
+                  facebookUrl: hotel.facebookUrl || '',
+                  lineId: hotel.lineId || ''
+              });
+              setShowForm(true);
+            }}
+            className="flex-1 bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 text-xs md:text-sm"
+          >
+            Edit
+          </button>
+
+          <button
+            onClick={() => handleDeleteHotel(hotel.id)}
+            className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 text-xs md:text-sm"
+          >
+            Delete
+          </button>
+        </div>
+          </div>
+            ))
+          )}
+        </div>
+
+          </div>
+        )}
         {/* Users Tab */}
         {activeTab === 'users' && (
           <UserManagement />

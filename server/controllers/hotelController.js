@@ -1,69 +1,86 @@
 const { Hotel, Review, User, Favorite } = require('../models');
 const { Op } = require('sequelize');
 
+const parseJSON = (value, fallback = []) => {
+  try {
+    if (Array.isArray(value)) return value;
+    if (!value) return fallback;
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+};
+
 // Get all hotels
 exports.getAllHotels = async (req, res) => {
   try {
     const hotels = await Hotel.findAll({
-      include: [
-        {
-          model: Review,
-          attributes: ['id', 'rating']
-        }
-      ]
+      include: [{ model: Review, attributes: ['id', 'rating'] }]
     });
 
-    const hotelsWithAvgRating = hotels.map(hotel => {
-      const reviews = hotel.Reviews || [];
-      const avgRating = reviews.length > 0
-        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    const result = hotels.map(hotel => {
+      const data = hotel.toJSON();
+      const reviews = data.Reviews || [];
+      const avgRating = reviews.length
+        ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
         : 0;
 
       return {
-        ...hotel.toJSON(),
-        avgRating: parseFloat(avgRating),
+        ...data,
+        galleryImages: parseJSON(data.galleryImages),
+        amenities: parseJSON(data.amenities),
+        nearbyPlaces: parseJSON(data.nearbyPlaces),
+        avgRating: Number(avgRating.toFixed(1)),
         reviewCount: reviews.length
       };
     });
 
-    res.json(hotelsWithAvgRating);
+    res.json(result);
   } catch (err) {
+    console.error('getAllHotels error:', err);
     res.status(500).json({ message: 'Failed to fetch hotels', error: err.message });
   }
 };
 
-// Get hotel by ID with reviews
+// Get hotel by ID
 exports.getHotelById = async (req, res) => {
   try {
     const hotel = await Hotel.findByPk(req.params.id, {
-      include: [
-        {
-          model: Review,
-          include: [{ model: User, attributes: ['username', 'email'] }]
-        }
-      ]
+      include: [{
+        model: Review,
+        include: [{ model: User, attributes: ['username', 'email'] }]
+      }]
     });
 
     if (!hotel) {
       return res.status(404).json({ message: 'Hotel not found' });
     }
 
-    const reviews = hotel.Reviews || [];
-    const avgRating = reviews.length > 0
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    const data = hotel.toJSON();
+    const reviews = data.Reviews || [];
+    const avgRating = reviews.length
+      ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
       : 0;
 
-    const isFavorited = req.userId
-      ? await Favorite.findOne({ where: { userId: req.userId, hotelId: hotel.id } })
-      : false;
+    let isFavorited = false;
+    if (req.userId) {
+      const fav = await Favorite.findOne({
+        where: { userId: req.userId, hotelId: data.id }
+      });
+      isFavorited = !!fav;
+    }
 
     res.json({
-      ...hotel.toJSON(),
-      avgRating: parseFloat(avgRating),
+      ...data,
+      galleryImages: parseJSON(data.galleryImages),
+      amenities: parseJSON(data.amenities),
+      nearbyPlaces: parseJSON(data.nearbyPlaces),
+      avgRating: Number(avgRating.toFixed(1)),
       reviewCount: reviews.length,
-      isFavorited: !!isFavorited
+      isFavorited
     });
   } catch (err) {
+    console.error('getHotelById error:', err);
     res.status(500).json({ message: 'Failed to fetch hotel', error: err.message });
   }
 };
@@ -72,7 +89,6 @@ exports.getHotelById = async (req, res) => {
 exports.searchHotels = async (req, res) => {
   try {
     const { query } = req.query;
-
     if (!query) {
       return res.status(400).json({ message: 'Search query required' });
     }
@@ -80,29 +96,34 @@ exports.searchHotels = async (req, res) => {
     const hotels = await Hotel.findAll({
       where: {
         [Op.or]: [
-          { name: { [Op.iLike]: `%${query}%` } },
-          { location: { [Op.iLike]: `%${query}%` } },
-          { description: { [Op.iLike]: `%${query}%` } }
+          { name: { [Op.like]: `%${query}%` } },
+          { location: { [Op.like]: `%${query}%` } },
+          { description: { [Op.like]: `%${query}%` } }
         ]
       },
       include: [{ model: Review, attributes: ['id', 'rating'] }]
     });
 
-    const hotelsWithAvgRating = hotels.map(hotel => {
-      const reviews = hotel.Reviews || [];
-      const avgRating = reviews.length > 0
-        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    const result = hotels.map(hotel => {
+      const data = hotel.toJSON();
+      const reviews = data.Reviews || [];
+      const avgRating = reviews.length
+        ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
         : 0;
 
       return {
-        ...hotel.toJSON(),
-        avgRating: parseFloat(avgRating),
+        ...data,
+        galleryImages: JSON.parse(data.galleryImages || '[]'),
+        amenities: JSON.parse(data.amenities || '[]'),
+        nearbyPlaces: JSON.parse(data.nearbyPlaces || '[]'),
+        avgRating: Number(avgRating.toFixed(1)),
         reviewCount: reviews.length
       };
     });
 
-    res.json(hotelsWithAvgRating);
+    res.json(result);
   } catch (err) {
+    console.error('searchHotels error:', err);
     res.status(500).json({ message: 'Search failed', error: err.message });
   }
 };
@@ -110,7 +131,7 @@ exports.searchHotels = async (req, res) => {
 // Filter hotels
 exports.filterHotels = async (req, res) => {
   try {
-    const { minPrice, maxPrice, minRating, hotelType, nearbyPlace } = req.query;
+    const { minPrice, maxPrice } = req.query;
 
     const where = {};
     if (minPrice || maxPrice) {
@@ -118,51 +139,32 @@ exports.filterHotels = async (req, res) => {
       if (minPrice) where.price[Op.gte] = minPrice;
       if (maxPrice) where.price[Op.lte] = maxPrice;
     }
-    if (hotelType) {
-      where.hotelType = hotelType;
-    }
 
-    let hotels = await Hotel.findAll({
+    const hotels = await Hotel.findAll({
       where,
       include: [{ model: Review, attributes: ['id', 'rating'] }]
     });
 
-    // Filter by rating
-    if (minRating) {
-      hotels = hotels.filter(hotel => {
-        const reviews = hotel.Reviews || [];
-        const avgRating = reviews.length > 0
-          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-          : 0;
-        return avgRating >= minRating;
-      });
-    }
-
-    // Filter by nearby places
-    if (nearbyPlace) {
-      hotels = hotels.filter(hotel => {
-        const nearbyPlaces = hotel.nearbyPlaces || [];
-        return nearbyPlaces.some(place =>
-          place.toLowerCase().includes(nearbyPlace.toLowerCase())
-        );
-      });
-    }
-
-    const hotelsWithAvgRating = hotels.map(hotel => {
-      const reviews = hotel.Reviews || [];
-      const avgRating = reviews.length > 0
-        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    const result = hotels.map(hotel => {
+      const data = hotel.toJSON();
+      const reviews = data.Reviews || [];
+      const avgRating = reviews.length
+        ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
         : 0;
 
       return {
-        ...hotel.toJSON(),
-        avgRating: parseFloat(avgRating),
+        ...data,
+        galleryImages: JSON.parse(data.galleryImages || '[]'),
+        amenities: JSON.parse(data.amenities || '[]'),
+        nearbyPlaces: JSON.parse(data.nearbyPlaces || '[]'),
+        avgRating: Number(avgRating.toFixed(1)),
         reviewCount: reviews.length
       };
     });
 
-    res.json(hotelsWithAvgRating);
+    res.json(result);
   } catch (err) {
+    console.error('filterHotels error:', err);
     res.status(500).json({ message: 'Filter failed', error: err.message });
   }
 };

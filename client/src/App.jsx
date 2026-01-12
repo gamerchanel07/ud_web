@@ -9,7 +9,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { MyReviewsPage } from './pages/MyReviewsPage';
-import { FavoritesPage } from './pages/FavoritesPage';
+import  FavoritesPage  from './pages/FavoritesPage';
 import { AdminPage } from './pages/AdminPage';
 import './index.css';
 
