@@ -6,6 +6,7 @@ import { HotelMap } from '../components/HotelMap';
 import { HotelList } from '../components/HotelCard';
 import { AnnouncementPopup } from '../components/AnnouncementPopup';
 import { Building2, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const HomePage = () => {
   const { user } = useAuth();
@@ -77,8 +78,8 @@ export const HomePage = () => {
       },
       { 
         timeout: 15000, 
-        enableHighAccuracy: true,  // Request high accuracy GPS
-        maximumAge: 0  // Don't cache location
+        enableHighAccuracy: true,
+        maximumAge: 0
       }
     );
   };
@@ -112,7 +113,7 @@ export const HomePage = () => {
     }
 
     try {
-      const response = await hotelService.search(searchQuery);
+      const response = await hotelService.filter(cleanFilters);
       setFilteredHotels(response.data);
     } catch (err) {
       console.error('Search failed', err);
@@ -122,8 +123,16 @@ export const HomePage = () => {
   const handleFilter = async (e) => {
     e.preventDefault();
     try {
-      const response = await hotelService.filter(filters);
-      setFilteredHotels(response.data);
+      const cleanFilters = {
+      ...(filters.minPrice && { minPrice: Number(filters.minPrice) }),
+      ...(filters.maxPrice && { maxPrice: Number(filters.maxPrice) }),
+      ...(filters.minRating && { minRating: Number(filters.minRating) }),
+      ...(filters.hotelType && { hotelType: filters.hotelType }),
+      ...(filters.nearbyPlace && { nearbyPlace: filters.nearbyPlace })
+    };
+    const response = await hotelService.filter(cleanFilters);
+    setFilteredHotels(response.data);
+
     } catch (err) {
       console.error('Filter failed', err);
     }
@@ -154,11 +163,22 @@ export const HomePage = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-8 md:py-12 animate-slide-in-down">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-2xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-3">
-            <Building2 size={40} />
-            Udon Thani Hotels
-          </h1>
-          <p className="text-sm md:text-lg text-gray-100">ค้นหา โรงแรมและที่พัก ที่ถูกใจคุณ</p>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="text-4xl md:text-5xl font-bold text-white"
+          >
+            UD Hotels
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-gray-300 mt-4"
+          >
+            ค้นหาที่พักในอุดรธานีได้ง่าย ๆ กับเรา!
+          </motion.p>
         </div>
       </div>
 
@@ -206,7 +226,7 @@ export const HomePage = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search hotels, locations..."
-                className="flex-1 p-3 border rounded-lg text-sm"
+                className="flex-1 p-3 border rounded-lg text-sm text-purple-400"
               />
               <button
                 type="submit"
@@ -219,7 +239,7 @@ export const HomePage = () => {
 
           {/* Filter Box */}
           <form onSubmit={handleFilter} className="lg:col-span-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-purple-400">
               <input
                 type="number"
                 placeholder="Min Price"

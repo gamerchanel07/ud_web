@@ -15,6 +15,15 @@ export const UserManagement = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newUser, setNewUser] = useState({
+  name: '',
+  email: '',
+  password: '',
+  role: 'user'
+});
+
+
   useEffect(() => {
     loadUsers();
   }, []);
@@ -31,6 +40,21 @@ export const UserManagement = () => {
       setLoading(false);
     }
   };
+
+  // จัดการการสร้างผู้ใช้ใหม่
+  const handleCreateUser = async (e) => {
+  e.preventDefault();
+  try {
+    await adminService.createUser(newUser);
+    setSuccess('เพิ่มผู้ใช้เรียบร้อยแล้ว');
+    setShowAddForm(false);
+    setNewUser({ name: '', email: '', password: '', role: 'user' });
+    loadUsers();
+  } catch (err) {
+    setError(err.response?.data?.message || 'Create user failed');
+  }
+};
+
 
   // จัดการการแก้ไขข้อมูลผู้ใช้
   const handleEditClick = (user, mode) => {
@@ -88,7 +112,6 @@ export const UserManagement = () => {
       loadUsers();
       handleCancel();
     } catch (err) {
-      // จัดการการตอบสนองข้อผิดพลาด
       setError(err.response?.data?.message || 'Failed to update username');
     }
   };
@@ -100,19 +123,16 @@ export const UserManagement = () => {
       setError('Password is required');
       return;
     }
-
     // ตรวจสอบความยาวของรหัสผ่าน
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
-
     // ตรวจสอบว่ารหัสผ่านตรงกันหรือไม่
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     try {
       // เรียก API เพื่ออัปเดตรหัสผ่าน
       await adminService.updateUserPassword(userId, { password: formData.password });
@@ -125,6 +145,19 @@ export const UserManagement = () => {
       setError(err.response?.data?.message || 'Failed to update password');
     }
   };
+
+  const handleDeleteUser = async (userId) => {
+  if (!window.confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?')) return;
+
+  try {
+    await adminService.deleteUser(userId);
+    setSuccess('ลบผู้ใช้เรียบร้อยแล้ว');
+    loadUsers();
+  } catch (err) {
+    setError(err.response?.data?.message || 'Failed to delete user');
+  }
+};
+
 
   if (loading) {
     return <div className="text-center py-8 text-gray-200 animate-pulse">กำลังโหลดผู้ใช้...</div>;
@@ -225,6 +258,81 @@ export const UserManagement = () => {
         <div className="p-4 md:p-6 border-b border-white/20">
           <h2 className="text-xl md:text-2xl font-bold text-gray-100">จัดการผู้ใช้</h2>
           <p className="text-gray-400 text-xs md:text-sm mt-1">{users.length} ผู้ใช้ทั้งหมด</p>
+          {/* ADD USER BUTTON */}
+<button
+  onClick={() => setShowAddForm(!showAddForm)}
+  className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500
+             hover:from-purple-600 hover:to-pink-600
+             text-white px-4 py-2 rounded-lg font-bold transition-all"
+>
+  {showAddForm ? '✖ ยกเลิก' : '➕ เพิ่มผู้ใช้'}
+</button>
+
+{/* ADD USER FORM */}
+{showAddForm && (
+  <form
+    onSubmit={handleCreateUser}
+    className="glass glass-lg p-6 rounded-xl mt-6 space-y-5 animate-slide-in-down"
+  >
+    <h3 className="text-xl font-bold text-purple-300">เพิ่มผู้ใช้ใหม่</h3>
+
+    <div>
+      <label className="text-sm text-gray-300">ชื่อผู้ใช้</label>
+      <input
+        value={newUser.name}
+        onChange={e => setNewUser({ ...newUser, name: e.target.value })}
+        placeholder="ชื่อ"
+        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+        required
+      />
+    </div>
+
+    <div>
+      <label className="text-sm text-gray-300">Email</label>
+      <input
+        type="email"
+        value={newUser.email}
+        onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+        placeholder="email@example.com"
+        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+        required
+      />
+    </div>
+
+    <div>
+      <label className="text-sm text-gray-300">Password</label>
+      <input
+        type="password"
+        value={newUser.password}
+        onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+        placeholder="อย่างน้อย 6 ตัวอักษร"
+        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+        required
+      />
+    </div>
+
+    <div>
+      <label className="text-sm text-gray-300">Role</label>
+      <select
+        value={newUser.role}
+        onChange={e => setNewUser({ ...newUser, role: e.target.value })}
+        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-purple-300"
+      >
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+
+    <button
+      type="submit"
+      className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-bold transition"
+    >
+      สร้างผู้ใช้
+    </button>
+  </form>
+)}
+
+          
         </div>
 
         <div className="overflow-x-auto">
@@ -276,6 +384,13 @@ export const UserManagement = () => {
                       >
                         รหัส
                       </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="px-2 md:px-3 py-1 rounded bg-red-500/30 text-red-200 hover:bg-red-500/50 transition-all duration-300 text-xs font-bold"
+                        title="ลบผู้ใช้"
+                      >
+                        ลบ
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -283,7 +398,7 @@ export const UserManagement = () => {
             </tbody>
           </table>
         </div>
-
+              
         {users.length === 0 && (
           <div className="text-center py-12 text-gray-300 text-sm">ไม่พบผู้ใช้</div>
         )}

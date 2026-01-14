@@ -12,7 +12,9 @@ router.put('/hotels/:id', authMiddleware, adminMiddleware, adminController.updat
 router.delete('/hotels/:id', authMiddleware, adminMiddleware, adminController.deleteHotel);
 
 // User management routes
+router.post('/users', adminController.createUser);
 router.put('/users/:userId/username', protect, authorize('admin'), adminController.updateUserUsername);
 router.put('/users/:userId/password', protect, authorize('admin'), adminController.updateUserPassword);
+router.delete('/users/:userId', protect, authorize('admin'), adminController.deleteUser);
 
 module.exports = router;

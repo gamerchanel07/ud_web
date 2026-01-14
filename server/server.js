@@ -38,14 +38,14 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const HOST = '0.0.0.0'; // ฟังจากทุก IP address เพื่อให้มือถือเข้าได้
+const HOST = '0.0.0.0'; 
 
 const startServer = async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection established');
 
-    await sequelize.sync({ alter: true })
+    await sequelize.sync()
   .then(() => console.log('Database synced'))
   .catch(err => console.error('Sync error:', err));
 

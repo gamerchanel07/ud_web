@@ -6,7 +6,6 @@ const getBaseURL = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return '/api';
   }
-  // ถ้าเป็น IP address อื่น ให้เชื่อมต่อ backend โดยตรง
   return `http://${window.location.hostname}:5000/api`;
 };
 
@@ -49,6 +48,8 @@ export const adminService = {
   deleteHotel: (id) => API.delete(`/admin/hotels/${id}`),
   updateUserUsername: (userId, data) => API.put(`/admin/users/${userId}/username`, data),
   updateUserPassword: (userId, data) => API.put(`/admin/users/${userId}/password`, data),
+  deleteUser: (id) => API.delete(`/admin/users/${id}`),
+  createUser: (data) => API.post('/admin/users', data),
 };
 
 export const favoriteService = {

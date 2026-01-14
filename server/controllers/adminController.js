@@ -18,7 +18,6 @@ const logActivity = async (action, description, userId = null, targetId = null, 
   }
 };
 
-
 exports.addHotel = async (req, res) => {
   try {
     const {
@@ -138,48 +137,108 @@ exports.deleteHotel = async (req, res) => {
   }
 };
 
-// อัปเดตชื่อผู้ใช้ (เฉพาะผู้ดูแลระบบ)
-exports.updateUserUsername = async (req, res) => {
+// ลบผู้ใช้ (เฉพาะผู้ดูแลระบบ)
+exports.deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { username } = req.body;
-
-    if (!username || username.trim() === '') {
-      return res.status(400).json({ message: 'Username is required' });
-    }
-
-    if (username.length < 3) {
-      return res.status(400).json({ message: 'Username must be at least 3 characters' });
-    }
 
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // ตรวจสอบว่าชื่อผู้ใช้ถูกใช้แล้วหรือไม่
-    const existingUser = await User.findOne({ where: { username: username.toLowerCase() } });
-    if (existingUser && existingUser.id !== parseInt(userId)) {
-      return res.status(400).json({ message: 'Username already taken' });
+    const deletedEmail = user.email;
+    await user.destroy();
+
+    await ActivityLog.create({
+      action: 'user_deleted',
+      description: `Admin deleted user: ${deletedEmail}`,
+      userId: req.user?.id || null,
+      targetId: userId,
+      targetType: 'user',
+      ipAddress: req.ip
+    });
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('DELETE USER ERROR:', err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
+// สร้างผู้ใช้ใหม่ (เฉพาะผู้ดูแลระบบ)
+exports.createUser = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const oldUsername = user.username;
-    await user.update({ username: username.toLowerCase() });
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
 
-    // บันทึกกิจกรรม
-    await logActivity(
-      'user_updated',
-      `เปลี่ยนชื่อผู้ใช้จาก "${oldUsername}" เป็น "${username.toLowerCase()}"`,
-      req.user.id,
-      userId,
-      'user',
-      { oldUsername, newUsername: username.toLowerCase() },
-      req.ip
-    );
+    const user = await User.create({
+      username: name || email, 
+      email,
+      password,                
+      role: role || 'user'
+    });
 
-    res.json({ message: 'Username updated successfully', user });
+    await ActivityLog.create({
+      action: 'user_created',
+      description: `Admin created user: ${user.email}`,
+      userId: req.user?.id || null,
+      targetId: user.id,
+      targetType: 'user',
+      ipAddress: req.ip
+    });
+
+
+    res.status(201).json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update username', error: err.message });
+    console.error('CREATE USER ERROR:', err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+// อัปเดตชื่อผู้ใช้ (เฉพาะผู้ดูแลระบบ)
+exports.updateUserUsername = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { username } = req.body;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.username = username;
+    await user.save();
+
+    await ActivityLog.create({
+      action: 'user_updated',
+      description: `Admin updated username for user: ${user.email}`,
+      userId: req.user?.id || null,
+      targetId: userId,
+      targetType: 'user',
+      ipAddress: req.ip
+    });
+
+    res.json({ message: 'Username updated successfully' });
+  } catch (err) {
+    console.error('UPDATE USERNAME ERROR:', err);
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -189,11 +248,7 @@ exports.updateUserPassword = async (req, res) => {
     const { userId } = req.params;
     const { password } = req.body;
 
-    if (!password || password.trim() === '') {
-      return res.status(400).json({ message: 'Password is required' });
-    }
-
-    if (password.length < 6) {
+    if (!password || password.length < 6) {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
@@ -202,24 +257,21 @@ exports.updateUserPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // เข้ารหัสรหัสผ่าน
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await user.update({ password: hashedPassword });
+    user.password = password; // hook จะ hash ให้
+    await user.save();
 
-    // บันทึกกิจกรรม
-    await logActivity(
-      'password_changed',
-      `เปลี่ยนรหัสผ่านสำหรับผู้ใช้ ${user.username}`,
-      req.user.id,
-      userId,
-      'user',
-      { username: user.username },
-      req.ip
-    );
+    await ActivityLog.create({
+      action: 'password_changed',
+      description: `Admin reset password for user: ${user.email}`,
+      userId: req.user?.id || null,
+      targetId: userId,
+      targetType: 'user',
+      ipAddress: req.ip
+    });
 
     res.json({ message: 'Password updated successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update password', error: err.message });
+    console.error('UPDATE PASSWORD ERROR:', err);
+    res.status(500).json({ message: err.message });
   }
 };
-

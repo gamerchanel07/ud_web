@@ -85,15 +85,6 @@ export const LoginPage = () => {
             {t('login.registerHere')}
           </Link>
         </p>
-
-        {/* Demo credentials */}
-        <div className="mt-6 p-4 bg-purple-500/20 rounded-lg border border-purple-500/30 animate-bounce-in">
-          <p className="text-xs md:text-sm text-gray-200">
-            <strong>{t('login.demoAdmin')}</strong><br/>
-            {t('login.username')}: <code className="bg-white/10 px-2 py-1 rounded">{t('login.username_demo')}</code><br/>
-            {t('login.password')}: <code className="bg-white/10 px-2 py-1 rounded">{t('login.password_demo')}</code>
-          </p>
-        </div>
       </div>
     </div>
   );

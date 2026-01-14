@@ -148,7 +148,7 @@ export const ActivityLog = () => {
               setFilterAction(e.target.value);
               setPage(1);
             }}
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
+            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-purple-400 placeholder-gray-400"
           >
             <option value="">ทั้งหมด</option>
             {Object.entries(activityTypeConfig).map(([key, config]) => (

@@ -1,15 +1,24 @@
 const { Hotel, Review, User, Favorite } = require('../models');
 const { Op } = require('sequelize');
 
-const parseJSON = (value, fallback = []) => {
-  try {
-    if (Array.isArray(value)) return value;
-    if (!value) return fallback;
-    return JSON.parse(value);
-  } catch {
-    return fallback;
+const safeParse = (value, fallback = []) => {
+  if (!value) return fallback;
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch {
+      if (value.startsWith('http')) {
+        return [value];
+      }
+      return fallback;
+    }
   }
+
+  return fallback;
 };
+
 
 // Get all hotels
 exports.getAllHotels = async (req, res) => {
@@ -27,11 +36,9 @@ exports.getAllHotels = async (req, res) => {
 
       return {
         ...data,
-        galleryImages: parseJSON(data.galleryImages),
-        amenities: parseJSON(data.amenities),
-        nearbyPlaces: parseJSON(data.nearbyPlaces),
-        avgRating: Number(avgRating.toFixed(1)),
-        reviewCount: reviews.length
+        galleryImages: safeParse(data.galleryImages),
+        amenities: safeParse(data.amenities),
+        nearbyPlaces: safeParse(data.nearbyPlaces), 
       };
     });
 
@@ -72,9 +79,9 @@ exports.getHotelById = async (req, res) => {
 
     res.json({
       ...data,
-      galleryImages: parseJSON(data.galleryImages),
-      amenities: parseJSON(data.amenities),
-      nearbyPlaces: parseJSON(data.nearbyPlaces),
+      galleryImages: safeParse(data.galleryImages),
+      amenities: safeParse(data.amenities),
+      nearbyPlaces: safeParse(data.nearbyPlaces),
       avgRating: Number(avgRating.toFixed(1)),
       reviewCount: reviews.length,
       isFavorited
@@ -113,9 +120,9 @@ exports.searchHotels = async (req, res) => {
 
       return {
         ...data,
-        galleryImages: JSON.parse(data.galleryImages || '[]'),
-        amenities: JSON.parse(data.amenities || '[]'),
-        nearbyPlaces: JSON.parse(data.nearbyPlaces || '[]'),
+        galleryImages: safeParse(data.galleryImages),
+        amenities: safeParse(data.amenities),
+        nearbyPlaces: safeParse(data.nearbyPlaces),
         avgRating: Number(avgRating.toFixed(1)),
         reviewCount: reviews.length
       };
@@ -139,6 +146,7 @@ exports.filterHotels = async (req, res) => {
       if (minPrice) where.price[Op.gte] = minPrice;
       if (maxPrice) where.price[Op.lte] = maxPrice;
     }
+    console.log('FILTER QUERY:', req.query);
 
     const hotels = await Hotel.findAll({
       where,
@@ -154,12 +162,13 @@ exports.filterHotels = async (req, res) => {
 
       return {
         ...data,
-        galleryImages: JSON.parse(data.galleryImages || '[]'),
-        amenities: JSON.parse(data.amenities || '[]'),
-        nearbyPlaces: JSON.parse(data.nearbyPlaces || '[]'),
+        galleryImages: safeParse(data.galleryImages),
+        amenities: safeParse(data.amenities),
+        nearbyPlaces: safeParse(data.nearbyPlaces),
         avgRating: Number(avgRating.toFixed(1)),
         reviewCount: reviews.length
       };
+
     });
 
     res.json(result);
