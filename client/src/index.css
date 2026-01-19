@@ -425,3 +425,19 @@ button {
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
 }
 
+.pulse-circle {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    stroke-opacity: 0.8;
+    stroke-width: 2;
+    transform: scale(1);
+  }
+  100% {
+    stroke-opacity: 0;
+    stroke-width: 8;
+    transform: scale(1.1);
+  }
+}

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
-import { hotelService } from '../services/api';
 import { Star, MapPin } from 'lucide-react';
 
 // Fix leaflet icon issue
@@ -13,105 +12,154 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// Udon Thani Tech College coordinates (consistent)
+// Custom icons
+const purpleIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32]
+});
+
+const grayIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/grey-dot.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32]
+});
+
+// วิทยาลัย (ศูนย์กลาง)
 const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
 
+// คำนวณระยะทาง
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Earth's radius in km
+  const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos((lat1 * Math.PI) / 180) *
-    Math.cos((lat2 * Math.PI) / 180) *
-    Math.sin(dLon / 2) *
-    Math.sin(dLon / 2);
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return (R * c).toFixed(2);
+  return parseFloat((R * c).toFixed(2));
 };
 
-export const HotelMap = ({ hotels, onMarkerClick, userLocation }) => {
+export const HotelMap = ({
+  hotels,
+  userLocation,
+  centerLat = TECH_COLLEGE_LAT,
+  centerLng = TECH_COLLEGE_LNG,
+  radiusKm = 0
+}) => {
   const navigate = useNavigate();
+  const mapRef = useRef();
 
-  if (!hotels || hotels.length === 0) {
-    return <div className="p-4 text-center">No hotels to display</div>;
-  }
+  const center = [centerLat, centerLng];
 
-  // Calculate center - use user location if available, otherwise use default
-  const center = userLocation 
-    ? [userLocation.lat, userLocation.lng] 
-    : [17.4086, 102.7870];
+  // 🔎 AUTO ZOOM ตามรัศมี
+  useEffect(() => {
+    if (mapRef.current && radiusKm > 0) {
+      const circleBounds = L.circle(center, { radius: radiusKm * 1000 }).getBounds();
+      mapRef.current.fitBounds(circleBounds, { padding: [50, 50] });
+    }
+  }, [radiusKm]);
 
   return (
     <MapContainer
       center={center}
-      zoom={userLocation ? 14 : 13}
+      zoom={13}
       style={{ width: '100%', height: '500px', zIndex: 0 }}
+      whenCreated={(map) => (mapRef.current = map)}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; OpenStreetMap contributors'
       />
 
-      {/* User Current Location Marker */}
-      {userLocation && (
-        <Marker position={[userLocation.lat, userLocation.lng]}>
-          <Popup>
-            <div className="text-center">
-              <h3 className="font-bold text-blue-600">📍 Your Location</h3>
-              <p className="text-sm">({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})</p>
-            </div>
-          </Popup>
-        </Marker>
+      {/* 🌊 วงรัศมีแบบ PULSE */}
+      {radiusKm > 0 && (
+        <>
+          {/* วงหลัก */}
+          <Circle
+            center={center}
+            radius={radiusKm * 1000}
+            pathOptions={{
+              color: "#a855f7",
+              fillColor: "#a855f7",
+              fillOpacity: 0.2
+            }}
+          />
+
+          {/* วง pulse */}
+          <Circle
+            center={center}
+            radius={radiusKm * 1000}
+            pathOptions={{
+              color: "#a855f7",
+              fillOpacity: 0
+            }}
+            className="pulse-circle"
+          />
+        </>
       )}
 
-      {/* Tech College Marker */}
-      <Marker position={[TECH_COLLEGE_LAT, TECH_COLLEGE_LNG]}>
-        <Popup>
-          <div className="text-center">
-            <h3 className="font-bold text-primary">🎓 Udon Technical College</h3>
-          </div>
-        </Popup>
+      {/* Marker วิทยาลัย */}
+      <Marker position={center}>
+        <Popup>🎓 Udon Technical College</Popup>
       </Marker>
 
-      {/* Hotel Markers */}
-      {hotels.map(hotel => (
-        <Marker
-          key={hotel.id}
-          position={[hotel.latitude, hotel.longitude]}
-        >
-          <Popup>
-            <div className="min-w-48">
-              <img
-                src={hotel.imageUrl}
-                alt={hotel.name}
-                className="w-full h-24 object-cover rounded mb-2"
-              />
-              <h3 className="font-bold text-primary">{hotel.name}</h3>
-              <p className="text-sm text-gray-600">{hotel.location}</p>
-              <p className="text-lg font-bold">฿{hotel.price}</p>
-              <p className="text-yellow-500 flex items-center gap-1">
-                <Star size={16} className="fill-yellow-500" /> {hotel.avgRating || 0}
-              </p>
-              <p className="text-sm mt-2 flex items-center gap-1">
-                <MapPin size={16} /> {calculateDistance(TECH_COLLEGE_LAT, TECH_COLLEGE_LNG, hotel.latitude, hotel.longitude)} km from Tech College
-              </p>
-              {userLocation && (
-                <p className="text-sm flex items-center gap-1 text-blue-600">
-                  <MapPin size={16} /> {calculateDistance(userLocation.lat, userLocation.lng, hotel.latitude, hotel.longitude)} km from you
+      {/* โรงแรม */}
+      {hotels.map(hotel => {
+        const distance = calculateDistance(
+          centerLat,
+          centerLng,
+          hotel.latitude,
+          hotel.longitude
+        );
+
+        const isInRange = radiusKm === 0 || distance <= radiusKm;
+
+        // 🟢 ซ่อน marker นอกวง
+        if (!isInRange) return null;
+
+        return (
+          <Marker
+            key={hotel.id}
+            position={[hotel.latitude, hotel.longitude]}
+            icon={isInRange ? purpleIcon : grayIcon}   // ⭐ ในวงเป็นสีม่วง
+          >
+            <Popup>
+              <div className="min-w-48">
+                <img
+                  src={hotel.imageUrl}
+                  alt={hotel.name}
+                  className="w-full h-24 object-cover rounded mb-2"
+                  onError={(e) => (e.currentTarget.src = "/no-image.png")}
+                />
+
+                <h3 className="font-bold text-purple-600">{hotel.name}</h3>
+                <p className="text-sm">{hotel.location}</p>
+                <p className="font-bold text-pink-500">฿{hotel.price}</p>
+
+                <p className="flex items-center gap-1 text-yellow-500">
+                  <Star size={16} className="fill-yellow-500" /> {hotel.avgRating || 0}
                 </p>
-              )}
-              <button
-                onClick={() => navigate(`/hotel/${hotel.id}`)}
-                className="mt-2 w-full bg-primary text-white py-1 rounded text-sm hover:bg-blue-700"
-              >
-                View Details
-              </button>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+
+                <p className="text-sm flex items-center gap-1 mt-1">
+                  <MapPin size={16} />
+                  {distance} km from college
+                </p>
+
+                <button
+                  onClick={() => navigate(`/hotel/${hotel.id}`)}
+                  className="mt-2 w-full bg-purple-600 text-white py-1 rounded hover:bg-purple-700"
+                >
+                  View Details
+                </button>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
     </MapContainer>
   );
 };

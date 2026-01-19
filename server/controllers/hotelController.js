@@ -1,5 +1,22 @@
 const { Hotel, Review, User, Favorite } = require('../models');
 const { Op } = require('sequelize');
+const TECH_COLLEGE_LAT = 17.41604449545236;
+const TECH_COLLEGE_LNG = 102.78876831049472;
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 
 const safeParse = (value, fallback = []) => {
   if (!value) return fallback;
@@ -138,14 +155,15 @@ exports.searchHotels = async (req, res) => {
 // Filter hotels
 exports.filterHotels = async (req, res) => {
   try {
-    const { minPrice, maxPrice } = req.query;
+    const { minPrice, maxPrice, maxDistance } = req.query;
 
     const where = {};
     if (minPrice || maxPrice) {
       where.price = {};
-      if (minPrice) where.price[Op.gte] = minPrice;
-      if (maxPrice) where.price[Op.lte] = maxPrice;
+      if (minPrice) where.price[Op.gte] = Number(minPrice);
+      if (maxPrice) where.price[Op.lte] = Number(maxPrice);
     }
+
     console.log('FILTER QUERY:', req.query);
 
     const hotels = await Hotel.findAll({
@@ -153,7 +171,7 @@ exports.filterHotels = async (req, res) => {
       include: [{ model: Review, attributes: ['id', 'rating'] }]
     });
 
-    const result = hotels.map(hotel => {
+    let result = hotels.map(hotel => {
       const data = hotel.toJSON();
       const reviews = data.Reviews || [];
       const avgRating = reviews.length
@@ -168,8 +186,25 @@ exports.filterHotels = async (req, res) => {
         avgRating: Number(avgRating.toFixed(1)),
         reviewCount: reviews.length
       };
-
     });
+
+    // ✅ FILTER BY DISTANCE FROM TECH COLLEGE
+    if (maxDistance) {
+      const maxKm = Number(maxDistance);
+
+      result = result.filter(hotel => {
+        if (!hotel.latitude || !hotel.longitude) return false;
+
+        const distance = calculateDistance(
+          TECH_COLLEGE_LAT,
+          TECH_COLLEGE_LNG,
+          hotel.latitude,
+          hotel.longitude
+        );
+
+        return distance <= maxKm;
+      });
+    }
 
     res.json(result);
   } catch (err) {
@@ -177,3 +212,4 @@ exports.filterHotels = async (req, res) => {
     res.status(500).json({ message: 'Filter failed', error: err.message });
   }
 };
+
