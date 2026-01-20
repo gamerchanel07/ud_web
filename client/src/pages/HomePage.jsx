@@ -92,7 +92,7 @@ export const HomePage = () => {
         timeout: 15000,
         enableHighAccuracy: true,
         maximumAge: 0,
-      }
+      },
     );
   };
 
@@ -256,20 +256,23 @@ export const HomePage = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 mb-6">
           {/* Search Box */}
-          <form onSubmit={handleSearch} className="lg:col-span-2">
-            <div className="flex gap-2 flex-col md:flex-row">
+          <form
+            onSubmit={handleSearch}
+            className="lg:col-span-3 "
+          >
+            <div className="flex gap-1 items-center">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search hotels, locations..."
-                className="flex-1 p-3 border rounded-lg text-sm text-purple-400"
+                className="w-full p-2 border rounded-md text-xs text-purple-400 h-9"
               />
               <button
                 type="submit"
-                className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-700 whitespace-nowrap"
+                className="bg-primary text-white px-4 h-9 rounded-md text-xs hover:bg-green-600 whitespace-nowrap"
               >
                 Search
               </button>
@@ -277,7 +280,7 @@ export const HomePage = () => {
           </form>
 
           {/* Filter Box */}
-          <form onSubmit={handleFilter} className="lg:col-span-2">
+          <form onSubmit={handleFilter} className="lg:col-span-4 h-9">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-purple-400">
               <input
                 type="number"
@@ -311,27 +314,6 @@ export const HomePage = () => {
                 <option value="4">4+ stars</option>
               </select>
 
-              <div className="mt-4">
-                <label className="block text-xs md:text-sm text-gray-300 mb-2">
-                  ระยะทางจากวิทยาลัยไม่เกิน:
-                  <span className="text-purple-400 font-bold ml-2">
-                    {filters.maxDistance} กม.
-                  </span>
-                </label>
-
-                <input
-                  type="range"
-                  min="0"
-                  max="10"
-                  step="0.5"
-                  value={filters.maxDistance}
-                  onChange={(e) =>
-                    setFilters({ ...filters, maxDistance: e.target.value })
-                  }
-                  className="w-full accent-purple-500"
-                />
-              </div>
-
               <button
                 type="submit"
                 className="bg-secondary text-white px-4 py-2 rounded text-sm hover:bg-orange-600"
@@ -340,6 +322,26 @@ export const HomePage = () => {
               </button>
             </div>
           </form>
+          <div className="lg:col-start-8 lg:col-span-3 flex flex-col">
+            <label className="block text-xs md:text-sm text-gray-300 mb-2">
+              ระยะทางจากวิทยาลัยไม่เกิน:
+              <span className="text-purple-400 font-bold ml-2">
+                {filters.maxDistance} กม.
+              </span>
+            </label>
+
+            <input
+              type="range"
+              min="0"
+              max="10"
+              step="0.5"
+              value={filters.maxDistance}
+              onChange={(e) =>
+                setFilters({ ...filters, maxDistance: e.target.value })
+              }
+              className="w-full accent-purple-500"
+            />
+          </div>
         </div>
 
         {/* Map View */}
