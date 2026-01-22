@@ -56,7 +56,6 @@ export const HotelMap = ({
 
   const center = [centerLat, centerLng];
 
-  // 🔎 AUTO ZOOM ตามรัศมี
   useEffect(() => {
     if (mapRef.current && radiusKm > 0) {
       const circleBounds = L.circle(center, { radius: radiusKm * 1000 }).getBounds();
@@ -83,8 +82,8 @@ export const HotelMap = ({
             center={center}
             radius={radiusKm * 1000}
             pathOptions={{
-              color: "#a855f7",
-              fillColor: "#a855f7",
+              color: "#6495ED",
+              fillColor: "#6495ED",
               fillOpacity: 0.2
             }}
           />
@@ -94,7 +93,7 @@ export const HotelMap = ({
             center={center}
             radius={radiusKm * 1000}
             pathOptions={{
-              color: "#a855f7",
+              color: "#6495ED",
               fillOpacity: 0
             }}
             className="pulse-circle"

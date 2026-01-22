@@ -67,13 +67,13 @@ export const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-gray-900 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 animate-fade-in">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Building2 size={40} className="text-purple-400" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <Building2 size={40} className="text-ocean-300" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent">
               UD Hotels
             </h1>
           </div>
@@ -118,14 +118,14 @@ export const ForgotPasswordPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg text-sm bg-gradient-to-r from-ocean-600 to-blue-600 hover:from-ocean-700 hover:to-blue-700 px-4 py-2 rounded-lg transition-all duration-200 font-semibold text-white"
               >
                 {loading ? t('common.loading') : t('forgotPassword.sendCode')}
               </button>
 
               <Link
                 to="/login"
-                className="flex items-center justify-center gap-2 text-purple-400 hover:text-purple-300 transition-colors text-sm"
+                className="flex items-center justify-center gap-2 text-ocean-300 hover:text-ocean-200 transition-colors text-sm"
               >
                 <ArrowLeft size={16} />
                 {t('forgotPassword.backToLogin')}
@@ -153,7 +153,7 @@ export const ForgotPasswordPage = () => {
                   value={resetCode}
                   onChange={(e) => setResetCode(e.target.value)}
                   placeholder={t('forgotPassword.enterCode')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-ocean-400 transition-colors"
                   required
                 />
               </div>
@@ -167,7 +167,7 @@ export const ForgotPasswordPage = () => {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder={t('forgotPassword.enterNewPassword')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-ocean-400 transition-colors"
                   required
                 />
               </div>
@@ -181,7 +181,7 @@ export const ForgotPasswordPage = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder={t('register.confirmPasswordPlaceholder')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-ocean-400 transition-colors"
                   required
                 />
               </div>
@@ -189,7 +189,7 @@ export const ForgotPasswordPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-ocean-700 hover:to-blue-700 transition-all duration-300 disabled:opacity-50"
               >
                 {loading ? t('common.loading') : t('forgotPassword.resetPassword')}
               </button>
@@ -204,7 +204,7 @@ export const ForgotPasswordPage = () => {
                   setNewPassword('');
                   setConfirmPassword('');
                 }}
-                className="flex items-center justify-center gap-2 text-purple-400 hover:text-purple-300 transition-colors text-sm w-full"
+                className="flex items-center justify-center gap-2 text-ocean-300 hover:text-ocean-200 transition-colors text-sm w-full"
               >
                 <ArrowLeft size={16} />
                 {t('common.cancel')}
@@ -216,7 +216,7 @@ export const ForgotPasswordPage = () => {
         {/* Footer */}
         <p className="text-center text-gray-400 text-sm mt-8">
           {t('login.dontHaveAccount')}{' '}
-          <Link to="/login" className="text-purple-400 hover:text-purple-300 transition-colors">
+          <Link to="/login" className="text-ocean-300 hover:text-ocean-200 transition-colors">
             {t('login.title')}
           </Link>
         </p>

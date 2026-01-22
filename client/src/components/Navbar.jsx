@@ -17,9 +17,9 @@ export const Navbar = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 hover-scale flex items-center gap-2"
+            className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 hover-scale flex items-center gap-2"
           >
-            <Building2 size={32} className="text-purple-400" />
+            <Building2 size={32} className="text-ocean-300" />
             UD Hotels
           </Link>
 
@@ -28,7 +28,7 @@ export const Navbar = () => {
             {user ? (
               <>
                 <span className="text-xs md:text-sm font-medium text-gray-200">
-                  Welcome, <span className="font-bold text-purple-300">{user.username}</span>
+                  Welcome, <span className="font-bold text-ocean-300">{user.username}</span>
                 </span>
                 <Link
                   to="/my-reviews"
@@ -38,14 +38,14 @@ export const Navbar = () => {
                 </Link>
                 <Link
                   to="/favorites"
-                  className="px-3 py-2 rounded-lg hover:bg-purple-500/30 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 text-gray-100 hover:text-purple-200 flex items-center gap-2"
+                  className="px-3 py-2 rounded-lg hover:bg-ocean-600/30 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 text-gray-100 hover:text-ocean-200 flex items-center gap-2"
                 >
                   <Heart size={20} className="fill-current" /> {t('nav.favorites')}
                 </Link>
                 {user.role === 'admin' && (
                   <Link
                     to="/admin"
-                    className="px-3 py-2 rounded-lg hover:bg-purple-500/40 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 font-semibold text-purple-200 glow flex items-center gap-2"
+                    className="px-3 py-2 rounded-lg hover:bg-ocean-600/40 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 font-semibold text-ocean-200 glow flex items-center gap-2"
                   >
                     <Settings size={20} /> {t('nav.admin')}
                   </Link>
@@ -62,13 +62,13 @@ export const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="px-3 py-2 rounded-lg hover:bg-purple-500/30 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 text-gray-100 hover:text-purple-200"
+                  className="bg-gradient-to-r from-ocean-600 to-blue-600 hover:from-ocean-700 hover:to-blue-700 px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 font-semibold text-white glow"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 font-semibold text-white glow"
+                  className="bg-gradient-to-r from-ocean-600 to-blue-600 hover:from-ocean-700 hover:to-blue-700 px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 font-semibold text-white glow"
                 >
                   {t('nav.register')}
                 </Link>
@@ -80,7 +80,7 @@ export const Navbar = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-gray-200 hover:text-purple-200 transition-colors p-2"
+            className="md:hidden text-gray-200 hover:text-ocean-200 transition-colors p-2"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -92,18 +92,18 @@ export const Navbar = () => {
             {user ? (
               <>
                 <div className="text-xs font-medium text-gray-300 px-2 py-2">
-                  Welcome, <span className="font-bold text-purple-300">{user.username}</span>
+                  Welcome, <span className="font-bold text-ocean-300">{user.username}</span>
                 </div>
                 <Link
                   to="/my-reviews"
-                  className="block px-4 py-2 rounded-lg hover:bg-purple-500/30 transition-all duration-200 text-gray-100"
+                  className="px-4 py-2 rounded-lg hover:bg-ocean-600/30 transition-all duration-200 text-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('nav.reviews')}
                 </Link>
                 <Link
                   to="/favorites"
-                  className="px-4 py-2 rounded-lg hover:bg-purple-500/30 transition-all duration-200 text-gray-100 flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg hover:bg-ocean-600/30 transition-all duration-200 text-gray-100 flex items-center gap-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Heart size={20} /> {t('nav.favorites')}
@@ -111,7 +111,7 @@ export const Navbar = () => {
                 {user.role === 'admin' && (
                   <Link
                     to="/admin"
-                    className="px-4 py-2 rounded-lg hover:bg-purple-500/40 transition-all duration-200 font-semibold text-purple-200 flex items-center gap-2"
+                    className="px-4 py-2 rounded-lg hover:bg-ocean-600/40 transition-all duration-200 font-semibold text-ocean-200 flex items-center gap-2"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <Settings size={20} /> {t('nav.admin')}
@@ -134,14 +134,14 @@ export const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="block px-4 py-2 rounded-lg hover:bg-purple-500/30 transition-all duration-200 text-gray-100"
+                  className="all duration-200 text-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className="block text-center bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-4 py-2 rounded-lg transition-all duration-200 font-semibold text-white"
+                  className="block text-center bg-gradient-to-r from-ocean-600 to-blue-600 hover:from-ocean-700 hover:to-blue-700 px-4 py-2 rounded-lg transition-all duration-200 font-semibold text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('nav.register')}

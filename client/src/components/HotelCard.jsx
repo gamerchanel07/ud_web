@@ -1,12 +1,27 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Heart, Star, MapPin, Edit2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Heart, Star, MapPin, Edit2 } from "lucide-react";
+import { motion } from "framer-motion";
 
-const API_BASE_URL = 'http://localhost:5000';
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  show: { opacity: 1, y: 0, scale: 1 },
+};
+
+const API_BASE_URL = "http://localhost:5000";
 
 const getImageUrl = (path) => {
-  if (!path) return '/no-image.png';
-  if (path.startsWith('http')) return path;
+  if (!path) return "/no-image.png";
+  if (path.startsWith("http")) return path;
   return `${API_BASE_URL}${path}`;
 };
 
@@ -14,7 +29,7 @@ const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
 
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  if ([lat1, lon1, lat2, lon2].some(v => typeof v !== 'number')) return null;
+  if ([lat1, lon1, lat2, lon2].some((v) => typeof v !== "number")) return null;
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -31,7 +46,7 @@ export const HotelCard = ({
   onFavoriteToggle,
   isFavorited,
   userLocation,
-  onEdit // ⭐ ถ้ามี = admin
+  onEdit, // ⭐ ถ้ามี = admin
 }) => {
   const navigate = useNavigate();
 
@@ -44,7 +59,7 @@ export const HotelCard = ({
     TECH_COLLEGE_LAT,
     TECH_COLLEGE_LNG,
     hotel.latitude,
-    hotel.longitude
+    hotel.longitude,
   );
 
   const distanceFromUser = userLocation
@@ -52,17 +67,21 @@ export const HotelCard = ({
         userLocation.lat,
         userLocation.lng,
         hotel.latitude,
-        hotel.longitude
+        hotel.longitude,
       )
     : null;
 
   return (
-    <div className="hotel-card group card-enter">
+    <motion.div
+      variants={cardVariants}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="hotel-card group card-enter"
+    >
       <img
         src={getImageUrl(heroImage)}
         alt={hotel.name}
         className="w-full h-48 object-cover rounded-t-xl"
-        onError={(e) => (e.currentTarget.src = '/no-image.png')}
+        onError={(e) => (e.currentTarget.src = "/no-image.png")}
       />
 
       <div className="p-4">
@@ -77,7 +96,9 @@ export const HotelCard = ({
           <button onClick={() => onFavoriteToggle(hotel.id)}>
             <Heart
               size={24}
-              className={isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-400'}
+              className={
+                isFavorited ? "fill-red-500 text-red-500" : "text-gray-400"
+              }
             />
           </button>
         </div>
@@ -97,7 +118,7 @@ export const HotelCard = ({
 
         <button
           onClick={() => navigate(`/hotel/${hotel.id}`)}
-          className="w-full bg-purple-600 text-white py-2 rounded"
+          className="w-full bg-ocean-600 text-white py-2 rounded"
         >
           View Details
         </button>
@@ -112,7 +133,7 @@ export const HotelCard = ({
           </button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -121,15 +142,23 @@ export const HotelList = ({
   onFavoriteToggle,
   favorites,
   userLocation,
-  onEdit // ⭐ ส่งมาจาก AdminPage เท่านั้น
+  onEdit,
 }) => {
   if (!hotels?.length) {
-    return <div className="text-center text-gray-400 py-8">No hotels found</div>;
+    return (
+      <div className="text-center text-gray-400 py-8">No hotels found</div>
+    );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {hotels.map(hotel => (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.2 }}
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {hotels.map((hotel) => (
         <HotelCard
           key={hotel.id}
           hotel={hotel}
@@ -139,7 +168,7 @@ export const HotelList = ({
           onEdit={onEdit}
         />
       ))}
-    </div>
+    </motion.div>
   );
 };
 

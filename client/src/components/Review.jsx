@@ -37,8 +37,8 @@ export const ReviewForm = ({ hotelId, onReviewAdded }) => {
 
   if (!user) {
     return (
-      <div className="bg-purple-500/20 border border-purple-400/50 p-4 rounded mb-6">
-        <p className="text-purple-200">Please <a href="/login" className="underline font-bold text-purple-300">login</a> to add a review</p>
+      <div className="bg-ocean-600/20 border border-ocean-400/50 p-4 rounded mb-6">
+        <p className="text-ocean-200">Please <a href="/login" className="underline font-bold text-ocean-300">login</a> to add a review</p>
       </div>
     );
   }
@@ -54,7 +54,7 @@ export const ReviewForm = ({ hotelId, onReviewAdded }) => {
         <select
           value={rating}
           onChange={(e) => setRating(e.target.value)}
-          className="w-full p-2 border border-white/20 rounded bg-white/10 text-purple-400 focus:border-purple-400"
+          className="w-full p-2 border border-white/20 rounded bg-white/10 text-ocean-300 focus:border-ocean-400"
         >
           <option value="5">★★★★★ Excellent</option>
           <option value="4">★★★★ Good</option>
@@ -70,7 +70,7 @@ export const ReviewForm = ({ hotelId, onReviewAdded }) => {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Share your experience..."
-          className="w-full p-2 border border-white/20 rounded bg-white/10 text-gray-100 placeholder-gray-400 focus:border-purple-400"
+          className="w-full p-2 border border-white/20 rounded bg-white/10 text-gray-100 placeholder-gray-400 focus:border-ocean-400"
           rows="4"
           required
         />
@@ -79,7 +79,7 @@ export const ReviewForm = ({ hotelId, onReviewAdded }) => {
       <button
         type="submit"
         disabled={loading}
-        className="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded hover:from-purple-600 hover:to-pink-600 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300"
+        className="bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-2 px-4 rounded hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300"
       >
         {loading ? 'Submitting...' : 'Submit Review'}
       </button>

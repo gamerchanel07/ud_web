@@ -50,8 +50,8 @@ export const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="glass glass-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent mb-6 flex items-center justify-center gap-2">
-          <Building2 size={32} className="text-purple-300" />
+        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent mb-6 flex items-center justify-center gap-2">
+          <Building2 size={32} className="text-ocean-300" />
           {t('register.title')}
         </h1>
 
@@ -69,7 +69,7 @@ export const RegisterPage = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
               placeholder={t('register.chooseUsername')}
               required
             />
@@ -82,7 +82,7 @@ export const RegisterPage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
               placeholder={t('register.enterEmail')}
               required
             />
@@ -95,7 +95,7 @@ export const RegisterPage = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
               placeholder={t('register.enterPassword')}
               required
             />
@@ -108,7 +108,7 @@ export const RegisterPage = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
               placeholder={t('register.confirmPasswordPlaceholder')}
               required
             />
@@ -117,7 +117,7 @@ export const RegisterPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-bold hover:from-purple-600 hover:to-pink-600 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg"
+            className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg"
           >
             {loading ? t('common.loading') : t('register.createAccount')}
           </button>
@@ -125,7 +125,7 @@ export const RegisterPage = () => {
 
         <p className="text-center mt-4 text-gray-300">
           {t('register.alreadyHaveAccount')}{' '}
-          <Link to="/login" className="text-purple-300 font-bold hover:text-purple-200 transition-colors">
+          <Link to="/login" className="text-ocean-300 font-bold hover:text-ocean-200 transition-colors">
             {t('register.loginHere')}
           </Link>
         </p>

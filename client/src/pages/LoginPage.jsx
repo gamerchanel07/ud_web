@@ -29,8 +29,8 @@ export const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 animate-fade-in">
       <div className="glass glass-lg p-6 md:p-8 w-full max-w-md card-enter">
-        <h1 className="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent mb-6 animate-slide-in-down flex items-center justify-center gap-2">
-          <Building2 size={32} className="text-purple-300" />
+        <h1 className="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent mb-6 animate-slide-in-down flex items-center justify-center gap-2">
+          <Building2 size={32} className="text-ocean-300" />
           {t('login.title')}
         </h1>
 
@@ -47,7 +47,7 @@ export const LoginPage = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400 input-focus transition-all duration-300 text-sm"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 input-focus transition-all duration-300 text-sm"
               placeholder={t('login.username')}
               required
             />
@@ -59,12 +59,12 @@ export const LoginPage = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400 input-focus transition-all duration-300 text-sm"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 input-focus transition-all duration-300 text-sm"
               placeholder={t('login.password')}
               required
             />
             <div className="text-right mt-2">
-              <Link to="/forgot-password" className="text-purple-300 text-xs hover:text-purple-200 transition-colors">
+              <Link to="/forgot-password" className="text-ocean-300 text-xs hover:text-ocean-200 transition-colors">
                 {t('login.forgotPassword')}
               </Link>
             </div>
@@ -73,7 +73,7 @@ export const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-bold hover:from-purple-600 hover:to-pink-600 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg text-sm"
+            className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg text-sm"
           >
             {loading ? t('common.loading') : t('login.title')}
           </button>
@@ -81,7 +81,7 @@ export const LoginPage = () => {
 
         <p className="text-center mt-4 text-gray-300 text-sm">
           {t('login.dontHaveAccount')}{' '}
-          <Link to="/register" className="text-purple-300 font-bold hover:text-purple-200 transition-colors">
+          <Link to="/register" className="text-ocean-300 font-bold hover:text-ocean-200 transition-colors">
             {t('login.registerHere')}
           </Link>
         </p>

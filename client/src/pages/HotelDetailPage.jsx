@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { hotelService, reviewService, favoriteService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { ReviewForm, ReviewList } from '../components/Review';
+import { Footer } from '../components/Footer';
 import { Heart, MapPin, Star, Phone, Facebook} from 'lucide-react';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -149,7 +150,7 @@ export const HotelDetailPage = () => {
 
           <div className="glass p-4">
             <p className="text-gray-300 text-sm">Distance to Tech College</p>
-            <p className="text-2xl font-bold text-purple-400">
+            <p className="text-2xl font-bold text-ocean-300">
               {hotel.distanceToTechCollege || 'N/A'} km
             </p>
           </div>
@@ -219,7 +220,7 @@ export const HotelDetailPage = () => {
                         <p className="text-sm text-gray-400 mb-1"><Phone size={16} className="inline mr-1" /> Phone</p>
                         <a
                           href={`tel:${hotel.phone}`}
-                          className="text-white font-medium hover:text-purple-400"
+                          className="text-white font-medium hover:text-ocean-300"
                         >
                           {hotel.phone}
                         </a>
@@ -233,7 +234,7 @@ export const HotelDetailPage = () => {
                           href={hotel.facebookUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-white font-medium hover:text-purple-400 break-all"
+                          className="text-white font-medium hover:text-ocean-300 break-all"
                         >
                           {hotel.facebookUrl}
                         </a>
@@ -273,7 +274,7 @@ export const HotelDetailPage = () => {
               href={`https://www.google.com/maps?q=${hotel.latitude},${hotel.longitude}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 block w-full bg-primary text-white text-center py-2 rounded hover:bg-blue-700"
+              className="mt-3 block w-full bg-primary text-white text-center py-2 rounded hover:bg-ocean-700"
             >
               Open in Google Maps
             </a>
@@ -287,6 +288,7 @@ export const HotelDetailPage = () => {
           <ReviewList reviews={reviews} onReviewDeleted={handleReviewAdded} />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

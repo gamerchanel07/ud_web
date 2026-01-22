@@ -7,21 +7,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#a855f7',      // Purple
-        secondary: '#c084fc',    // Light purple
-        dark: '#0f0f1e',         // Very dark purple
-        darkBg: '#1a1a2e',       // Dark background
-        purple: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7e22ce',
-          800: '#6b21a8',
-          900: '#581c87',
+        primary: '#0F2A44',      // Navy Glass
+        secondary: '#3FA9F5',    // Aqua Light
+        accent: '#B7E7F7',       // Glass Blue
+        dark: '#051e3e',         // Very dark navy
+        darkBg: '#0a2a44',       // Dark ocean background
+        ocean: {
+          50: '#f0f7ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#3fa9f5',
+          700: '#0f2a44',
+          800: '#082f49',
+          900: '#051e3e',
         }
       },
       backdropBlur: {

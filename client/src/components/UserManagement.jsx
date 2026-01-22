@@ -196,7 +196,7 @@ export const UserManagement = () => {
                   value={formData.username}
                   onChange={handleInputChange}
                   placeholder="ป้อนชื่อผู้ใช้ใหม่"
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400 mb-4 text-sm"
+                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 mb-4 text-sm"
                 />
                 <div className="flex gap-2">
                   <button
@@ -222,7 +222,7 @@ export const UserManagement = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="ป้อนรหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)"
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400 mb-3 text-sm"
+                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 mb-3 text-sm"
                 />
                 <label className="block text-gray-200 font-bold mb-2 text-sm">ยืนยันรหัสผ่าน</label>
                 <input
@@ -231,7 +231,7 @@ export const UserManagement = () => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="ยืนยันรหัสผ่าน"
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400 mb-4"
+                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 mb-4"
                 />
                 <div className="flex gap-2">
                   <button
@@ -261,8 +261,8 @@ export const UserManagement = () => {
           {/* ADD USER BUTTON */}
 <button
   onClick={() => setShowAddForm(!showAddForm)}
-  className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500
-             hover:from-purple-600 hover:to-pink-600
+  className="mt-4 bg-gradient-to-r from-ocean-600 to-blue-600
+             hover:from-ocean-700 hover:to-blue-700
              text-white px-4 py-2 rounded-lg font-bold transition-all"
 >
   {showAddForm ? '✖ ยกเลิก' : '➕ เพิ่มผู้ใช้'}
@@ -274,7 +274,7 @@ export const UserManagement = () => {
     onSubmit={handleCreateUser}
     className="glass glass-lg p-6 rounded-xl mt-6 space-y-5 animate-slide-in-down"
   >
-    <h3 className="text-xl font-bold text-purple-300">เพิ่มผู้ใช้ใหม่</h3>
+    <h3 className="text-xl font-bold text-ocean-300">เพิ่มผู้ใช้ใหม่</h3>
 
     <div>
       <label className="text-sm text-gray-300">ชื่อผู้ใช้</label>
@@ -316,7 +316,7 @@ export const UserManagement = () => {
       <select
         value={newUser.role}
         onChange={e => setNewUser({ ...newUser, role: e.target.value })}
-        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-purple-300"
+        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-ocean-300"
       >
         <option value="user">User</option>
         <option value="admin">Admin</option>
@@ -337,7 +337,7 @@ export const UserManagement = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full text-xs md:text-sm">
-            <thead className="bg-gradient-to-r from-purple-500/30 to-pink-500/30 border-b border-white/20">
+            <thead className="bg-gradient-to-r from-ocean-600/30 to-blue-600/30 border-b border-white/20">
               <tr>
                 <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">ชื่อผู้ใช้</th>
                 <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden md:table-cell">อีเมล</th>
