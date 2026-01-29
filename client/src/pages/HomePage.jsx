@@ -266,14 +266,6 @@ export const HomePage = () => {
           >
             <Zap size={20} /> {texts[index]}
           </motion.p>
-
-          <p style={{
-            color: 'var(--text-secondary)',
-            marginTop: '0.75rem',
-            fontSize: '0.875rem'
-          }}>
-            🌟 ค้นหาที่พักคุณภาพในอุดรธานี - ที่พักสุดถูก ใกล้ที่สุด
-          </p>
         </div>
       </div>
 

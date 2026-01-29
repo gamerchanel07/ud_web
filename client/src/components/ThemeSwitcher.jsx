@@ -4,6 +4,7 @@ import { Moon, Sun } from 'lucide-react';
 export const ThemeSwitcher = () => {
   const [theme, setTheme] = useState('light');
   const [mounted, setMounted] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Initialize theme from localStorage on mount
   useEffect(() => {
@@ -14,10 +15,21 @@ export const ThemeSwitcher = () => {
   }, []);
 
   const toggleTheme = () => {
+    setIsAnimating(true);
+    
+    // Add animation class to document
+    document.documentElement.classList.add('theme-transition');
+    
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
+    
+    // Reset animation state after animation completes
+    setTimeout(() => {
+      setIsAnimating(false);
+      document.documentElement.classList.remove('theme-transition');
+    }, 500);
   };
 
   // Prevent hydration mismatch
@@ -35,27 +47,50 @@ export const ThemeSwitcher = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="
-        relative p-2.5 rounded-lg
-        bg-gray-100 hover:bg-gray-200
-        dark:bg-gray-800 dark:hover:bg-gray-700
-        transition-all duration-300
-        hover:shadow-md
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-        dark:focus:ring-offset-gray-900
-      "
+      style={{
+        position: 'relative',
+        padding: '0.625rem',
+        borderRadius: 'var(--radius-md)',
+        backgroundColor: 'var(--bg-tertiary)',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: isAnimating ? '0 4px 12px rgba(0, 173, 181, 0.3)' : '0 0px 0px transparent'
+      }}
+      className="hover:shadow-md focus:outline-none"
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+        e.currentTarget.style.transform = 'scale(1.05)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+        e.currentTarget.style.transform = 'scale(1)';
+      }}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
     >
       {theme === 'light' ? (
         <Moon
           size={20}
-          className="text-gray-700 hover:text-gray-900 transition-colors"
+          style={{
+            color: 'var(--text-primary)',
+            transition: 'all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+            transform: isAnimating ? 'rotate(-180deg) scale(0)' : 'rotate(0) scale(1)',
+            opacity: isAnimating ? 0 : 1
+          }}
         />
       ) : (
         <Sun
           size={20}
-          className="text-yellow-400 hover:text-yellow-300 transition-colors"
+          style={{
+            color: '#FFD700',
+            transition: 'all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+            transform: isAnimating ? 'rotate(180deg) scale(0)' : 'rotate(0) scale(1)',
+            opacity: isAnimating ? 0 : 1
+          }}
         />
       )}
     </button>

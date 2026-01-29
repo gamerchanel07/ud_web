@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
-import { Heart, Star } from 'lucide-react';
+import { SkeletonGrid } from '../components/Skeleton';
+import { Heart, Star, Lightbulb } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:5000';
 
@@ -52,39 +53,48 @@ const getMainImage = (hotel) =>
 
   if (loading) {
     return (
-      <div className="text-center py-12 animate-pulse" style={{color: 'var(--text-secondary)'}}>
-        กำลังโหลด...
+      <div style={{backgroundColor: 'var(--bg-primary)', minHeight: '100vh', paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)'}}>
+        <div style={{maxWidth: '80rem', marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'var(--spacing-md)', paddingRight: 'var(--spacing-md)'}}>
+          <SkeletonGrid columns={3} count={6} />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)'}}>
-      <div className="max-w-7xl mx-auto px-4 py-20">
+    <div style={{backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', minHeight: '100vh', paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)'}}>
+      <div style={{maxWidth: '80rem', marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'var(--spacing-md)', paddingRight: 'var(--spacing-md)'}}>
         {/* Header */}
-        <div className="mb-12 animate-slide-in-down">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 flex items-center gap-3">
-            <Heart size={40} className="fill-current" style={{color: '#d946ef'}} />
+        <div style={{marginBottom: 'var(--spacing-2xl)'}} className="animate-slide-in-down">
+          <h1 style={{
+            fontSize: 'var(--text-3xl)',
+            fontWeight: 'var(--font-bold)',
+            marginBottom: 'var(--spacing-md)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-md)'
+          }}>
+            <Heart size={40} fill="currentColor" style={{color: '#d946ef'}} />
             <span>โรงแรมโปรด</span>
           </h1>
-          <p className="text-lg" style={{color: 'var(--text-secondary)'}}>
+          <p style={{fontSize: 'var(--text-lg)', color: 'var(--text-secondary)'}}>
             {favorites.length} โรงแรมที่บันทึกไว้
           </p>
         </div>
 
         {/* Empty State */}
         {favorites.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">💭</div>
-            <p className="text-xl" style={{color: 'var(--text-secondary)'}}>
+          <div style={{textAlign: 'center', paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)'}}>
+            <Lightbulb size={80} style={{margin: '0 auto', marginBottom: 'var(--spacing-md)', color: 'var(--primary-main)', opacity: 0.5}} />
+            <p style={{fontSize: 'var(--text-xl)', color: 'var(--text-secondary)', marginBottom: 'var(--spacing-md)'}}>
               ยังไม่มีโรงแรมที่บันทึกไว้
             </p>
-            <p className="text-sm mt-2" style={{color: 'var(--text-tertiary)'}}>
+            <p style={{fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)'}}>
               ไปหาโรงแรมที่ชอบและบันทึกไว้ได้เลย
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-stagger">
+          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--spacing-lg)'}} className="animate-stagger">
             {favorites.map((fav) => {
               const hotel = fav.Hotel || fav;
               const mainImage = getMainImage(hotel);
@@ -92,18 +102,27 @@ const getMainImage = (hotel) =>
               return (
                 <div
                   key={hotel.id}
-                  className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-md dark:shadow-lg hover:shadow-xl dark:hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+                  className="card hover:shadow-lg transition-all duration-300"
                   style={{
+                    backgroundColor: 'var(--bg-secondary)',
                     borderTop: '4px solid var(--primary-main)',
-                    backgroundColor: 'var(--bg-primary)'
+                    overflow: 'hidden'
                   }}
                 >
                   {/* Image */}
-                  <div className="relative h-48 overflow-hidden bg-gradient-to-br" style={{backgroundImage: 'linear-gradient(to bottom right, #E3FDFD, #CBF1F5)'}}>
+                  <div style={{position: 'relative', height: '12rem', overflow: 'hidden', backgroundColor: 'var(--bg-tertiary)'}}>
                     <img
                       src={getImageUrl(mainImage)}
                       alt={hotel.name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease-out',
+                        transform: 'scale(1)'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       onError={(e) => {
                         e.currentTarget.src = '/no-image.png';
                       }}
@@ -111,52 +130,83 @@ const getMainImage = (hotel) =>
                   </div>
 
                   {/* Content */}
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold mb-2" style={{color: 'var(--text-primary)'}}>
+                  <div style={{padding: 'var(--spacing-md)'}}>
+                    <h3 style={{
+                      fontSize: 'var(--text-lg)',
+                      fontWeight: 'var(--font-bold)',
+                      marginBottom: 'var(--spacing-sm)',
+                      color: 'var(--text-primary)'
+                    }}>
                       {hotel.name}
                     </h3>
-                    <p className="text-sm mb-3" style={{color: 'var(--text-secondary)'}}>
-                      📍 {hotel.location}
+                    <p style={{
+                      fontSize: 'var(--text-sm)',
+                      marginBottom: 'var(--spacing-md)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--spacing-xs)',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      <Heart size={16} /> {hotel.location}
                     </p>
 
                     {/* Price */}
-                    <p className="font-bold text-lg mb-3" style={{color: 'var(--primary-main)'}}>
+                    <p style={{
+                      fontWeight: 'var(--font-bold)',
+                      fontSize: 'var(--text-lg)',
+                      marginBottom: 'var(--spacing-md)',
+                      color: 'var(--primary-main)'
+                    }}>
                       ฿{Number(hotel.price ?? 0).toLocaleString()}
                     </p>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-2 mb-5">
-                      <div className="flex">
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--spacing-xs)',
+                      marginBottom: 'var(--spacing-md)'
+                    }}>
+                      <div style={{display: 'flex'}}>
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
                             size={16}
-                            className="fill-current"
-                            style={{color: i < Math.round(hotel.avgRating ?? 0) ? '#FFD700' : 'var(--border-light)'}}
+                            style={{
+                              color: i < Math.round(hotel.avgRating ?? 0) ? '#FFD700' : 'var(--border-light)',
+                              fill: i < Math.round(hotel.avgRating ?? 0) ? 'currentColor' : 'none'
+                            }}
                           />
                         ))}
                       </div>
-                      <span style={{color: 'var(--text-secondary)', fontSize: '0.875rem'}}>
-                        {Number(hotel.avgRating ?? 0).toFixed(1)} ({hotel.reviewCount ?? 0} รีวิว)
+                      <span style={{color: 'var(--text-secondary)', fontSize: 'var(--text-sm)'}}>
+                        {Number(hotel.avgRating ?? 0).toFixed(1)} ({hotel.reviewCount ?? 0})
                       </span>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-3">
+                    <div style={{display: 'flex', gap: 'var(--spacing-sm)'}}>
                       <button
                         onClick={() => navigate(`/hotel/${hotel.id}`)}
-                        className="flex-1 py-2 rounded-lg font-semibold transition-all duration-200 text-white hover:opacity-90"
-                        style={{backgroundColor: 'var(--primary-main)'}}
+                        className="btn btn-primary"
+                        style={{flex: 1}}
                       >
                         ดูรายละเอียด
                       </button>
 
                       <button
                         onClick={() => handleRemoveFavorite(hotel.id)}
-                        className="px-3 rounded-lg transition-all duration-200"
                         style={{
+                          padding: 'var(--spacing-sm)',
                           backgroundColor: 'rgba(217, 70, 239, 0.2)',
-                          color: '#d946ef'
+                          color: '#d946ef',
+                          border: 'none',
+                          borderRadius: 'var(--radius-md)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = 'rgba(217, 70, 239, 0.3)';
@@ -165,7 +215,7 @@ const getMainImage = (hotel) =>
                           e.currentTarget.style.backgroundColor = 'rgba(217, 70, 239, 0.2)';
                         }}
                       >
-                        <Heart size={20} className="fill-current" />
+                        <Heart size={20} fill="currentColor" />
                       </button>
                     </div>
                   </div>

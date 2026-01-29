@@ -6,7 +6,8 @@ import { hotelService, reviewService, favoriteService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { ReviewForm, ReviewList } from '../components/Review';
 import { Footer } from '../components/Footer';
-import { Heart, MapPin, Star, Phone, Facebook, FileText, Zap, Building, Compass, Map, Navigation } from 'lucide-react';
+import { SkeletonBox, SkeletonCard, SkeletonText, SkeletonGrid } from '../components/Skeleton';
+import { Heart, MapPin, Star, Phone, Facebook, FileText, Zap, Building, Compass, Map, Navigation, Navigation2 } from 'lucide-react';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -83,7 +84,33 @@ export const HotelDetailPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-300">Loading...</div>;
+    return (
+      <div style={{backgroundColor: 'var(--bg-primary)', minHeight: '100vh', paddingTop: 'var(--spacing-lg)'}}>
+        <div style={{maxWidth: '80rem', marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'var(--spacing-md)', paddingRight: 'var(--spacing-md)'}}>
+          {/* Hero Skeleton */}
+          <SkeletonBox height="24rem" style={{marginBottom: 'var(--spacing-lg)', borderRadius: 'var(--radius-lg)'}} />
+          
+          {/* Info Skeleton */}
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 'var(--spacing-lg)'}}>
+            <div style={{flex: 1}}>
+              <SkeletonText width="60%" height="2.5rem" style={{marginBottom: 'var(--spacing-sm)'}} />
+              <SkeletonText width="40%" height="1.25rem" />
+            </div>
+            <SkeletonBox width="3rem" height="3rem" style={{borderRadius: 'var(--radius-full)'}} />
+          </div>
+
+          {/* Stats Skeleton */}
+          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-lg)'}}>
+            <SkeletonBox height="5rem" />
+            <SkeletonBox height="5rem" />
+            <SkeletonBox height="5rem" />
+          </div>
+
+          {/* Gallery Skeleton */}
+          <SkeletonGrid columns={4} count={4} style={{marginBottom: 'var(--spacing-lg)'}} />
+        </div>
+      </div>
+    );
   }
   if (!hotel) {
     return <div className="text-center py-12 text-gray-300">Hotel not found</div>;
@@ -181,7 +208,7 @@ export const HotelDetailPage = () => {
             borderRadius: '0.5rem',
             padding: '1rem'
           }}>
-            <p style={{color: 'var(--text-secondary)', fontSize: '0.875rem'}}>📍 ระยะทาง</p>
+            <p style={{color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}><Navigation2 size={16} /> ระยะทาง</p>
             <p style={{color: 'var(--primary-main)', fontSize: '1.875rem'}} className="font-bold">
               {hotel.distanceToTechCollege || 'N/A'} km
             </p>
@@ -190,17 +217,37 @@ export const HotelDetailPage = () => {
 
         {/* แกลเลอรี่ */}
         {galleryImages.length > 0 && (
-          <div className="mb-10">
-            <h2 style={{color: 'var(--text-primary)'}} className="text-2xl font-bold mb-4">แกลเลอรี่</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="mb-10 animate-slide-in-up">
+            <h2 style={{color: 'var(--text-primary)', fontSize: 'var(--text-2xl)', fontWeight: 'var(--font-bold)', marginBottom: 'var(--spacing-lg)'}}>แกลเลอรี่</h2>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 'var(--spacing-md)'}}>
               {galleryImages.map((img, idx) => (
-                <img
+                <div
                   key={idx}
-                  src={img}
-                  alt={`Gallery ${idx}`}
-                  className="w-full h-32 object-cover rounded-lg hover:opacity-80 transition-opacity"
-                  style={{border: '2px solid var(--primary-main)'}}
-                />
+                  style={{
+                    position: 'relative',
+                    height: '150px',
+                    overflow: 'hidden',
+                    borderRadius: 'var(--radius-lg)',
+                    border: '2px solid var(--primary-main)',
+                    cursor: 'pointer',
+                    transition: 'transform 0.3s ease-out'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  <img
+                    src={img}
+                    alt={`Gallery ${idx}`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'filter 0.3s ease-out'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                    onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                  />
+                </div>
               ))}
             </div>
           </div>

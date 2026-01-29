@@ -8,6 +8,7 @@ import { UserManagement } from "../components/UserManagement";
 import { AnnouncementManagement } from "../components/AnnouncementManagement";
 import { ActivityLog } from "../components/ActivityLog";
 import { HotelForm } from "../components/HotelForm";
+import { SkeletonCard, SkeletonGrid, SkeletonStats } from "../components/Skeleton";
 import {
   BarChart3,
   Building2,
@@ -238,77 +239,133 @@ export const AdminPage = () => {
             {/* Hotels List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-stagger">
               {loading ? (
-                <div className="text-center py-8 text-gray-700 dark:text-gray-200 animate-pulse text-sm md:text-base">
-                  Loading hotels...
+                <SkeletonGrid columns={3} count={6} />
+              ) : hotels.length === 0 ? (
+                <div style={{gridColumn: '1 / -1', textAlign: 'center', paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)'}}>
+                  <Building2 size={80} style={{margin: '0 auto', marginBottom: 'var(--spacing-md)', color: 'var(--primary-main)', opacity: 0.5}} />
+                  <p style={{fontSize: 'var(--text-xl)', color: 'var(--text-secondary)'}}>ไม่มีโรงแรม</p>
                 </div>
               ) : (
                 hotels.map((hotel) => (
                   <div
                     key={hotel.id}
-                    className="glass glass-lg p-4 md:p-6 rounded-lg card-enter hover-lift hover-glow"
+                    className="card hover:shadow-lg transition-all duration-300"
+                    style={{
+                      backgroundColor: 'var(--bg-secondary)',
+                      overflow: 'hidden'
+                    }}
                   >
                     {hotel.imageUrl && (
-                      <img
-                        src={hotel.imageUrl}
-                        alt={hotel.name}
-                        className="w-full h-32 object-cover rounded mb-3 md:mb-4"
-                      />
+                      <div style={{height: '150px', overflow: 'hidden'}}>
+                        <img
+                          src={hotel.imageUrl}
+                          alt={hotel.name}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
                     )}
 
-                    <h3 className="text-lg md:text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">
-                      {hotel.name}
-                    </h3>
+                    <div style={{padding: 'var(--spacing-md)'}}>
+                      <h3 style={{
+                        fontSize: 'var(--text-lg)',
+                        fontWeight: 'var(--font-bold)',
+                        marginBottom: 'var(--spacing-sm)',
+                        color: 'var(--text-primary)'
+                      }}>
+                        {hotel.name}
+                      </h3>
 
-                    <p className="text-gray-700 dark:text-gray-300 mb-2 text-sm md:text-base">
-                      {hotel.location}
-                    </p>
+                      <p style={{
+                        color: 'var(--text-secondary)',
+                        marginBottom: 'var(--spacing-sm)',
+                        fontSize: 'var(--text-sm)'
+                      }}>
+                        {hotel.location}
+                      </p>
 
-                    <p className="text-base md:text-lg font-bold text-pink-600 dark:text-pink-400 mb-2">
-                      ฿{hotel.price}
-                    </p>
+                      <p style={{
+                        fontSize: 'var(--text-lg)',
+                        fontWeight: 'var(--font-bold)',
+                        color: 'var(--primary-main)',
+                        marginBottom: 'var(--spacing-md)'
+                      }}>
+                        ฿{Number(hotel.price).toLocaleString()}
+                      </p>
 
-                    <div className="flex gap-2 flex-col md:flex-row">
-                      <button
-                        onClick={() => navigate(`/hotel/${hotel.id}`)}
-                        className="flex-1 bg-blue-600 dark:bg-blue-500 text-white py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-600 text-xs md:text-sm"
-                      >
-                        View
-                      </button>
+                      <div style={{display: 'flex', gap: 'var(--spacing-sm)'}}>
+                        <button
+                          onClick={() => navigate(`/hotel/${hotel.id}`)}
+                          className="btn btn-primary"
+                          style={{flex: 1}}
+                        >
+                          View
+                        </button>
 
-                      <button
-                        onClick={() => {
-                          setEditingHotel(hotel);
-                          setFormData({
-                            name: hotel.name || "",
-                            description: hotel.description || "",
-                            price: hotel.price ?? "",
-                            location: hotel.location || "",
-                            latitude: hotel.latitude ?? "",
-                            longitude: hotel.longitude ?? "",
-                            imageUrl: hotel.imageUrl || "",
-                            galleryImages: hotel.galleryImages || [],
-                            hotelType: hotel.hotelType || "Standard Hotel",
-                            distanceToTechCollege:
-                              hotel.distanceToTechCollege ?? "",
-                            amenities: hotel.amenities || [],
-                            nearbyPlaces: hotel.nearbyPlaces || [],
-                            phone: hotel.phone || "",
-                            facebookUrl: hotel.facebookUrl || "",
-                            lineId: hotel.lineId || "",
-                          });
-                          setShowForm(true);
-                        }}
-                        className="flex-1 bg-yellow-500 dark:bg-yellow-600 text-white py-2 rounded hover:bg-yellow-600 dark:hover:bg-yellow-700 text-xs md:text-sm"
-                      >
-                        Edit
-                      </button>
+                        <button
+                          onClick={() => {
+                            setEditingHotel(hotel);
+                            setFormData({
+                              name: hotel.name || "",
+                              description: hotel.description || "",
+                              price: hotel.price ?? "",
+                              location: hotel.location || "",
+                              latitude: hotel.latitude ?? "",
+                              longitude: hotel.longitude ?? "",
+                              imageUrl: hotel.imageUrl || "",
+                              galleryImages: hotel.galleryImages || [],
+                              hotelType: hotel.hotelType || "Standard Hotel",
+                              distanceToTechCollege:
+                                hotel.distanceToTechCollege ?? "",
+                              amenities: hotel.amenities || [],
+                              nearbyPlaces: hotel.nearbyPlaces || [],
+                              phone: hotel.phone || "",
+                              facebookUrl: hotel.facebookUrl || "",
+                              lineId: hotel.lineId || "",
+                            });
+                            setShowForm(true);
+                          }}
+                          style={{
+                            padding: 'var(--spacing-sm) var(--spacing-md)',
+                            backgroundColor: '#FFA500',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 'var(--radius-md)',
+                            cursor: 'pointer',
+                            fontSize: 'var(--text-sm)',
+                            fontWeight: 'var(--font-bold)',
+                            transition: 'all 0.2s',
+                            flex: 1
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FF8C00'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFA500'}
+                        >
+                          Edit
+                        </button>
 
-                      <button
-                        onClick={() => handleDeleteHotel(hotel.id)}
-                        className="flex-1 bg-red-600 dark:bg-red-700 text-white py-2 rounded hover:bg-red-700 dark:hover:bg-red-800 text-xs md:text-sm"
-                      >
-                        Delete
-                      </button>
+                        <button
+                          onClick={() => handleDeleteHotel(hotel.id)}
+                          style={{
+                            padding: 'var(--spacing-sm) var(--spacing-md)',
+                            backgroundColor: 'var(--color-error)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 'var(--radius-md)',
+                            cursor: 'pointer',
+                            fontSize: 'var(--text-sm)',
+                            fontWeight: 'var(--font-bold)',
+                            transition: 'all 0.2s',
+                            flex: 1
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                          onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))

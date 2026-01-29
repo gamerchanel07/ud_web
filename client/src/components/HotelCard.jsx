@@ -75,64 +75,200 @@ export const HotelCard = ({
     <motion.div
       variants={cardVariants}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="hotel-card group card-enter"
+      className="card"
+      style={{
+        backgroundColor: 'var(--bg-secondary)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}
     >
-      <img
-        src={getImageUrl(heroImage)}
-        alt={hotel.name}
-        className="w-full h-48 object-cover rounded-t-xl"
-        onError={(e) => (e.currentTarget.src = "/no-image.png")}
-      />
+      {/* Image Container */}
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: '12rem',
+        overflow: 'hidden',
+        backgroundColor: 'var(--bg-primary)'
+      }} className="group">
+        <img
+          src={getImageUrl(heroImage)}
+          alt={hotel.name}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transition: 'transform 0.3s ease-out',
+            transform: 'scale(1)'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          onError={(e) => (e.currentTarget.src = "/no-image.png")}
+        />
+        
+        {/* Badge overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 'var(--spacing-sm)',
+          right: 'var(--spacing-sm)',
+          backgroundColor: 'rgba(0, 173, 181, 0.95)',
+          backdropFilter: 'blur(12px)',
+          padding: 'var(--spacing-xs) var(--spacing-md)',
+          borderRadius: 'var(--radius-full)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--spacing-xs)',
+          fontSize: 'var(--text-xs)',
+          fontWeight: 'var(--font-bold)',
+          color: 'white',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: '0 8px 24px rgba(0, 173, 181, 0.4)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          cursor: 'default'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 1)';
+          e.currentTarget.style.transform = 'scale(1.05)';
+          e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 173, 181, 0.5)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.95)';
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 173, 181, 0.4)';
+        }}>
+          <Eye size={16} style={{color: 'white'}} />
+          {hotel.views || 0}
+        </div>
+      </div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-bold">{hotel.name}</h3>
-        <p className="text-sm">{hotel.location}</p>
-
-        <div className="flex justify-between items-center my-2">
-          <span className="text-xl font-bold">
-            ฿{Number(hotel.price ?? 0).toLocaleString()}
-          </span>
-
-          <div className="flex gap-2 items-center">
-            <div className="flex items-center gap-1 text-gray-300 text-xs bg-white/10 px-2 py-1 rounded">
-              <Eye size={14} />
-              {hotel.views || 0}
-            </div>
-            <button onClick={() => onFavoriteToggle(hotel.id)}>
-              <Heart
-                size={24}
-                className={
-                  isFavorited ? "fill-red-500 text-red-500" : "text-gray-400"
-                }
-              />
-            </button>
+      <div className="card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Title */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'start',
+          marginBottom: 'var(--spacing-sm)',
+          gap: 'var(--spacing-sm)'
+        }}>
+          <div style={{ flex: 1 }}>
+            <h3 style={{
+              fontSize: 'var(--text-lg)',
+              fontWeight: 'var(--font-bold)',
+              color: 'var(--text-primary)',
+              margin: '0 0 var(--spacing-xs) 0'
+            }}>{hotel.name}</h3>
+            <p style={{
+              fontSize: 'var(--text-sm)',
+              color: 'var(--text-secondary)',
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-xs)'
+            }}>
+              <MapPin size={14} /> {hotel.location}
+            </p>
           </div>
+          
+          <button 
+            onClick={() => onFavoriteToggle(hotel.id)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <Heart
+              size={24}
+              style={{
+                color: isFavorited ? 'var(--color-error)' : 'var(--text-tertiary)',
+                fill: isFavorited ? 'var(--color-error)' : 'none'
+              }}
+            />
+          </button>
         </div>
 
-        <div className="text-sm space-y-1 mb-3">
+        {/* Distance Info - Top */}
+        <div style={{
+          fontSize: 'var(--text-sm)',
+          color: 'var(--text-secondary)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--spacing-xs)',
+          marginBottom: 'auto',
+          flex: 1
+        }}>
           {distanceFromCollege && (
-            <div className="flex gap-2">
-              <MapPin size={16} /> {distanceFromCollege} km from Tech College
-            </div>
-          )}
-          {distanceFromUser && (
-            <div className="flex gap-2">
-              <MapPin size={16} /> {distanceFromUser} km from you
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
+              <MapPin size={14} /> {distanceFromCollege} km from Tech College
             </div>
           )}
         </div>
+
+        {/* Bottom Section - Distance for you (left) and Price (right) */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          paddingTop: 'var(--spacing-md)',
+          borderTop: '1px solid var(--border-light)'
+        }}>
+          {/* Distance from You - Left */}
+          <div style={{
+            fontSize: 'var(--text-sm)',
+            color: 'var(--text-secondary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-xs)'
+          }}>
+            {distanceFromUser ? (
+              <>
+                <MapPin size={14} />
+                <span>{distanceFromUser} km for you</span>
+              </>
+            ) : (
+              <span style={{color: 'var(--text-tertiary)'}}>-</span>
+            )}
+          </div>
+
+          {/* Price - Right */}
+          <p style={{
+            fontSize: 'var(--text-lg)',
+            fontWeight: 'var(--font-bold)',
+            color: 'var(--primary-main)',
+            margin: 0
+          }}>
+            ฿{Number(hotel.price ?? 0).toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--spacing-sm)',
+        paddingTop: 'var(--spacing-sm)',
+        borderTop: '1px solid var(--border-light)'
+      }}>
         <button
           onClick={() => navigate(`/hotel/${hotel.id}`)}
-          className="w-full bg-ocean-600 py-2 rounded"
+          className="btn btn-primary"
+          style={{ width: '100%' }}
         >
-          View Details
+          <Eye size={16} /> View Details
         </button>
 
-        {/* ⭐ Edit เฉพาะ admin */}
+        {/* Edit button - Admin only */}
         {onEdit && (
           <button
             onClick={() => onEdit(hotel)}
-            className="w-full mt-2 bg-yellow-500 text-white py-2 rounded flex items-center justify-center gap-1 text-sm"
+            className="btn btn-secondary"
+            style={{ width: '100%' }}
           >
             <Edit2 size={16} /> Edit
           </button>
@@ -151,7 +287,7 @@ export const HotelList = ({
 }) => {
   if (!hotels?.length) {
     return (
-      <div className="text-center text-gray-400 py-8">No hotels found</div>
+      <div className="text-center py-8">No hotels found</div>
     );
   }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API from "../services/api";
+import { SkeletonStats, SkeletonBox } from "./Skeleton";
 import { Building2, Star, Users, BarChart3, Heart, Trophy, TrendingUp, MessageCircle } from "lucide-react";
 import {
   BarChart,
@@ -79,7 +80,23 @@ export const DashboardStats = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-8 text-gray-200">Loading dashboard...</div>
+      <div style={{animation: 'fade-in 0.5s ease-in'}}>
+        <h2 style={{
+          fontSize: '1.875rem',
+          fontWeight: 'bold',
+          marginBottom: '1.5rem',
+          color: 'var(--text-primary)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem'
+        }}>
+          <BarChart3 size={36} style={{color: 'var(--primary-main)'}} />
+          Dashboard Overview
+        </h2>
+        
+        {/* Stats Skeleton */}
+        <SkeletonStats count={5} />
+      </div>
     );
   }
 

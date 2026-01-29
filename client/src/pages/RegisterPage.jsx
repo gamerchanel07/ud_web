@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { Building2, Mail, Lock, UserPlus } from 'lucide-react';
+import { Building2, Mail, Lock, UserPlus, Loader } from 'lucide-react';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -53,162 +53,162 @@ export const RegisterPage = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '1rem',
+      padding: 'var(--spacing-sm)',
       backgroundColor: 'var(--bg-primary)'
-    }}>
+    }} className="animate-fade-in">
+      {/* Background blur effect */}
       <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(circle at 80% 50%, rgba(0, 173, 181, 0.1), transparent 50%)',
+        pointerEvents: 'none'
+      }} />
+
+      <div className="card" style={{
         backgroundColor: 'var(--bg-secondary)',
-        borderRadius: '0.5rem',
-        padding: '2rem',
         width: '100%',
         maxWidth: '28rem',
-        border: '1px solid var(--border-light)'
+        position: 'relative',
+        zIndex: 1
       }}>
-        <h1 style={{
-          fontSize: '1.875rem',
-          fontWeight: 'bold',
-          textAlign: 'center',
-          color: 'var(--primary-main)',
-          marginBottom: '1.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.5rem'
-        }}>
-          <Building2 size={32} style={{color: 'var(--primary-main)'}} />
-          {t('register.title')}
-        </h1>
+        {/* Header */}
+        <div className="card-header">
+          <h1 style={{
+            fontSize: 'var(--text-2xl)',
+            fontWeight: 'var(--font-bold)',
+            textAlign: 'center',
+            color: 'var(--primary-main)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 'var(--spacing-xs)',
+            margin: 0
+          }} className="animate-slide-in-down">
+            <Building2 size={32} />
+            {t('register.title')}
+          </h1>
+        </div>
 
-        {error && (
-          <div style={{
-            backgroundColor: 'rgba(239, 68, 68, 0.2)',
-            color: '#EF4444',
-            padding: '0.75rem',
-            borderRadius: '0.5rem',
-            marginBottom: '1rem',
-            border: '1px solid rgba(239, 68, 68, 0.5)'
+        {/* Body */}
+        <div className="card-body">
+
+          {error && (
+            <div style={{
+              backgroundColor: 'rgba(239, 68, 68, 0.15)',
+              border: '2px solid var(--color-error)',
+              borderRadius: 'var(--radius-md)',
+              padding: 'var(--spacing-sm)',
+              marginBottom: 'var(--spacing-md)',
+              color: 'var(--color-error)',
+              fontSize: 'var(--text-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-xs)'
+            }} className="animate-shake">
+              <div style={{width: '4px', height: '4px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-error)'}} />
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="animate-stagger space-y-4">
+            {/* Username Field */}
+            <div className="animate-slide-in-left">
+              <label className="form-label required">{t('register.username')}</label>
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                className="form-input"
+                placeholder={t('register.chooseUsername')}
+                required
+              />
+            </div>
+
+            {/* Email Field */}
+            <div className="animate-slide-in-right">
+              <label className="form-label required">{t('register.email')}</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="form-input"
+                placeholder={t('register.enterEmail')}
+                required
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="animate-slide-in-left">
+              <label className="form-label required">{t('register.password')}</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="form-input"
+                placeholder={t('register.enterPassword')}
+                required
+              />
+            </div>
+
+            {/* Confirm Password Field */}
+            <div className="animate-slide-in-right">
+              <label className="form-label required">{t('register.confirmPassword')}</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="form-input"
+                placeholder={t('register.confirmPasswordPlaceholder')}
+                required
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary w-full mt-6"
+              style={{
+                width: '100%',
+                marginTop: 'var(--spacing-lg)'
+              }}
+            >
+              {loading ? (
+                <><Loader size={16} className="animate-spin" /> {t('common.loading')}</>
+              ) : (
+                <><UserPlus size={16} /> {t('register.createAccount')}</>
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <div className="card-footer" style={{textAlign: 'center'}}>
+          <p style={{
+            margin: 0,
+            color: 'var(--text-secondary)',
+            fontSize: 'var(--text-sm)'
           }}>
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.username')}</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
+            {t('register.alreadyHaveAccount')}{' '}
+            <Link 
+              to="/login" 
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                border: '1px solid var(--border-light)',
-                borderRadius: '0.375rem',
-                color: 'var(--text-primary)'
+                color: 'var(--primary-main)',
+                fontWeight: 'var(--font-semibold)',
+                textDecoration: 'none',
+                transition: 'opacity 0.2s'
               }}
-              placeholder={t('register.chooseUsername')}
-              required
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
-              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
-            />
-          </div>
-
-          <div className="mb-4">
-            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.email')}</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                border: '1px solid var(--border-light)',
-                borderRadius: '0.375rem',
-                color: 'var(--text-primary)'
-              }}
-              placeholder={t('register.enterEmail')}
-              required
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
-              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
-            />
-          </div>
-
-          <div className="mb-4">
-            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.password')}</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                border: '1px solid var(--border-light)',
-                borderRadius: '0.375rem',
-                color: 'var(--text-primary)'
-              }}
-              placeholder={t('register.enterPassword')}
-              required
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
-              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
-            />
-          </div>
-
-          <div className="mb-6">
-            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.confirmPassword')}</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                border: '1px solid var(--border-light)',
-                borderRadius: '0.375rem',
-                color: 'var(--text-primary)'
-              }}
-              placeholder={t('register.confirmPasswordPlaceholder')}
-              required
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
-              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              backgroundColor: loading ? 'rgba(107, 114, 128, 0.5)' : 'var(--primary-main)',
-              color: 'white',
-              paddingTop: '0.75rem',
-              paddingBottom: '0.75rem',
-              borderRadius: '0.375rem',
-              fontWeight: 'bold',
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1
-            }}
-            onMouseEnter={(e) => !loading && (e.currentTarget.style.opacity = '0.9')}
-            onMouseLeave={(e) => !loading && (e.currentTarget.style.opacity = '1')}
-          >
-            {loading ? '⏳ ' + t('common.loading') : (<><UserPlus size={16} /> {t('register.createAccount')}</>)}
-          </button>
-        </form>
-
-        <p style={{textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)'}}>
-          {t('register.alreadyHaveAccount')}{' '}
-          <Link to="/login" style={{color: 'var(--primary-main)', fontWeight: 'bold', textDecoration: 'none'}} className="hover:underline">
-            {t('register.loginHere')}
-          </Link>
-        </p>
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            >
+              {t('register.loginHere')}
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

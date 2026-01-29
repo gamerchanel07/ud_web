@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { adminService } from "../services/api";
-import { MapPin, Camera, X } from "lucide-react";
+import { MapPin, Camera, X, Building2, Navigation, Zap, Phone, MessageSquare, Save, CheckCircle } from "lucide-react";
 
 const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
@@ -149,20 +149,50 @@ export const HotelForm = ({
   };
 
   return (
-    <div className="glass glass-lg p-6 rounded-lg mb-8 animate-slide-in-down">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-purple-300 mb-6">
+    <div style={{
+      backgroundColor: 'var(--bg-secondary)',
+      border: '1px solid rgba(0, 173, 181, 0.2)',
+      borderRadius: '0.5rem',
+      padding: '1.5rem',
+      marginBottom: '2rem',
+      animation: 'slide-in-down 0.5s ease'
+    }}>
+      <h2 style={{
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        color: 'var(--text-primary)',
+        marginBottom: '1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+      }}>
+        <Building2 size={28} style={{color: 'var(--primary-main)'}} />
         {editingHotel ? "แก้ไขโรงแรม" : t("admin.addHotel")}
       </h2>
-      <form onSubmit={handleSubmitHotel} className="space-y-6">
+      <form onSubmit={handleSubmitHotel} style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
         {/* Basic Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '1rem'
+        }}>
           <input
             type="text"
             name="name"
             placeholder={t("admin.hotelName")}
             value={formData.name}
             onChange={handleInputChange}
-            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            style={{
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
             required
           />
           <input
@@ -171,7 +201,17 @@ export const HotelForm = ({
             placeholder={t("admin.location")}
             value={formData.location}
             onChange={handleInputChange}
-            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            style={{
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
             required
           />
           <input
@@ -180,14 +220,35 @@ export const HotelForm = ({
             placeholder={t("admin.price")}
             value={formData.price}
             onChange={handleInputChange}
-            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            style={{
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
             required
           />
           <select
             name="hotelType"
             value={formData.hotelType}
             onChange={handleInputChange}
-            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
+            style={{
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s',
+              cursor: 'pointer'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           >
             <option value="Budget Hotel">Budget Hotel</option>
             <option value="Standard Hotel">Standard Hotel</option>
@@ -197,44 +258,99 @@ export const HotelForm = ({
         </div>
 
         {/* Location Selection */}
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded border border-gray-300 dark:border-gray-700">
-          <h3 className="text-gray-900 dark:text-blue-400 font-bold mb-4 flex items-center gap-2">
-            <MapPin size={20} /> {t("admin.location")} (Format: latitude,
-            longitude)
+        <div style={{
+          backgroundColor: 'rgba(0, 173, 181, 0.05)',
+          border: '2px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1rem'
+        }}>
+          <h3 style={{
+            color: 'var(--text-primary)',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <MapPin size={20} style={{color: 'var(--primary-main)'}} /> {t("admin.location")} (รูปแบบ: ละติจูด, ลองจิจูด)
           </h3>
           <input
             type="text"
             placeholder="เช่น: 17.416, 102.789"
             onChange={handleCoordinateChange}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 mb-3"
+            style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              marginBottom: '0.75rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           />
-          <div className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-            📍 Latitude: {formData.latitude || "-"} | Longitude:{" "}
-            {formData.longitude || "-"}
+          <div style={{
+            fontSize: '0.875rem',
+            color: 'var(--text-secondary)',
+            marginBottom: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Navigation size={16} style={{color: 'var(--primary-main)'}} /> ละติจูด: {formData.latitude || "-"} | ลองจิจูด: {formData.longitude || "-"}
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            📏 Distance to Tech College:{" "}
-            {formData.distanceToTechCollege
-              ? `${formData.distanceToTechCollege} km`
-              : "Auto-calculated"}
+          <div style={{
+            fontSize: '0.875rem',
+            color: 'var(--text-tertiary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Zap size={16} style={{color: '#FFC107'}} /> ระยะห่างจากวิทยาลัยเทคโนโลยี: {formData.distanceToTechCollege ? `${formData.distanceToTechCollege} กม.` : "คำนวณโดยอัตโนมัติ"}
           </div>
         </div>
 
         {/* Image Upload */}
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded border border-gray-300 dark:border-gray-700">
-          <h3 className="text-gray-900 dark:text-blue-400 font-bold mb-4 flex items-center gap-2">
-            <Camera size={20} /> Images
+        <div style={{
+          backgroundColor: 'rgba(0, 173, 181, 0.05)',
+          border: '2px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1rem'
+        }}>
+          <h3 style={{
+            color: 'var(--text-primary)',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Camera size={20} style={{color: 'var(--primary-main)'}} /> รูปภาพ
           </h3>
 
           {/* Image Preview */}
           {formData.galleryImages.length > 0 && (
-            <div className="mb-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div style={{
+              marginBottom: '1rem',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+              gap: '0.75rem'
+            }}>
               {formData.galleryImages.map((img, idx) => (
-                <div key={idx} className="relative">
+                <div key={idx} style={{position: 'relative'}}>
                   <img
                     src={img}
                     alt={`Preview ${idx}`}
-                    className="w-full h-24 object-cover rounded"
+                    style={{
+                      width: '100%',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '0.375rem',
+                      border: '2px solid rgba(0, 173, 181, 0.3)'
+                    }}
                     onError={(e) => {
                       e.currentTarget.src = "/no-image.png";
                     }}
@@ -242,7 +358,23 @@ export const HotelForm = ({
                   <button
                     type="button"
                     onClick={() => removeImage(idx)}
-                    className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full p-1"
+                    style={{
+                      position: 'absolute',
+                      top: '0.25rem',
+                      right: '0.25rem',
+                      backgroundColor: '#EF4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      padding: '0.25rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'background-color 0.3s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#DC2626'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#EF4444'}
                   >
                     <X size={16} />
                   </button>
@@ -255,15 +387,27 @@ export const HotelForm = ({
           <input
             type="text"
             name="imageUrl"
-            placeholder="หรือใส่ Image URL"
+            placeholder="URL รูปภาพหลัก"
             value={formData.imageUrl}
             onChange={handleInputChange}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white mb-2"
+            style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              marginBottom: '0.75rem',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           />
           {/* Gallery Upload */}
           <input
             type="text"
-            placeholder="Gallery Image URL (กด Enter)"
+            placeholder="URL รูปภาพแกลเลอรี่ (กด Enter)"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
@@ -277,28 +421,77 @@ export const HotelForm = ({
                 e.target.value = "";
               }
             }}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white"
+            style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           />
         </div>
 
         {/* Amenities Selection */}
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded border border-gray-300 dark:border-gray-700">
-          <h3 className="text-gray-900 dark:text-white font-bold mb-4">
+        <div style={{
+          backgroundColor: 'rgba(0, 173, 181, 0.05)',
+          border: '2px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1rem'
+        }}>
+          <h3 style={{
+            color: 'var(--text-primary)',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Zap size={20} style={{color: 'var(--primary-main)'}} />
             {t("admin.amenities")}
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: '0.75rem'
+          }}>
             {AMENITIES_OPTIONS.map((amenity) => (
               <label
                 key={amenity}
-                className="flex items-center gap-2 cursor-pointer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  cursor: 'pointer',
+                  padding: '0.5rem',
+                  borderRadius: '0.375rem',
+                  backgroundColor: formData.amenities.includes(amenity) ? 'rgba(0, 173, 181, 0.15)' : 'transparent',
+                  border: `1px solid ${formData.amenities.includes(amenity) ? 'var(--primary-main)' : 'rgba(0, 173, 181, 0.1)'}`,
+                  transition: 'all 0.3s'
+                }}
               >
                 <input
                   type="checkbox"
                   checked={formData.amenities.includes(amenity)}
                   onChange={() => handleAmenityChange(amenity)}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 checked:bg-blue-600"
+                  style={{
+                    width: '1rem',
+                    height: '1rem',
+                    borderRadius: '0.25rem',
+                    border: '1px solid var(--primary-main)',
+                    backgroundColor: formData.amenities.includes(amenity) ? 'var(--primary-main)' : 'var(--bg-primary)',
+                    cursor: 'pointer',
+                    accentColor: 'var(--primary-main)'
+                  }}
                 />
-                <span className="text-gray-700 dark:text-gray-300 text-sm">
+                <span style={{
+                  color: 'var(--text-primary)',
+                  fontSize: '0.875rem'
+                }}>
                   {amenity}
                 </span>
               </label>
@@ -307,17 +500,45 @@ export const HotelForm = ({
         </div>
 
         {/* Nearby Places */}
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded border border-gray-300 dark:border-gray-700">
-          <h3 className="text-gray-900 dark:text-white font-bold mb-4">
-            Nearby Places
+        <div style={{
+          backgroundColor: 'rgba(0, 173, 181, 0.05)',
+          border: '2px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1rem'
+        }}>
+          <h3 style={{
+            color: 'var(--text-primary)',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <MapPin size={20} style={{color: 'var(--primary-main)'}} />
+            สถานที่ใกล้เคียง
           </h3>
 
-          <div className="flex gap-2 mb-3">
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            marginBottom: '0.75rem'
+          }}>
             <input
               value={nearbyInput}
               onChange={(e) => setNearbyInput(e.target.value)}
-              placeholder="Add nearby place"
-              className="flex-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white"
+              placeholder="เพิ่มสถานที่ใกล้เคียง"
+              style={{
+                flex: 1,
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid rgba(0, 173, 181, 0.3)',
+                borderRadius: '0.375rem',
+                padding: '0.75rem',
+                color: 'var(--text-primary)',
+                fontSize: '0.875rem',
+                transition: 'border-color 0.3s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
             />
             <button
               type="button"
@@ -329,19 +550,65 @@ export const HotelForm = ({
                 }));
                 setNearbyInput("");
               }}
-              className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-3 rounded"
+              style={{
+                backgroundColor: 'var(--primary-main)',
+                color: 'white',
+                border: 'none',
+                padding: '0.75rem 1rem',
+                borderRadius: '0.375rem',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                transition: 'opacity 0.3s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             >
               +
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.5rem'
+          }}>
             {formData.nearbyPlaces.map((p, i) => (
               <span
                 key={i}
-                className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-sm"
+                style={{
+                  backgroundColor: 'rgba(0, 173, 181, 0.2)',
+                  color: 'var(--text-primary)',
+                  padding: '0.5rem 0.75rem',
+                  borderRadius: '1rem',
+                  fontSize: '0.875rem',
+                  border: '1px solid var(--primary-main)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
               >
                 {p}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      nearbyPlaces: prev.nearbyPlaces.filter((_, idx) => idx !== i)
+                    }));
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--primary-main)',
+                    cursor: 'pointer',
+                    fontSize: '1rem',
+                    padding: 0,
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  ×
+                </button>
               </span>
             ))}
           </div>
@@ -353,33 +620,83 @@ export const HotelForm = ({
           placeholder={t("admin.description")}
           value={formData.description}
           onChange={handleInputChange}
-          className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500"
-          rows="4"
+          style={{
+            width: '100%',
+            backgroundColor: 'var(--bg-primary)',
+            border: '1px solid rgba(0, 173, 181, 0.3)',
+            borderRadius: '0.375rem',
+            padding: '0.75rem',
+            color: 'var(--text-primary)',
+            fontSize: '0.875rem',
+            transition: 'border-color 0.3s',
+            fontFamily: 'inherit',
+            resize: 'vertical',
+            minHeight: '6rem'
+          }}
+          onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+          onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           required
         />
 
         {/* Contact Information */}
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded border border-gray-300 dark:border-gray-700">
-          <h3 className="text-gray-900 dark:text-white font-bold mb-4">
-            Contact Information
+        <div style={{
+          backgroundColor: 'rgba(0, 173, 181, 0.05)',
+          border: '2px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1rem'
+        }}>
+          <h3 style={{
+            color: 'var(--text-primary)',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Phone size={20} style={{color: 'var(--primary-main)'}} />
+            ข้อมูลติดต่อ
           </h3>
 
           <input
             type="text"
             name="phone"
-            placeholder="Phone number"
+            placeholder="เบอร์โทรศัพท์"
             value={formData.phone || ""}
             onChange={handleInputChange}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white mb-3"
+            style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              marginBottom: '0.75rem',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           />
 
           <input
             type="text"
             name="facebookUrl"
-            placeholder="Facebook Page URL"
+            placeholder="URL หน้า Facebook"
             value={formData.facebookUrl || ""}
             onChange={handleInputChange}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white mb-3"
+            style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              marginBottom: '0.75rem',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           />
 
           <input
@@ -388,30 +705,90 @@ export const HotelForm = ({
             placeholder="LINE ID (ไม่ต้องใส่ @)"
             value={formData.lineId || ""}
             onChange={handleInputChange}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-gray-900 dark:text-white"
+            style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-primary)',
+              border: '1px solid rgba(0, 173, 181, 0.3)',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'border-color 0.3s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+            onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
           />
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-3">
+        <div style={{
+          display: 'flex',
+          gap: '0.75rem'
+        }}>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white py-2 rounded font-bold text-sm transition-all disabled:opacity-50"
+            style={{
+              flex: 1,
+              backgroundColor: loading ? 'rgba(0, 173, 181, 0.5)' : 'var(--primary-main)',
+              color: 'white',
+              border: 'none',
+              padding: '0.75rem',
+              borderRadius: '0.375rem',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              transition: 'all 0.3s',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              opacity: loading ? 0.6 : 1
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.opacity = '0.9')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.opacity = '1')}
           >
-            {loading
-              ? "⟳ บันทึก..."
-              : `✓ ${editingHotel ? "อัปเดต" : t("admin.addHotel")}`}
+            {loading ? (
+              <>
+                <span style={{animation: 'spin 1s linear infinite'}}>⟳</span>
+                บันทึก...
+              </>
+            ) : (
+              <>
+                <CheckCircle size={18} />
+                {editingHotel ? "อัปเดต" : t("admin.addHotel")}
+              </>
+            )}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 bg-gray-500 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 text-white py-2 rounded font-bold text-sm transition-all"
+            style={{
+              flex: 1,
+              backgroundColor: 'var(--text-tertiary)',
+              color: 'white',
+              border: 'none',
+              padding: '0.75rem',
+              borderRadius: '0.375rem',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              transition: 'all 0.3s',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           >
-            ✕ ยกเลิก
+            <X size={18} />
+            ยกเลิก
           </button>
         </div>
       </form>
     </div>
   );
 };
+
+export default HotelForm;

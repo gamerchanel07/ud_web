@@ -67,50 +67,103 @@ export const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 animate-fade-in">
-      <div className="w-full max-w-md">
-        {/* ส่วนหัว */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Building2 size={40} className="text-ocean-300" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent">
-              UD Hotels
-            </h1>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-100">{t('forgotPassword.title')}</h2>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 'var(--spacing-sm)',
+      backgroundColor: 'var(--bg-primary)'
+    }} className="animate-fade-in">
+      {/* Background blur effect */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.1), transparent 50%)',
+        pointerEvents: 'none'
+      }} />
+
+      <div className="card" style={{
+        backgroundColor: 'var(--bg-secondary)',
+        width: '100%',
+        maxWidth: '28rem',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        {/* Header */}
+        <div className="card-header">
+          <h1 style={{
+            fontSize: 'var(--text-2xl)',
+            fontWeight: 'var(--font-bold)',
+            textAlign: 'center',
+            color: 'var(--primary-main)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 'var(--spacing-xs)',
+            margin: 0
+          }} className="animate-slide-in-down">
+            <Building2 size={32} />
+            {t('forgotPassword.title')}
+          </h1>
         </div>
 
-        {/* การ์ด */}
-        <div className="glass glass-lg p-8 rounded-2xl">
+        {/* Body */}
+        <div className="card-body">
           {step === 1 ? (
-            // ขั้นที่ 1: กรอกชื่อผู้ใช้
-            <form onSubmit={handleSendReset} className="space-y-6">
-              <p className="text-gray-300 text-center text-sm mb-4">
+            // Step 1: Enter username
+            <form onSubmit={handleSendReset} className="animate-stagger space-y-4">
+              <p style={{
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--text-sm)',
+                textAlign: 'center',
+                marginBottom: 'var(--spacing-md)'
+              }}>
                 {t('forgotPassword.description')}
               </p>
 
               {error && (
-                <div className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-lg text-sm">
+                <div style={{
+                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                  border: '2px solid var(--color-error)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--spacing-sm)',
+                  color: 'var(--color-error)',
+                  fontSize: 'var(--text-sm)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--spacing-xs)'
+                }} className="animate-shake">
+                  <div style={{width: '4px', height: '4px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-error)'}} />
                   {error}
                 </div>
               )}
 
               {success && (
-                <div className="bg-green-500/20 border border-green-500 text-green-300 px-4 py-3 rounded-lg text-sm">
+                <div style={{
+                  backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                  border: '2px solid var(--color-success)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--spacing-sm)',
+                  color: 'var(--color-success)',
+                  fontSize: 'var(--text-sm)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--spacing-xs)'
+                }}>
+                  <div style={{width: '4px', height: '4px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success)'}} />
                   {success}
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('forgotPassword.username')}
-                </label>
+              <div className="animate-slide-in-left">
+                <label className="form-label required">{t('forgotPassword.username')}</label>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  className="form-input"
                   placeholder={t('forgotPassword.username')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
                   required
                 />
               </div>
@@ -118,70 +171,93 @@ export const ForgotPasswordPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg text-sm bg-gradient-to-r from-ocean-600 to-blue-600 hover:from-ocean-700 hover:to-blue-700 px-4 py-2 rounded-lg transition-all duration-200 font-semibold text-white"
+                className="btn btn-primary w-full"
+                style={{ width: '100%' }}
               >
                 {loading ? t('common.loading') : t('forgotPassword.sendCode')}
               </button>
 
               <Link
                 to="/login"
-                className="flex items-center justify-center gap-2 text-ocean-300 hover:text-ocean-200 transition-colors text-sm"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 'var(--spacing-xs)',
+                  color: 'var(--primary-main)',
+                  fontSize: 'var(--text-sm)',
+                  textDecoration: 'none',
+                  transition: 'opacity 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
               >
                 <ArrowLeft size={16} />
                 {t('forgotPassword.backToLogin')}
               </Link>
             </form>
           ) : (
-            // ขั้นที่ 2: รีเซ็ตผ่านรหัส
-            <form onSubmit={handleResetPassword} className="space-y-6">
-              <p className="text-gray-300 text-center text-sm mb-4">
+            // Step 2: Reset password
+            <form onSubmit={handleResetPassword} className="animate-stagger space-y-4">
+              <p style={{
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--text-sm)',
+                textAlign: 'center',
+                marginBottom: 'var(--spacing-md)'
+              }}>
                 {t('forgotPassword.enterCode')}
               </p>
 
               {error && (
-                <div className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-lg text-sm">
+                <div style={{
+                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                  border: '2px solid var(--color-error)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--spacing-sm)',
+                  color: 'var(--color-error)',
+                  fontSize: 'var(--text-sm)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--spacing-xs)'
+                }} className="animate-shake">
+                  <div style={{width: '4px', height: '4px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-error)'}} />
                   {error}
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('forgotPassword.code')}
-                </label>
+              <div className="animate-slide-in-left">
+                <label className="form-label required">{t('forgotPassword.code')}</label>
                 <input
                   type="text"
                   value={resetCode}
                   onChange={(e) => setResetCode(e.target.value)}
+                  className="form-input"
                   placeholder={t('forgotPassword.enterCode')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-ocean-400 transition-colors"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('forgotPassword.newPassword')}
-                </label>
+              <div className="animate-slide-in-right">
+                <label className="form-label required">{t('forgotPassword.newPassword')}</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  className="form-input"
                   placeholder={t('forgotPassword.enterNewPassword')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-ocean-400 transition-colors"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('register.confirmPassword')}
-                </label>
+              <div className="animate-slide-in-left">
+                <label className="form-label required">{t('register.confirmPassword')}</label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="form-input"
                   placeholder={t('register.confirmPasswordPlaceholder')}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-ocean-400 transition-colors"
                   required
                 />
               </div>
@@ -189,7 +265,8 @@ export const ForgotPasswordPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-ocean-700 hover:to-blue-700 transition-all duration-300 disabled:opacity-50"
+                className="btn btn-primary w-full"
+                style={{ width: '100%' }}
               >
                 {loading ? t('common.loading') : t('forgotPassword.resetPassword')}
               </button>
@@ -204,7 +281,8 @@ export const ForgotPasswordPage = () => {
                   setNewPassword('');
                   setConfirmPassword('');
                 }}
-                className="flex items-center justify-center gap-2 text-ocean-300 hover:text-ocean-200 transition-colors text-sm w-full"
+                className="btn btn-secondary w-full"
+                style={{ width: '100%' }}
               >
                 <ArrowLeft size={16} />
                 {t('common.cancel')}
@@ -213,13 +291,29 @@ export const ForgotPasswordPage = () => {
           )}
         </div>
 
-        {/* ส่วนท้าย */}
-        <p className="text-center text-gray-400 text-sm mt-8">
-          {t('login.dontHaveAccount')}{' '}
-          <Link to="/login" className="text-ocean-300 hover:text-ocean-200 transition-colors">
-            {t('login.title')}
-          </Link>
-        </p>
+        {/* Footer */}
+        <div className="card-footer" style={{textAlign: 'center'}}>
+          <p style={{
+            margin: 0,
+            color: 'var(--text-secondary)',
+            fontSize: 'var(--text-sm)'
+          }}>
+            {t('login.dontHaveAccount')}{' '}
+            <Link 
+              to="/login" 
+              style={{
+                color: 'var(--primary-main)',
+                fontWeight: 'var(--font-semibold)',
+                textDecoration: 'none',
+                transition: 'opacity 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            >
+              {t('login.title')}
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

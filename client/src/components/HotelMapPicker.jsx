@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvent } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { X } from 'lucide-react';
+import { X, CheckCircle, MapPin } from 'lucide-react';
 
 // markers ไอคอน
 delete L.Icon.Default.prototype._getIconUrl;
@@ -132,7 +132,7 @@ export const HotelMapPicker = ({ onSelectLocation, onClose, initialLocation }) =
             alignItems: 'center',
             gap: '0.5rem'
           }}>
-            📍 ตำแหน่งที่เลือก: {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
+            <MapPin size={16} /> ตำแหน่งที่เลือก: {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
           </div>
           <div style={{
             display: 'flex',
@@ -157,7 +157,7 @@ export const HotelMapPicker = ({ onSelectLocation, onClose, initialLocation }) =
               onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
               onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             >
-              ✓ ยืนยันตำแหน่ง
+              <CheckCircle size={18} /> ยืนยันตำแหน่ง
             </button>
             <button
               onClick={onClose}

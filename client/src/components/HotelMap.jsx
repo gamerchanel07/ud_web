@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
-import { Star, MapPin } from 'lucide-react';
+import { Star, MapPin, School } from 'lucide-react';
 
 // แก้ปัญหา leaflet icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -110,7 +110,7 @@ export const HotelMap = ({
 
       {/* Marker วิทยาลัย */}
       <Marker position={center}>
-        <Popup>🎓 Udon Technical College</Popup>
+        <Popup><span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}><School size={16} /> Udon Technical College</span></Popup>
       </Marker>
 
       {/* User Location Marker */}
@@ -119,7 +119,7 @@ export const HotelMap = ({
           position={[userLocation.lat, userLocation.lng]}
           icon={userIcon}
         >
-          <Popup>📍 Your Location</Popup>
+          <Popup><span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}><MapPin size={16} /> Your Location</span></Popup>
         </Marker>
       )}
 

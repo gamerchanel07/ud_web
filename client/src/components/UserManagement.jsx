@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import API from "../services/api";
 import { adminService } from "../services/api";
+import { User, Mail, Lock, Key, Shield, Plus, Save, X, Edit2, Trash2 } from "lucide-react";
 
 export const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -132,60 +133,163 @@ export const UserManagement = () => {
   return (
     <div className="animate-fade-in">
       {error && (
-        <div className="bg-red-500/30 text-red-200 p-3 rounded-lg mb-4 border border-red-500/50 animate-shake">
+        <div style={{
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          color: '#FCA5A5',
+          padding: '0.75rem',
+          borderRadius: '0.5rem',
+          marginBottom: '1rem',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          animation: 'shake 0.5s ease'
+        }}>
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-500/30 text-green-200 p-3 rounded-lg mb-4 border border-green-500/50 animate-bounce-in">
+        <div style={{
+          backgroundColor: 'rgba(34, 197, 94, 0.1)',
+          color: '#86EFAC',
+          padding: '0.75rem',
+          borderRadius: '0.5rem',
+          marginBottom: '1rem',
+          border: '1px solid rgba(34, 197, 94, 0.3)',
+          animation: 'bounce-in 0.5s ease'
+        }}>
           {success}
         </div>
       )}
 
       {/* โมดัลแก้ไขผู้ใช้ */}
       {showUserModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem',
+          paddingTop: '2rem'
+        }}>
           {/* Background */}
           <div
-            className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md transition-all"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(4px)',
+              transition: 'all 0.3s'
+            }}
             onClick={() => setShowUserModal(false)}
           />
 
           {/* Modal */}
-          <div className="relative z-10 bg-white dark:bg-gray-900 w-full max-w-md rounded-2xl shadow-2xl dark:shadow-2xl animate-scale-in border border-gray-200 dark:border-gray-800">
+          <div style={{
+            position: 'relative',
+            zIndex: 10,
+            backgroundColor: 'var(--bg-secondary)',
+            width: '100%',
+            maxWidth: '28rem',
+            borderRadius: '1rem',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+            animation: 'scale-in 0.3s ease',
+            border: '1px solid rgba(0, 173, 181, 0.2)',
+            overflow: 'hidden'
+          }}>
             
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-50 dark:from-gray-800 to-blue-100 dark:to-gray-900 px-6 py-5 border-b border-gray-200 dark:border-gray-800 rounded-t-2xl">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {editingUser ? "✏️ แก้ไขผู้ใช้" : "➕ เพิ่มผู้ใช้ใหม่"}
+            <div style={{
+              background: 'linear-gradient(135deg, var(--primary-main), rgba(0, 173, 181, 0.8))',
+              padding: '1.5rem',
+              borderBottom: '1px solid rgba(0, 173, 181, 0.2)'
+            }}>
+              <h3 style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                {editingUser ? (
+                  <>
+                    <Edit2 size={24} /> แก้ไขผู้ใช้
+                  </>
+                ) : (
+                  <>
+                    <Plus size={24} /> เพิ่มผู้ใช้ใหม่
+                  </>
+                )}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+              <p style={{
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: '0.875rem',
+                marginTop: '0.25rem'
+              }}>
                 {editingUser ? "อัปเดตข้อมูลผู้ใช้" : "สร้างบัญชีผู้ใช้ใหม่"}
               </p>
             </div>
 
             {/* Form Content */}
-            <div className="p-6 space-y-4">
+            <div style={{
+              padding: '1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem'
+            }}>
               {/* Username */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  👤 ชื่อผู้ใช้
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <User size={16} style={{color: 'var(--primary-main)'}} />
+                  ชื่อผู้ใช้
                 </label>
                 <input
+                  name="username"
                   placeholder="กรุณากรอกชื่อผู้ใช้"
                   value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                  onChange={handleInputChange}
+                  disabled={editingUser ? true : false}
+                  style={{
+                    width: '100%',
+                    backgroundColor: editingUser ? 'rgba(0, 173, 181, 0.05)' : 'var(--bg-primary)',
+                    border: '1px solid rgba(0, 173, 181, 0.3)',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem',
+                    color: editingUser ? 'var(--text-tertiary)' : 'var(--text-primary)',
+                    fontSize: '0.875rem',
+                    transition: 'border-color 0.3s',
+                    cursor: editingUser ? 'not-allowed' : 'text',
+                    opacity: editingUser ? 0.6 : 1
+                  }}
+                  onFocus={(e) => !editingUser && (e.target.style.borderColor = 'var(--primary-main)')}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  📧 อีเมล
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Mail size={16} style={{color: 'var(--primary-main)'}} />
+                  อีเมล
                 </label>
                 <input
                   type="email"
@@ -194,14 +298,35 @@ export const UserManagement = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid rgba(0, 173, 181, 0.3)',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.875rem',
+                    transition: 'border-color 0.3s'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  🔒 รหัสผ่าน
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Lock size={16} style={{color: 'var(--primary-main)'}} />
+                  รหัสผ่าน
                 </label>
                 <input
                   type="password"
@@ -210,14 +335,35 @@ export const UserManagement = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid rgba(0, 173, 181, 0.3)',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.875rem',
+                    transition: 'border-color 0.3s'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
                 />
               </div>
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  🔑 ยืนยันรหัสผ่าน
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Key size={16} style={{color: 'var(--primary-main)'}} />
+                  ยืนยันรหัสผ่าน
                 </label>
                 <input
                   type="password"
@@ -226,42 +372,120 @@ export const UserManagement = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, confirmPassword: e.target.value })
                   }
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid rgba(0, 173, 181, 0.3)',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.875rem',
+                    transition: 'border-color 0.3s'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
                 />
               </div>
 
               {/* Role */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  👑 บทบาท
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Shield size={16} style={{color: 'var(--primary-main)'}} />
+                  บทบาท
                 </label>
                 <select
                   value={formData.role}
                   onChange={(e) =>
                     setFormData({ ...formData, role: e.target.value })
                   }
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid rgba(0, 173, 181, 0.3)',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.875rem',
+                    transition: 'border-color 0.3s',
+                    cursor: 'pointer'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(0, 173, 181, 0.3)'}
                 >
-                  <option value="user">👤 ผู้ใช้ทั่วไป</option>
-                  <option value="admin">👨‍💼 ผู้ดูแลระบบ</option>
+                  <option value="user">ผู้ใช้ทั่วไป</option>
+                  <option value="admin">ผู้ดูแลระบบ</option>
                 </select>
               </div>
             </div>
 
             {/* Footer Buttons */}
-            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+            <div style={{
+              padding: '1rem',
+              borderTop: '1px solid rgba(0, 173, 181, 0.2)',
+              display: 'flex',
+              gap: '0.75rem',
+              backgroundColor: 'rgba(0, 173, 181, 0.05)',
+              borderBottomLeftRadius: '1rem',
+              borderBottomRightRadius: '1rem'
+            }}>
               <button
                 onClick={handleSaveUser}
-                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-700 dark:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 text-white py-2.5 rounded-lg font-bold text-sm transition-all duration-200 shadow-md hover:shadow-lg"
+                style={{
+                  flex: 1,
+                  background: 'linear-gradient(135deg, var(--primary-main), rgba(0, 173, 181, 0.8))',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  fontWeight: 'bold',
+                  fontSize: '0.875rem',
+                  transition: 'all 0.3s',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  boxShadow: '0 4px 6px rgba(0, 173, 181, 0.2)'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
               >
-                ✅ {editingUser ? "อัปเดต" : "สร้าง"}
+                <Save size={18} />
+                {editingUser ? "อัปเดต" : "สร้าง"}
               </button>
 
               <button
                 onClick={() => setShowUserModal(false)}
-                className="flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-2.5 rounded-lg font-bold text-sm transition-all duration-200"
+                style={{
+                  flex: 1,
+                  backgroundColor: 'var(--text-tertiary)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  fontWeight: 'bold',
+                  fontSize: '0.875rem',
+                  transition: 'all 0.3s',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
               >
-                ✕ ยกเลิก
+                <X size={18} />
+                ยกเลิก
               </button>
             </div>
           </div>
@@ -269,15 +493,36 @@ export const UserManagement = () => {
       )}
 
       {/* ตารางผู้ใช้ */}
-      <div className="glass glass-lg rounded-lg overflow-hidden animate-slide-in-up">
-        <div className="p-4 md:p-6 border-b border-white/20">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-100">
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        border: '1px solid rgba(0, 173, 181, 0.2)',
+        borderRadius: '0.5rem',
+        overflow: 'hidden',
+        animation: 'slide-in-up 0.5s ease'
+      }}>
+        <div style={{
+          padding: '1.5rem',
+          borderBottom: '1px solid rgba(0, 173, 181, 0.2)'
+        }}>
+          <h2 style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            color: 'var(--text-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Shield size={24} style={{color: 'var(--primary-main)'}} />
             จัดการผู้ใช้
           </h2>
-          <p className="text-gray-400 text-xs md:text-sm mt-1">
+          <p style={{
+            color: 'var(--text-tertiary)',
+            fontSize: '0.875rem',
+            marginTop: '0.25rem'
+          }}>
             {users.length} ผู้ใช้ทั้งหมด
           </p>
-          {/* ปุ่มเพิ่มลุกจาเลว */}
+          {/* ปุ่มเพิ่มผู้ใช้ */}
           <button
             onClick={() => {
               setEditingUser(null);
@@ -290,80 +535,179 @@ export const UserManagement = () => {
               });
               setShowUserModal(true);
             }}
+            style={{
+              marginTop: '1rem',
+              backgroundColor: 'var(--primary-main)',
+              color: 'white',
+              border: 'none',
+              padding: '0.75rem 1rem',
+              borderRadius: '0.375rem',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              transition: 'opacity 0.3s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           >
-            ➕ เพิ่มผู้ใช้
+            <Plus size={18} />
+            เพิ่มผู้ใช้
           </button>
-
-          {/* ฟอร์มเพิ่มลุกจาเลว */}
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm">
-            <thead className="bg-gradient-to-r from-ocean-600/30 to-blue-600/30 border-b border-white/20">
+        <div style={{overflowX: 'auto'}}>
+          <table style={{width: '100%', fontSize: '0.875rem'}}>
+            <thead style={{
+              backgroundImage: 'linear-gradient(135deg, rgba(0, 173, 181, 0.15), rgba(0, 137, 123, 0.15))',
+              borderBottom: '2px solid var(--primary-main)'
+            }}>
               <tr>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">
+                <th style={{
+                  padding: '1rem',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)'
+                }}>
                   ชื่อผู้ใช้
                 </th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden md:table-cell">
+                <th style={{
+                  padding: '1rem',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  display: 'none',
+                  '@media (min-width: 768px)': { display: 'table-cell' }
+                }}>
                   อีเมล
                 </th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">
+                <th style={{
+                  padding: '1rem',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)'
+                }}>
                   บทบาท
                 </th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden lg:table-cell">
+                <th style={{
+                  padding: '1rem',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)',
+                  display: 'none',
+                  '@media (min-width: 1024px)': { display: 'table-cell' }
+                }}>
                   วันเข้าร่วม
                 </th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">
-                  แก้ไขผู้ใช้
+                <th style={{
+                  padding: '1rem',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)'
+                }}>
+                  แก้ไข
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody style={{
+              borderTop: '1px solid rgba(0, 173, 181, 0.1)'
+            }}>
               {users.map((user) => (
                 <tr
                   key={user.id}
-                  className="hover:bg-white/5 transition-colors duration-200 group"
+                  style={{
+                    borderBottom: '1px solid rgba(0, 173, 181, 0.1)',
+                    transition: 'background-color 0.3s',
+                    backgroundColor: 'transparent'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <td className="px-2 md:px-4 py-3 text-gray-200 font-medium text-xs md:text-sm">
+                  <td style={{
+                    padding: '1rem',
+                    color: 'var(--text-primary)',
+                    fontWeight: '500'
+                  }}>
                     {user.username}
                   </td>
-                  <td className="px-2 md:px-4 py-3 text-gray-300 hidden md:table-cell text-xs md:text-sm">
+                  <td style={{
+                    padding: '1rem',
+                    color: 'var(--text-secondary)',
+                    display: 'none',
+                    '@media (min-width: 768px)': { display: 'table-cell' }
+                  }}>
                     {user.email}
                   </td>
-                  <td className="px-2 md:px-4 py-3">
+                  <td style={{
+                    padding: '1rem'
+                  }}>
                     <span
-                      className={`px-2 md:px-3 py-1 rounded-full text-xs font-bold ${
-                        user.role === "admin"
-                          ? "bg-red-500/30 text-red-200 border border-red-400/30"
-                          : "bg-blue-500/30 text-blue-200 border border-blue-400/30"
-                      }`}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '9999px',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                        backgroundColor: user.role === "admin" ? 'rgba(239, 68, 68, 0.1)' : 'rgba(0, 173, 181, 0.1)',
+                        color: user.role === "admin" ? '#FCA5A5' : 'var(--primary-main)',
+                        border: `1px solid ${user.role === "admin" ? 'rgba(239, 68, 68, 0.3)' : 'rgba(0, 173, 181, 0.3)'}`
+                      }}
                     >
                       {user.role === "admin" ? "ผู้ดูแล" : "ผู้ใช้"}
                     </span>
                   </td>
-                  <td className="px-2 md:px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                  <td style={{
+                    padding: '1rem',
+                    color: 'var(--text-tertiary)',
+                    fontSize: '0.75rem',
+                    display: 'none',
+                    '@media (min-width: 1024px)': { display: 'table-cell' }
+                  }}>
+                    {new Date(user.createdAt).toLocaleDateString('th-TH')}
                   </td>
-                  <td className="px-2 md:px-4 py-3">
-                    <div className="flex gap-1 md:gap-2 flex-col md:flex-row opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button
-                        onClick={() => {
-                          setEditingUser(user);
-                          setFormData({
-                            username: user.username,
-                            email: user.email,
-                            password: "",
-                            confirmPassword: "",
-                            role: user.role,
-                          });
-                          setShowUserModal(true);
-                        }}
-                        className="px-2 md:px-3 py-1 rounded bg-blue-500/30 text-blue-200 hover:bg-blue-500/40 transition-all duration-300 text-xs font-bold"
-                        title="แก้ไขชื่อผู้ใช้"
-                      >
-                        แก้ไข
-                      </button>
-                    </div>
+                  <td style={{
+                    padding: '1rem'
+                  }}>
+                    <button
+                      onClick={() => {
+                        setEditingUser(user);
+                        setFormData({
+                          username: user.username,
+                          email: user.email,
+                          password: "",
+                          confirmPassword: "",
+                          role: user.role,
+                        });
+                        setShowUserModal(true);
+                      }}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '0.375rem',
+                        backgroundColor: 'rgba(0, 173, 181, 0.15)',
+                        color: 'var(--primary-main)',
+                        border: '1px solid var(--primary-main)',
+                        fontWeight: 'bold',
+                        fontSize: '0.75rem',
+                        transition: 'all 0.3s',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.25rem'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.25)';
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.15)';
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                      title="แก้ไขผู้ใช้"
+                    >
+                      <Edit2 size={14} />
+                      แก้ไข
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -372,7 +716,12 @@ export const UserManagement = () => {
         </div>
 
         {users.length === 0 && (
-          <div className="text-center py-12 text-gray-300 text-sm">
+          <div style={{
+            textAlign: 'center',
+            padding: '3rem',
+            color: 'var(--text-tertiary)',
+            fontSize: '0.875rem'
+          }}>
             ไม่พบผู้ใช้
           </div>
         )}
@@ -380,3 +729,5 @@ export const UserManagement = () => {
     </div>
   );
 };
+
+export default UserManagement;
