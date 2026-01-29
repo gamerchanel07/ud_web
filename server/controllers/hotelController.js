@@ -4,7 +4,7 @@ const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // km
+  const R = 6371; // กิโลเมตร
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
 
@@ -37,7 +37,7 @@ const safeParse = (value, fallback = []) => {
   return fallback;
 };
 
-// Get all hotels
+// ดึงโรงแรมทั้งหมด
 exports.getAllHotels = async (req, res) => {
   try {
     const hotels = await Hotel.findAll({
@@ -68,7 +68,7 @@ exports.getAllHotels = async (req, res) => {
   }
 };
 
-// Get hotel by ID
+// ดึงโรงแรมตามไอดี
 exports.getHotelById = async (req, res) => {
   try {
     const hotel = await Hotel.findByPk(req.params.id, {
@@ -115,7 +115,7 @@ exports.getHotelById = async (req, res) => {
   }
 };
 
-// Search hotels
+// ค้นหาโรงแรม
 exports.searchHotels = async (req, res) => {
   try {
     const { query } = req.query;
@@ -158,7 +158,7 @@ exports.searchHotels = async (req, res) => {
   }
 };
 
-// Filter hotels
+// กองตัวผรโรงแรม
 exports.filterHotels = async (req, res) => {
   try {
     const { minPrice, maxPrice, maxDistance, keyword } = req.query;
@@ -230,7 +230,7 @@ exports.filterHotels = async (req, res) => {
   }
 };
 
-// Increment hotel views
+// เพิ่มจำนวนการดูของโรงแรม
 exports.incrementViews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -240,7 +240,7 @@ exports.incrementViews = async (req, res) => {
       return res.status(404).json({ message: "Hotel not found" });
     }
 
-    // Increment views by 1
+    // เพิ่มจำนวนการดูของ 1
     await hotel.increment('views');
 
     res.json({ message: "View counted", views: hotel.views + 1 });

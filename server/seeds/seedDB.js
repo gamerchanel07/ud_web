@@ -5,7 +5,7 @@ const seedDB = async () => {
     await sequelize.sync({ force: true });
     console.log('Database synced');
 
-    // Seed admin user
+    // เพิ่มผู้ใช้ผู้ดูแล
     const adminUser = await User.create({
       username: 'admin',
       email: 'admin@udonhotels.com',
@@ -14,7 +14,7 @@ const seedDB = async () => {
     });
     console.log('Admin user created');
 
-    // Seed sample hotels in Udon Thani
+    // เพิ่มตัวอย่างโรงแรมในอุดรธานี
     const hotels = [
       {
         name: 'The Cottage Hotel Udon Thani',

@@ -1,6 +1,6 @@
 const { Review, Hotel, User } = require('../models');
 
-// Create review
+// สร้างรีวิว
 exports.createReview = async (req, res) => {
   try {
     const { hotelId, rating, comment, images } = req.body;
@@ -39,7 +39,7 @@ exports.createReview = async (req, res) => {
   }
 };
 
-// Get reviews for hotel
+// ดึงรีวิวของโรงแรม
 exports.getReviewsByHotel = async (req, res) => {
   try {
     const { hotelId } = req.params;
@@ -56,7 +56,7 @@ exports.getReviewsByHotel = async (req, res) => {
   }
 };
 
-// Get user reviews
+// ดึงรีวิวของผู้ใช้งาน
 exports.getUserReviews = async (req, res) => {
   try {
     const reviews = await Review.findAll({
@@ -71,7 +71,7 @@ exports.getUserReviews = async (req, res) => {
   }
 };
 
-// Delete review (user can delete own, admin can delete any)
+// ลบรีวิว (ผู้ใช้งานตัดเยืองมึงเท่านั้น ผูดริิ่นลบได่ท้ัง)
 exports.deleteReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
@@ -83,7 +83,7 @@ exports.deleteReview = async (req, res) => {
       return res.status(404).json({ message: 'Review not found' });
     }
 
-    // Check if user is the owner or admin
+    // ตรวจสอบว่าผู้ใช้งานเป็นเจ้าหรือผูดริิ่น
     if (review.userId !== userId && userRole !== 'admin') {
       return res.status(403).json({ message: 'You can only delete your own reviews' });
     }

@@ -10,9 +10,9 @@ export const Footer = () => {
   return (
     <footer className="glass glass-lg mt-12 py-12 border-t border-white/20">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Top Section */}
+        {/* ส่วนบน */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {/* Brand */}
+          {/* แบรนด์ */}
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4 hover:scale-110 transition-transform">
               <Building2 size={32} className="text-ocean-300" />
@@ -25,7 +25,7 @@ export const Footer = () => {
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* ลิงก์ที่ดวงเร็ว */}
           <div>
             <h4 className="font-bold text-ocean-300 mb-4">Quick Links</h4>
             <ul className="space-y-2">
@@ -47,7 +47,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* ข้อมูลติดต่อ */}
           <div>
             <h4 className="font-bold text-ocean-300 mb-4">Contact Us</h4>
             <ul className="space-y-2">
@@ -66,7 +66,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Links */}
+          {/* ลิงก์สอื่อเรา */}
           <div>
             <h4 className="font-bold text-ocean-300 mb-4">Follow Us</h4>
             <div className="flex gap-4">
@@ -90,10 +90,10 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Divider */}
+        {/* เส้นแบ่ง */}
         <div className="border-t border-white/10 py-6"></div>
 
-        {/* Bottom Section */}
+        {/* ส่วนล่าง */}
         <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
           <p className="text-gray-400 text-sm">
             © {currentYear} UD Hotels. All rights reserved.

@@ -1,41 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import API from '../services/api';
-import { adminService } from '../services/api';
+import React, { useState, useEffect } from "react";
+import API from "../services/api";
+import { adminService } from "../services/api";
 
 export const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [editMode, setEditMode] = useState(''); // '' | 'username' | 'password' (โหมดแก้ไข)
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    confirmPassword: ''
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "user",
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newUser, setNewUser] = useState({
-  name: '',
-  email: '',
-  password: '',
-  role: 'user'
-});
-
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     loadUsers();
   }, []);
 
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") setShowUserModal(false);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
   // โหลดรายชื่อผู้ใช้
   const loadUsers = async () => {
     try {
-      const response = await API.get('/dashboard/users');
+      const response = await API.get("/dashboard/users");
       setUsers(response.data);
     } catch (err) {
-      setError('Failed to load users');
-      console.error('Failed to load users', err);
+      setError("Failed to load users");
+      console.error("Failed to load users", err);
     } finally {
       setLoading(false);
     }
@@ -43,127 +45,89 @@ export const UserManagement = () => {
 
   // จัดการการสร้างผู้ใช้ใหม่
   const handleCreateUser = async (e) => {
-  e.preventDefault();
-  try {
-    await adminService.createUser(newUser);
-    setSuccess('เพิ่มผู้ใช้เรียบร้อยแล้ว');
-    setShowAddForm(false);
-    setNewUser({ name: '', email: '', password: '', role: 'user' });
-    loadUsers();
-  } catch (err) {
-    setError(err.response?.data?.message || 'Create user failed');
-  }
-};
-
+    e.preventDefault();
+    try {
+      await adminService.createUser(newUser);
+      setSuccess("เพิ่มผู้ใช้เรียบร้อยแล้ว");
+      setShowAddForm(false);
+      setNewUser({ name: "", email: "", password: "", role: "user" });
+      loadUsers();
+    } catch (err) {
+      setError(err.response?.data?.message || "Create user failed");
+    }
+  };
 
   // จัดการการแก้ไขข้อมูลผู้ใช้
-  const handleEditClick = (user, mode) => {
+  const handleEditClick = (user) => {
     setEditingUserId(user.id);
-    setEditMode(mode);
     setFormData({
-      username: user.username || '',
-      password: '',
-      confirmPassword: ''
+      username: user.username || "",
+      email: user.email || "",
+      password: "",
+      confirmPassword: "",
     });
-    setError('');
-    setSuccess('');
   };
 
   // ล้างสถานะการแก้ไข
   const handleCancel = () => {
     setEditingUserId(null);
-    setEditMode('');
+    setEditMode("");
     setFormData({
-      username: '',
-      password: '',
-      confirmPassword: ''
+      username: "",
+      password: "",
+      confirmPassword: "",
     });
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
   };
 
   // อัปเดตค่าอินพุตของแบบฟอร์ม
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  // บันทึกชื่อผู้ใช้ใหม่
-  const handleSaveUsername = async (userId) => {
-    // ตรวจสอบว่าชื่อผู้ใช้ว่างเปล่าหรือไม่
-    if (!formData.username.trim()) {
-      setError('Username is required');
-      return;
-    }
-
-    // ตรวจสอบความยาวของชื่อผู้ใช้
-    if (formData.username.length < 3) {
-      setError('Username must be at least 3 characters');
-      return;
-    }
-
+  const handleSaveUser = async () => {
     try {
-      // เรียก API เพื่ออัปเดตชื่อผู้ใช้
-      await adminService.updateUserUsername(userId, { username: formData.username });
-      // แสดงข้อความสำเร็จและโหลดผู้ใช้ใหม่
-      setSuccess('Username updated successfully');
-      loadUsers();
-      handleCancel();
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update username');
-    }
-  };
+      if (formData.password && formData.password !== formData.confirmPassword) {
+        setError("Password not match");
+        return;
+      }
 
-  // บันทึกรหัสผ่านใหม่
-  const handleSavePassword = async (userId) => {
-    // ตรวจสอบว่ารหัสผ่านว่างเปล่าหรือไม่
-    if (!formData.password.trim()) {
-      setError('Password is required');
-      return;
-    }
-    // ตรวจสอบความยาวของรหัสผ่าน
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-    // ตรวจสอบว่ารหัสผ่านตรงกันหรือไม่
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    try {
-      // เรียก API เพื่ออัปเดตรหัสผ่าน
-      await adminService.updateUserPassword(userId, { password: formData.password });
-      // แสดงข้อความสำเร็จและโหลดผู้ใช้ใหม่
-      setSuccess('Password updated successfully');
+      if (editingUser) {
+        await adminService.updateUser(editingUser.id, formData);
+      } else {
+        await adminService.createUser(formData);
+      }
+
+      setShowUserModal(false);
       loadUsers();
-      handleCancel();
     } catch (err) {
-      // จัดการการตอบสนองข้อผิดพลาด
-      setError(err.response?.data?.message || 'Failed to update password');
+      setError(err.response?.data?.message || "Save failed");
     }
   };
 
   const handleDeleteUser = async (userId) => {
-  if (!window.confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?')) return;
+    if (!window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?")) return;
 
-  try {
-    await adminService.deleteUser(userId);
-    setSuccess('ลบผู้ใช้เรียบร้อยแล้ว');
-    loadUsers();
-  } catch (err) {
-    setError(err.response?.data?.message || 'Failed to delete user');
-  }
-};
-
+    try {
+      await adminService.deleteUser(userId);
+      setSuccess("ลบผู้ใช้เรียบร้อยแล้ว");
+      loadUsers();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete user");
+    }
+  };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-200 animate-pulse">กำลังโหลดผู้ใช้...</div>;
+    return (
+      <div className="text-center py-8 text-gray-200 animate-pulse">
+        กำลังโหลดผู้ใช้...
+      </div>
+    );
   }
-
-  const user = editingUserId ? users.find(u => u.id === editingUserId) : null;
 
   return (
     <div className="animate-fade-in">
@@ -179,76 +143,127 @@ export const UserManagement = () => {
         </div>
       )}
 
-      {/* โมดัลแก้ไข */}
-      {editingUserId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in mb-8 px-4">
-          <div className="glass glass-lg max-w-md w-full card-enter p-4 md:p-6">
-            <h3 className="text-xl md:text-2xl font-bold mb-4 text-gray-100">
-              {editMode === 'username' ? 'แก้ไขชื่อผู้ใช้' : 'แก้ไขรหัสผ่าน'}
-            </h3>
+      {/* โมดัลแก้ไขผู้ใช้ */}
+      {showUserModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
+          {/* Background */}
+          <div
+            className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md transition-all"
+            onClick={() => setShowUserModal(false)}
+          />
 
-            {editMode === 'username' ? (
+          {/* Modal */}
+          <div className="relative z-10 bg-white dark:bg-gray-900 w-full max-w-md rounded-2xl shadow-2xl dark:shadow-2xl animate-scale-in border border-gray-200 dark:border-gray-800">
+            
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-50 dark:from-gray-800 to-blue-100 dark:to-gray-900 px-6 py-5 border-b border-gray-200 dark:border-gray-800 rounded-t-2xl">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {editingUser ? "✏️ แก้ไขผู้ใช้" : "➕ เพิ่มผู้ใช้ใหม่"}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                {editingUser ? "อัปเดตข้อมูลผู้ใช้" : "สร้างบัญชีผู้ใช้ใหม่"}
+              </p>
+            </div>
+
+            {/* Form Content */}
+            <div className="p-6 space-y-4">
+              {/* Username */}
               <div>
-                <label className="block text-gray-200 font-bold mb-2 text-sm">ชื่อผู้ใช้ใหม่</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  👤 ชื่อผู้ใช้
+                </label>
                 <input
-                  type="text"
-                  name="username"
+                  placeholder="กรุณากรอกชื่อผู้ใช้"
                   value={formData.username}
-                  onChange={handleInputChange}
-                  placeholder="ป้อนชื่อผู้ใช้ใหม่"
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 mb-4 text-sm"
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
                 />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleSaveUsername(editingUserId)}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white py-2 rounded-lg font-bold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 text-sm"
-                  >
-                    บันทึก
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    className="flex-1 bg-gray-500/30 text-gray-200 py-2 rounded-lg font-bold hover:bg-gray-500/40 transition-all duration-300 text-sm"
-                  >
-                    ยกเลิก
-                  </button>
-                </div>
               </div>
-            ) : (
+
+              {/* Email */}
               <div>
-                <label className="block text-gray-200 font-bold mb-2 text-sm">รหัสผ่านใหม่</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  📧 อีเมล
+                </label>
                 <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="ป้อนรหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)"
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 mb-3 text-sm"
+                  type="email"
+                  placeholder="example@email.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
                 />
-                <label className="block text-gray-200 font-bold mb-2 text-sm">ยืนยันรหัสผ่าน</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="ยืนยันรหัสผ่าน"
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 mb-4"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleSavePassword(editingUserId)}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white py-2 rounded-lg font-bold hover:from-green-600 hover:to-emerald-600 transition-all duration-300"
-                  >
-                    บันทึก
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    className="flex-1 bg-gray-500/30 text-gray-200 py-2 rounded-lg font-bold hover:bg-gray-500/40 transition-all duration-300"
-                  >
-                    ยกเลิก
-                  </button>
-                </div>
               </div>
-            )}
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  🔒 รหัสผ่าน
+                </label>
+                <input
+                  type="password"
+                  placeholder={editingUser ? "(ปล่อยว่างเพื่อไม่เปลี่ยน)" : "กรุณากรอกรหัสผ่าน"}
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                />
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  🔑 ยืนยันรหัสผ่าน
+                </label>
+                <input
+                  type="password"
+                  placeholder="กรุณายืนยันรหัสผ่าน"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({ ...formData, confirmPassword: e.target.value })
+                  }
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                />
+              </div>
+
+              {/* Role */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  👑 บทบาท
+                </label>
+                <select
+                  value={formData.role}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
+                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+                >
+                  <option value="user">👤 ผู้ใช้ทั่วไป</option>
+                  <option value="admin">👨‍💼 ผู้ดูแลระบบ</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+              <button
+                onClick={handleSaveUser}
+                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-700 dark:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 text-white py-2.5 rounded-lg font-bold text-sm transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                ✅ {editingUser ? "อัปเดต" : "สร้าง"}
+              </button>
+
+              <button
+                onClick={() => setShowUserModal(false)}
+                className="flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-2.5 rounded-lg font-bold text-sm transition-all duration-200"
+              >
+                ✕ ยกเลิก
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -256,94 +271,51 @@ export const UserManagement = () => {
       {/* ตารางผู้ใช้ */}
       <div className="glass glass-lg rounded-lg overflow-hidden animate-slide-in-up">
         <div className="p-4 md:p-6 border-b border-white/20">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-100">จัดการผู้ใช้</h2>
-          <p className="text-gray-400 text-xs md:text-sm mt-1">{users.length} ผู้ใช้ทั้งหมด</p>
-          {/* ADD USER BUTTON */}
-<button
-  onClick={() => setShowAddForm(!showAddForm)}
-  className="mt-4 bg-gradient-to-r from-ocean-600 to-blue-600
-             hover:from-ocean-700 hover:to-blue-700
-             text-white px-4 py-2 rounded-lg font-bold transition-all"
->
-  {showAddForm ? '✖ ยกเลิก' : '➕ เพิ่มผู้ใช้'}
-</button>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-100">
+            จัดการผู้ใช้
+          </h2>
+          <p className="text-gray-400 text-xs md:text-sm mt-1">
+            {users.length} ผู้ใช้ทั้งหมด
+          </p>
+          {/* ปุ่มเพิ่มลุกจาเลว */}
+          <button
+            onClick={() => {
+              setEditingUser(null);
+              setFormData({
+                username: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                role: "user",
+              });
+              setShowUserModal(true);
+            }}
+          >
+            ➕ เพิ่มผู้ใช้
+          </button>
 
-{/* ADD USER FORM */}
-{showAddForm && (
-  <form
-    onSubmit={handleCreateUser}
-    className="glass glass-lg p-6 rounded-xl mt-6 space-y-5 animate-slide-in-down"
-  >
-    <h3 className="text-xl font-bold text-ocean-300">เพิ่มผู้ใช้ใหม่</h3>
-
-    <div>
-      <label className="text-sm text-gray-300">ชื่อผู้ใช้</label>
-      <input
-        value={newUser.name}
-        onChange={e => setNewUser({ ...newUser, name: e.target.value })}
-        placeholder="ชื่อ"
-        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
-        required
-      />
-    </div>
-
-    <div>
-      <label className="text-sm text-gray-300">Email</label>
-      <input
-        type="email"
-        value={newUser.email}
-        onChange={e => setNewUser({ ...newUser, email: e.target.value })}
-        placeholder="email@example.com"
-        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
-        required
-      />
-    </div>
-
-    <div>
-      <label className="text-sm text-gray-300">Password</label>
-      <input
-        type="password"
-        value={newUser.password}
-        onChange={e => setNewUser({ ...newUser, password: e.target.value })}
-        placeholder="อย่างน้อย 6 ตัวอักษร"
-        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
-        required
-      />
-    </div>
-
-    <div>
-      <label className="text-sm text-gray-300">Role</label>
-      <select
-        value={newUser.role}
-        onChange={e => setNewUser({ ...newUser, role: e.target.value })}
-        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-ocean-300"
-      >
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-    </div>
-
-    <button
-      type="submit"
-      className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-bold transition"
-    >
-      สร้างผู้ใช้
-    </button>
-  </form>
-)}
-
-          
+          {/* ฟอร์มเพิ่มลุกจาเลว */}
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-xs md:text-sm">
             <thead className="bg-gradient-to-r from-ocean-600/30 to-blue-600/30 border-b border-white/20">
               <tr>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">ชื่อผู้ใช้</th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden md:table-cell">อีเมล</th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">บทบาท</th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden lg:table-cell">วันเข้าร่วม</th>
-                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">แก้ไขชื่อ/เปลี่ยนรหัสผ่าน</th>
+                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">
+                  ชื่อผู้ใช้
+                </th>
+                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden md:table-cell">
+                  อีเมล
+                </th>
+                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">
+                  บทบาท
+                </th>
+                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100 hidden lg:table-cell">
+                  วันเข้าร่วม
+                </th>
+                <th className="px-2 md:px-4 py-3 text-left font-semibold text-gray-100">
+                  แก้ไขผู้ใช้
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
@@ -352,17 +324,21 @@ export const UserManagement = () => {
                   key={user.id}
                   className="hover:bg-white/5 transition-colors duration-200 group"
                 >
-                  <td className="px-2 md:px-4 py-3 text-gray-200 font-medium text-xs md:text-sm">{user.username}</td>
-                  <td className="px-2 md:px-4 py-3 text-gray-300 hidden md:table-cell text-xs md:text-sm">{user.email}</td>
+                  <td className="px-2 md:px-4 py-3 text-gray-200 font-medium text-xs md:text-sm">
+                    {user.username}
+                  </td>
+                  <td className="px-2 md:px-4 py-3 text-gray-300 hidden md:table-cell text-xs md:text-sm">
+                    {user.email}
+                  </td>
                   <td className="px-2 md:px-4 py-3">
                     <span
                       className={`px-2 md:px-3 py-1 rounded-full text-xs font-bold ${
-                        user.role === 'admin'
-                          ? 'bg-red-500/30 text-red-200 border border-red-400/30'
-                          : 'bg-blue-500/30 text-blue-200 border border-blue-400/30'
+                        user.role === "admin"
+                          ? "bg-red-500/30 text-red-200 border border-red-400/30"
+                          : "bg-blue-500/30 text-blue-200 border border-blue-400/30"
                       }`}
                     >
-                      {user.role === 'admin' ? 'ผู้ดูแล' : 'ผู้ใช้'}
+                      {user.role === "admin" ? "ผู้ดูแล" : "ผู้ใช้"}
                     </span>
                   </td>
                   <td className="px-2 md:px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">
@@ -371,25 +347,21 @@ export const UserManagement = () => {
                   <td className="px-2 md:px-4 py-3">
                     <div className="flex gap-1 md:gap-2 flex-col md:flex-row opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <button
-                        onClick={() => handleEditClick(user, 'username')}
+                        onClick={() => {
+                          setEditingUser(user);
+                          setFormData({
+                            username: user.username,
+                            email: user.email,
+                            password: "",
+                            confirmPassword: "",
+                            role: user.role,
+                          });
+                          setShowUserModal(true);
+                        }}
                         className="px-2 md:px-3 py-1 rounded bg-blue-500/30 text-blue-200 hover:bg-blue-500/40 transition-all duration-300 text-xs font-bold"
                         title="แก้ไขชื่อผู้ใช้"
                       >
                         แก้ไข
-                      </button>
-                      <button
-                        onClick={() => handleEditClick(user, 'password')}
-                        className="px-2 md:px-3 py-1 rounded bg-orange-500/30 text-orange-200 hover:bg-orange-500/40 transition-all duration-300 text-xs font-bold"
-                        title="แก้ไขรหัสผ่าน"
-                      >
-                        รหัส
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="px-2 md:px-3 py-1 rounded bg-red-500/30 text-red-200 hover:bg-red-500/50 transition-all duration-300 text-xs font-bold"
-                        title="ลบผู้ใช้"
-                      >
-                        ลบ
                       </button>
                     </div>
                   </td>
@@ -398,9 +370,11 @@ export const UserManagement = () => {
             </tbody>
           </table>
         </div>
-              
+
         {users.length === 0 && (
-          <div className="text-center py-12 text-gray-300 text-sm">ไม่พบผู้ใช้</div>
+          <div className="text-center py-12 text-gray-300 text-sm">
+            ไม่พบผู้ใช้
+          </div>
         )}
       </div>
     </div>

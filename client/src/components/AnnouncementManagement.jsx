@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { announcementService } from '../services/api';
+import React, { useState, useEffect } from "react";
+import { announcementService } from "../services/api";
 
 export const AnnouncementManagement = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    type: 'info',
-    startDate: new Date().toISOString().split('T')[0],
-    endDate: ''
+    title: "",
+    content: "",
+    type: "info",
+    startDate: new Date().toISOString().split("T")[0],
+    endDate: "",
   });
   const [editingId, setEditingId] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadAnnouncements();
@@ -24,7 +24,7 @@ export const AnnouncementManagement = () => {
       const response = await announcementService.getAll();
       setAnnouncements(response.data);
     } catch (err) {
-      setError('Failed to load announcements');
+      setError("Failed to load announcements");
     } finally {
       setLoading(false);
     }
@@ -33,7 +33,7 @@ export const AnnouncementManagement = () => {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -49,14 +49,14 @@ export const AnnouncementManagement = () => {
       setShowForm(false);
       setEditingId(null);
       setFormData({
-        title: '',
-        content: '',
-        type: 'info',
-        startDate: new Date().toISOString().split('T')[0],
-        endDate: ''
+        title: "",
+        content: "",
+        type: "info",
+        startDate: new Date().toISOString().slice(0, 16),
+        endDate: "",
       });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save announcement');
+      setError(err.response?.data?.message || "Failed to save announcement");
     }
   };
 
@@ -65,20 +65,20 @@ export const AnnouncementManagement = () => {
       title: announcement.title,
       content: announcement.content,
       type: announcement.type,
-      startDate: announcement.startDate.split('T')[0],
-      endDate: announcement.endDate ? announcement.endDate.split('T')[0] : ''
+      startDate: announcement.startDate.slice(0, 16),
+      endDate: announcement.endDate ? announcement.endDate.split("T")[0] : "",
     });
     setEditingId(announcement.id);
     setShowForm(true);
   };
 
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this announcement?')) {
+    if (confirm("Are you sure you want to delete this announcement?")) {
       try {
         await announcementService.delete(id);
         loadAnnouncements();
       } catch (err) {
-        setError('Failed to delete announcement');
+        setError("Failed to delete announcement");
       }
     }
   };
@@ -87,26 +87,26 @@ export const AnnouncementManagement = () => {
     setShowForm(false);
     setEditingId(null);
     setFormData({
-      title: '',
-      content: '',
-      type: 'info',
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: ''
+      title: "",
+      content: "",
+      type: "info",
+      startDate: new Date().toISOString().slice(0, 16),
+      endDate: "",
     });
   };
 
   const typeColors = {
-    info: 'from-blue-500 to-cyan-500',
-    warning: 'from-yellow-500 to-orange-500',
-    success: 'from-green-500 to-emerald-500',
-    error: 'from-red-500 to-pink-500'
+    info: "from-blue-500 to-cyan-500",
+    warning: "from-yellow-500 to-orange-500",
+    success: "from-green-500 to-emerald-500",
+    error: "from-red-500 to-pink-500",
   };
 
   const typeIcons = {
-    info: '📢',
-    warning: '⚠️',
-    success: '✅',
-    error: '❌'
+    info: "📢",
+    warning: "⚠️",
+    success: "✅",
+    error: "❌",
   };
 
   return (
@@ -114,149 +114,199 @@ export const AnnouncementManagement = () => {
       <div className="mb-6 animate-slide-in-down">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-lg hover:from-purple-600 hover:to-pink-600 font-bold transition-all duration-300 hover-lift glow"
+          className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white px-6 md:px-8 py-3 rounded-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2 text-sm md:text-base"
         >
-          {showForm ? '✕ Cancel' : '+ New Announcement'}
+          {showForm ? (
+            <>
+              <span className="text-lg">✕</span>
+              <span>ยกเลิก</span>
+            </>
+          ) : (
+            <>
+              <span className="text-lg">📢</span>
+              <span>เพิ่มประกาศใหม่</span>
+            </>
+          )}
         </button>
       </div>
 
-      {/* Form */}
+      {/* ฟอร์มสร้าง/แก้ไขประกาศ */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="glass glass-lg p-6 rounded-lg mb-8 card-enter">
-          <h3 className="text-2xl font-bold mb-4 text-gray-100">
-            {editingId ? 'Edit Announcement' : 'Create New Announcement'}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 md:p-8 rounded-2xl mb-8 card-enter shadow-xl dark:shadow-2xl"
+        >
+          <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+            {editingId ? "✏️ แก้ไขประกาศ" : "📢 สร้างประกาศใหม่"}
           </h3>
 
           {error && (
-            <div className="bg-red-500/30 text-red-200 p-3 rounded-lg mb-4 border border-red-500/50">
-              {error}
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 p-4 rounded-lg mb-6 border border-red-200 dark:border-red-800/50">
+              ⚠️ {error}
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Title Input */}
             <div>
-              <label className="block text-gray-200 font-bold mb-2">Title</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+                📝 ชื่อเรื่อง
+              </label>
               <input
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                placeholder="Announcement title"
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
+                placeholder="กรุณากรอกชื่อประกาศ"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all"
                 required
               />
             </div>
 
+            {/* Type Select */}
             <div>
-              <label className="block text-gray-200 font-bold mb-2">Type</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+                🏷️ ประเภท
+              </label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleInputChange}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-purple-400"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white transition-all"
               >
-                <option value="info">Info 📢</option>
-                <option value="warning">Warning ⚠️</option>
-                <option value="success">Success ✅</option>
-                <option value="error">Error ❌</option>
+                <option value="info">📢 ข้อมูล</option>
+                <option value="warning">⚠️ คำเตือน</option>
+                <option value="success">✅ สำเร็จ</option>
+                <option value="error">❌ ข้อผิดพลาด</option>
               </select>
             </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-200 font-bold mb-2">Content</label>
+          {/* Content Textarea */}
+          <div className="mb-6">
+            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+              📄 เนื้อหา
+            </label>
             <textarea
               name="content"
               value={formData.content}
               onChange={handleInputChange}
-              placeholder="Announcement content"
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100 placeholder-gray-400"
-              rows="4"
+              placeholder="กรุณากรอกเนื้อหาประกาศ"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all"
+              rows="5"
               required
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {/* Date Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
-              <label className="block text-gray-200 font-bold mb-2">Start Date</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+                ⏰ วันที่เริ่มต้น
+              </label>
               <input
-                type="date"
+                type="datetime-local"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleInputChange}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-gray-200 font-bold mb-2">End Date (optional)</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+                ⏱️ วันที่สิ้นสุด (ตัวเลือก)
+              </label>
               <input
-                type="date"
+                type="datetime-local"
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleInputChange}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-gray-100"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white transition-all"
               />
             </div>
           </div>
 
-          <div className="flex gap-3">
+          {/* Action Buttons */}
+          <div className="flex gap-4">
             <button
               type="submit"
-              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-2 rounded-lg hover:from-green-600 hover:to-emerald-600 font-bold transition-all duration-300 hover-lift"
+              className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 dark:from-green-700 dark:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 text-white px-6 py-3 rounded-lg font-bold transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 text-sm md:text-base"
             >
-              {editingId ? 'Update' : 'Create'}
+              {editingId ? "✅ อัปเดต" : "✨ สร้าง"}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="bg-gray-500/30 text-gray-200 px-6 py-2 rounded-lg hover:bg-gray-500/40 font-bold transition-all duration-300"
+              className="flex-1 bg-gray-400 dark:bg-gray-700 hover:bg-gray-500 dark:hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-bold transition-all duration-200 text-sm md:text-base"
             >
-              Cancel
+              ✕ ยกเลิก
             </button>
           </div>
         </form>
       )}
 
-      {/* Announcements List */}
+      {/* รายการประกาศ */}
       {loading ? (
-        <div className="text-center py-8 text-gray-200 animate-pulse">Loading announcements...</div>
+        <div className="text-center py-12 text-gray-600 dark:text-gray-200 animate-pulse">
+          กำลังโหลดประกาศ...
+        </div>
       ) : announcements.length === 0 ? (
-        <div className="text-center py-8 text-gray-300">No announcements yet</div>
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+          📭 ยังไม่มีประกาศ
+        </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 animate-stagger">
+        <div className="grid grid-cols-1 gap-5 animate-stagger">
           {announcements.map((announcement) => (
             <div
               key={announcement.id}
-              className={`glass glass-lg border-l-4 bg-gradient-to-r ${typeColors[announcement.type]}/10 p-6 card-enter hover-lift`}
+              className={`bg-white dark:bg-gray-900 border-l-4 border-blue-500 dark:border-blue-600 rounded-lg shadow-md dark:shadow-lg p-6 card-enter hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 ${
+                announcement.type === 'warning' 
+                  ? 'border-l-yellow-500 dark:border-l-yellow-600' 
+                  : announcement.type === 'success' 
+                  ? 'border-l-green-500 dark:border-l-green-600' 
+                  : announcement.type === 'error' 
+                  ? 'border-l-red-500 dark:border-l-red-600' 
+                  : ''
+              }`}
             >
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{typeIcons[announcement.type]}</span>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-100">{announcement.title}</h3>
-                    <p className="text-sm text-gray-400">
-                      Started: {new Date(announcement.startDate).toLocaleDateString()}
-                      {announcement.endDate && ` | Ends: ${new Date(announcement.endDate).toLocaleDateString()}`}
+              <div className="flex justify-between items-start gap-4 mb-4">
+                <div className="flex items-start gap-4 flex-1">
+                  <span className="text-4xl leading-none mt-1">
+                    {typeIcons[announcement.type]}
+                  </span>
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                      {announcement.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      🕐 เริ่ม: {new Date(announcement.startDate).toLocaleString('th-TH')}
+                      {announcement.endDate && (
+                        <> | 🏁 สิ้นสุด: {new Date(announcement.endDate).toLocaleString('th-TH')}</>
+                      )}
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-shrink-0">
                   <button
                     onClick={() => handleEdit(announcement)}
-                    className="px-3 py-1 rounded bg-blue-500/30 text-blue-200 hover:bg-blue-500/40 transition-all duration-300 text-sm"
+                    className="px-4 py-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-all duration-300 text-sm font-bold hover:scale-105"
+                    title="แก้ไข"
                   >
-                    Edit
+                    ✏️ แก้ไข
                   </button>
                   <button
                     onClick={() => handleDelete(announcement.id)}
-                    className="px-3 py-1 rounded bg-red-500/30 text-red-200 hover:bg-red-500/40 transition-all duration-300 text-sm"
+                    className="px-4 py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-all duration-300 text-sm font-bold hover:scale-105"
+                    title="ลบ"
                   >
-                    Delete
+                    🗑️ ลบ
                   </button>
                 </div>
               </div>
-              <p className="text-gray-200 whitespace-pre-wrap text-sm">{announcement.content}</p>
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-base leading-relaxed">
+                {announcement.content}
+              </p>
             </div>
           ))}
         </div>

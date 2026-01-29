@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-// Create email transporter
+// สร้าง transporter อีเมล
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Send password reset email
+// ส่งอีเมลรีเซ็ตรหัสผ่าน
 exports.sendPasswordResetEmail = async (email, resetCode) => {
   const resetLink = `${process.env.FRONTEND_URL}/forgot-password?code=${resetCode}&email=${encodeURIComponent(email)}`;
   
@@ -69,7 +69,7 @@ exports.sendPasswordResetEmail = async (email, resetCode) => {
   }
 };
 
-// Test email connection
+// ทดสอบการเชื่อมต่ออีเมล
 exports.testConnection = async () => {
   try {
     await transporter.verify();

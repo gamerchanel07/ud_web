@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
 import { Star, MapPin } from 'lucide-react';
 
-// Fix leaflet icon issue
+// แก้ปัญหา leaflet icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -12,7 +12,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// Custom icons
+// ไอคอนที่กำหนดเอง
 const purpleIcon = new L.Icon({
   iconUrl: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png",
   iconSize: [32, 32],
@@ -25,7 +25,7 @@ const grayIcon = new L.Icon({
   iconAnchor: [16, 32]
 });
 
-// User location marker (blue)
+// มาร์กเกอร์ตำแหน่งผู้ใช้ (สีน้ำเงิน)
 const userIcon = new L.Icon({
   iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
   iconSize: [32, 32],
@@ -36,7 +36,7 @@ const userIcon = new L.Icon({
 const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
 
-// คำนวณระยะทาง
+// คำนวณระยะทาง (ระหว่างพิกัด)
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;

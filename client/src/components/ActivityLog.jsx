@@ -115,21 +115,21 @@ export const ActivityLog = () => {
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="glass glass-lg p-6 card-enter rounded-lg border border-white/10">
-            <div className="text-gray-400 text-sm font-bold mb-2">📊 รวมทั้งหมด</div>
+            <div className=" text-sm font-bold mb-2">📊 รวมทั้งหมด</div>
             <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
               {stats.total}
             </div>
-            <div className="text-gray-500 text-xs mt-2">บันทึกกิจกรรม</div>
+            <div className=" text-xs mt-2">บันทึกกิจกรรม</div>
           </div>
           <div className="glass glass-lg p-6 card-enter rounded-lg border border-white/10">
-            <div className="text-gray-400 text-sm font-bold mb-2">📈 7 วันที่ผ่านมา</div>
+            <div className=" text-sm font-bold mb-2">📈 7 วันที่ผ่านมา</div>
             <div className="text-4xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
               {stats.recent7Days}
             </div>
             <div className="text-gray-500 text-xs mt-2">กิจกรรมในสัปดาห์นี้</div>
           </div>
           <div className="glass glass-lg p-6 card-enter rounded-lg border border-white/10">
-            <div className="text-gray-400 text-sm font-bold mb-2">🏷️ ประเภท</div>
+            <div className=" text-sm font-bold mb-2">🏷️ ประเภท</div>
             <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               {stats.byType?.length || 0}
             </div>
@@ -141,14 +141,14 @@ export const ActivityLog = () => {
       {/* ตัวกรองและปุ่มการดำเนินการ */}
       <div className="glass glass-lg p-6 rounded-lg border border-white/10 space-y-4">
         <div>
-          <label className="block text-gray-200 font-bold mb-3">🔍 กรองตามประเภท</label>
+          <label className="block font-bold mb-3">🔍 กรองตามประเภท</label>
           <select
             value={filterAction}
             onChange={(e) => {
               setFilterAction(e.target.value);
               setPage(1);
             }}
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 text-purple-400 placeholder-gray-400"
+            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-purple-400 placeholder-gray-400"
           >
             <option value="">ทั้งหมด</option>
             {Object.entries(activityTypeConfig).map(([key, config]) => (
@@ -218,7 +218,7 @@ export const ActivityLog = () => {
         )}
       </div>
 
-      {/* Pagination */}
+      {/* หน้า */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2">
           <button

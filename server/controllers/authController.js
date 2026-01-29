@@ -19,7 +19,7 @@ const logActivity = async (action, description, userId = null, targetId = null, 
   }
 };
 
-// Register
+// ลงทะเบียน
 exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -72,7 +72,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// Login
+// เข้าระบบ
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -126,7 +126,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// Get current user
+// ดึงผู้ใช้งานปัจจุบัน
 exports.getCurrentUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.userId, {
@@ -137,7 +137,7 @@ exports.getCurrentUser = async (req, res) => {
     res.status(500).json({ message: 'Failed to get user', error: err.message });
   }
 };
-// Forgot Password - Generate reset code and send email
+// ลืมรหัสผ่าน - สร้างโคดรีเซ็ตและส่งอิเมล
 exports.forgotPassword = async (req, res) => {
   try {
     const { username } = req.body;
@@ -147,16 +147,16 @@ exports.forgotPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Generate 6-digit reset code
+    // สร้างโคดรีเซ็ต 6 หลัก
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
 
-    // Store reset code in database
+    // เก็บโคดรีเซ็ตในฐานข้อมูล
     user.resetCode = resetCode;
     user.resetCodeExpiresAt = expiresAt;
     await user.save();
 
-    // Send email with reset code
+    // ส่งอิเมลพร้อมโคดรีเซ็ต
     try {
       await sendPasswordResetEmail(user.email, resetCode);
       console.log(`\n✅ Password reset email sent to ${user.email}`);
@@ -177,7 +177,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// Reset Password - Verify code and update password
+// ลบรหัสผ่าน - สๅนโคดและอัปเดทรหัสผ่าน
 exports.resetPassword = async (req, res) => {
   try {
     const { username, resetCode, newPassword } = req.body;
@@ -187,12 +187,12 @@ exports.resetPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Validate reset code exists
+    // ตรวจสอบว่าโคดรีเซ็ตมีขอ
     if (!user.resetCode) {
       return res.status(400).json({ message: 'No reset code found. Please request a new one.' });
     }
 
-    // Check if code is expired
+    // ตรวจสอบว่าโคดรีเซ็ตหมดอายุงค่ลือไม
     if (new Date() > user.resetCodeExpiresAt) {
       user.resetCode = null;
       user.resetCodeExpiresAt = null;
@@ -200,18 +200,18 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Reset code expired. Please request a new one.' });
     }
 
-    // Verify code
+    // ยืนยินโคด
     if (user.resetCode !== resetCode) {
       return res.status(400).json({ message: 'Invalid reset code' });
     }
 
-    // Update password
+    // อัปเดทรหัสผ่าน
     user.password = newPassword;
     user.resetCode = null;
     user.resetCodeExpiresAt = null;
     await user.save();
 
-    // Log activity
+    // บันทึกกิจกรรม
     await logActivity(
       'password_reset',
       `ผู้ใช้ ${username} รีเซ็ตรหัสผ่าน`,

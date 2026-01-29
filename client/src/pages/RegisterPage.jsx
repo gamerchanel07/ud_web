@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { Building2 } from 'lucide-react';
+import { Building2, Mail, Lock, UserPlus } from 'lucide-react';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -48,84 +48,164 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
-      <div className="glass glass-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent mb-6 flex items-center justify-center gap-2">
-          <Building2 size={32} className="text-ocean-300" />
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      backgroundColor: 'var(--bg-primary)'
+    }}>
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        borderRadius: '0.5rem',
+        padding: '2rem',
+        width: '100%',
+        maxWidth: '28rem',
+        border: '1px solid var(--border-light)'
+      }}>
+        <h1 style={{
+          fontSize: '1.875rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          color: 'var(--primary-main)',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem'
+        }}>
+          <Building2 size={32} style={{color: 'var(--primary-main)'}} />
           {t('register.title')}
         </h1>
 
         {error && (
-          <div className="bg-red-500/30 text-red-200 p-3 rounded-lg mb-4 border border-red-500/50">
+          <div style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+            color: '#EF4444',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            marginBottom: '1rem',
+            border: '1px solid rgba(239, 68, 68, 0.5)'
+          }}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-200 font-bold mb-2">{t('register.username')}</label>
+            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.username')}</label>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.375rem',
+                color: 'var(--text-primary)'
+              }}
               placeholder={t('register.chooseUsername')}
               required
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-200 font-bold mb-2">{t('register.email')}</label>
+            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.email')}</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.375rem',
+                color: 'var(--text-primary)'
+              }}
               placeholder={t('register.enterEmail')}
               required
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-200 font-bold mb-2">{t('register.password')}</label>
+            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.password')}</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.375rem',
+                color: 'var(--text-primary)'
+              }}
               placeholder={t('register.enterPassword')}
               required
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-200 font-bold mb-2">{t('register.confirmPassword')}</label>
+            <label style={{color: 'var(--text-primary)'}} className="block font-bold mb-2">{t('register.confirmPassword')}</label>
             <input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.375rem',
+                color: 'var(--text-primary)'
+              }}
               placeholder={t('register.confirmPasswordPlaceholder')}
               required
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg"
+            style={{
+              width: '100%',
+              backgroundColor: loading ? 'rgba(107, 114, 128, 0.5)' : 'var(--primary-main)',
+              color: 'white',
+              paddingTop: '0.75rem',
+              paddingBottom: '0.75rem',
+              borderRadius: '0.375rem',
+              fontWeight: 'bold',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.opacity = '0.9')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.opacity = '1')}
           >
-            {loading ? t('common.loading') : t('register.createAccount')}
+            {loading ? '⏳ ' + t('common.loading') : (<><UserPlus size={16} /> {t('register.createAccount')}</>)}
           </button>
         </form>
 
-        <p className="text-center mt-4 text-gray-300">
+        <p style={{textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)'}}>
           {t('register.alreadyHaveAccount')}{' '}
-          <Link to="/login" className="text-ocean-300 font-bold hover:text-ocean-200 transition-colors">
+          <Link to="/login" style={{color: 'var(--primary-main)', fontWeight: 'bold', textDecoration: 'none'}} className="hover:underline">
             {t('register.loginHere')}
           </Link>
         </p>

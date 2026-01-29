@@ -7,7 +7,7 @@ import API from '../services/api';
 export const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [step, setStep] = useState(1); // 1: enter username, 2: reset password
+  const [step, setStep] = useState(1); // 1: กรอกชื่อผู้ใช้, 2: รีเซ็ตผ่านรหัสผาน
   const [username, setUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -69,7 +69,7 @@ export const ForgotPasswordPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 animate-fade-in">
       <div className="w-full max-w-md">
-        {/* Header */}
+        {/* ส่วนหัว */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Building2 size={40} className="text-ocean-300" />
@@ -80,10 +80,10 @@ export const ForgotPasswordPage = () => {
           <h2 className="text-2xl font-bold text-gray-100">{t('forgotPassword.title')}</h2>
         </div>
 
-        {/* Card */}
+        {/* การ์ด */}
         <div className="glass glass-lg p-8 rounded-2xl">
           {step === 1 ? (
-            // Step 1: Enter Username
+            // ขั้นที่ 1: กรอกชื่อผู้ใช้
             <form onSubmit={handleSendReset} className="space-y-6">
               <p className="text-gray-300 text-center text-sm mb-4">
                 {t('forgotPassword.description')}
@@ -132,7 +132,7 @@ export const ForgotPasswordPage = () => {
               </Link>
             </form>
           ) : (
-            // Step 2: Reset Password
+            // ขั้นที่ 2: รีเซ็ตผ่านรหัส
             <form onSubmit={handleResetPassword} className="space-y-6">
               <p className="text-gray-300 text-center text-sm mb-4">
                 {t('forgotPassword.enterCode')}
@@ -213,7 +213,7 @@ export const ForgotPasswordPage = () => {
           )}
         </div>
 
-        {/* Footer */}
+        {/* ส่วนท้าย */}
         <p className="text-center text-gray-400 text-sm mt-8">
           {t('login.dontHaveAccount')}{' '}
           <Link to="/login" className="text-ocean-300 hover:text-ocean-200 transition-colors">

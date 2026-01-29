@@ -64,7 +64,7 @@ exports.addHotel = async (req, res) => {
 };
 
 
-// Update hotel (admin only)
+// อัปเดทโรงแรม (แเดมเปินลทิกลุ่มเท่านั้น)
 exports.updateHotel = async (req, res) => {
   try {
     const { id } = req.params;
@@ -119,7 +119,7 @@ exports.updateHotel = async (req, res) => {
 
 
 
-// Delete hotel (admin only)
+// ลบโรงแรม (แเดมเปินลทิกลุ่มเท่านั้น)
 exports.deleteHotel = async (req, res) => {
   try {
     const { id } = req.params;

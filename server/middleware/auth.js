@@ -38,7 +38,7 @@ const isAdmin = (req, res, next) => {
 module.exports = {
   authMiddleware,
   adminMiddleware: isAdmin,
-  protect: authMiddleware,  // alias for authMiddleware
+  protect: authMiddleware,  // นามแฝงของ authMiddleware
   authorize: (role) => (req, res, next) => {
     if (req.userRole !== role) {
       return res.status(403).json({ message: `ต้องเป็น ${role} เท่านั้น` });

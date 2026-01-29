@@ -1,34 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import API from '../services/api';
+import React, { useState, useEffect } from "react";
+import API from "../services/api";
+import { Building2, Star, Users, BarChart3, Heart, Trophy, TrendingUp, MessageCircle } from "lucide-react";
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from 'recharts';
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 /* =========================
-   Reusable Stat Card
+   บัตรสถิติที่สามารถนำมาใช้ใหม่ได้
 ========================= */
-export const StatCard = ({ title, value, icon, color }) => (
-  <div className={`glass glass-lg border-l-4 ${color} hover:shadow-xl transition-all duration-300 hover:bg-white/20`}>
-    <div className="flex justify-between items-start">
+export const StatCard = ({ title, value, icon: Icon, color }) => (
+  <div
+    style={{
+      backgroundColor: 'var(--bg-secondary)',
+      border: '1px solid rgba(0, 173, 181, 0.2)',
+      borderLeft: '4px solid var(--primary-main)',
+      borderRadius: '0.5rem',
+      padding: '1.25rem',
+      transition: 'all 0.3s ease',
+      cursor: 'pointer'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.1)';
+      e.currentTarget.style.borderColor = 'rgba(0, 173, 181, 0.4)';
+      e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 173, 181, 0.1)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+      e.currentTarget.style.borderColor = 'rgba(0, 173, 181, 0.2)';
+      e.currentTarget.style.boxShadow = 'none';
+    }}
+  >
+    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
       <div>
-        <p className="text-gray-300 text-sm font-medium">{title}</p>
-        <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+        <p style={{fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-tertiary)'}}>{title}</p>
+        <p style={{fontSize: '1.875rem', fontWeight: 'bold', marginTop: '0.5rem', color: 'var(--primary-main)'}}>
           {value}
         </p>
       </div>
-      <span className="text-4xl">{icon}</span>
+      {Icon && <Icon size={32} style={{color: 'var(--primary-main)'}} />}
     </div>
   </div>
 );
 
 /* =========================
-   Dashboard Stats
+   สถิติแดชบอร์ด
 ========================= */
 export const DashboardStats = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadStats();
@@ -36,17 +68,19 @@ export const DashboardStats = () => {
 
   const loadStats = async () => {
     try {
-      const response = await API.get('/dashboard/stats');
+      const response = await API.get("/dashboard/stats");
       setStats(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load stats');
+      setError(err.response?.data?.message || "Failed to load stats");
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-200">Loading dashboard...</div>;
+    return (
+      <div className="text-center py-8 text-gray-200">Loading dashboard...</div>
+    );
   }
 
   if (error) {
@@ -93,43 +127,117 @@ export const DashboardStats = () => {
     : [];
 
   return (
-    <div className="animate-fade-in">
-      <h2 className="text-3xl font-bold mb-6 text-transparent bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text">
+    <div style={{animation: 'fade-in 0.5s ease-in'}}>
+      <h2 style={{
+        fontSize: '1.875rem',
+        fontWeight: 'bold',
+        marginBottom: '1.5rem',
+        color: 'var(--text-primary)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem'
+      }}>
+        <BarChart3 size={36} style={{color: 'var(--primary-main)'}} />
         Dashboard Overview
       </h2>
 
       {/* =========================
           Stats Grid
       ========================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        <StatCard title="Total Hotels" value={totalHotels} icon="🏨" color="border-purple-400" />
-        <StatCard title="Total Reviews" value={totalReviews} icon="⭐" color="border-yellow-400" />
-        <StatCard title="Total Users" value={totalUsers} icon="👥" color="border-pink-400" />
-        <StatCard title="Avg Rating" value={avgRating} icon="📊" color="border-purple-500" />
-        <StatCard title="Favorites" value={totalFavorites} icon="❤️" color="border-red-400" />
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '1rem',
+        marginBottom: '2rem'
+      }}>
+        <StatCard
+          title="โรงแรมทั้งหมด"
+          value={totalHotels}
+          icon={Building2}
+        />
+        <StatCard
+          title="รีวิวทั้งหมด"
+          value={totalReviews}
+          icon={Star}
+        />
+        <StatCard
+          title="ผู้ใช้ทั้งหมด"
+          value={totalUsers}
+          icon={Users}
+        />
+        <StatCard
+          title="คะแนนเฉลี่ย"
+          value={avgRating}
+          icon={BarChart3}
+        />
+        <StatCard
+          title="รายการโปรด"
+          value={totalFavorites}
+          icon={Heart}
+        />
       </div>
 
       {/* =========================
           Charts
       ========================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Reviews by Rating */}
-        <div className="glass glass-lg">
-          <h3 className="text-xl font-bold mb-4 text-purple-300">Reviews by Rating</h3>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        {/* รีวิวตามคะแนน */}
+        <div style={{
+          backgroundColor: 'var(--bg-secondary)',
+          border: '1px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1.5rem'
+        }}>
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            color: 'var(--text-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <TrendingUp size={24} style={{color: 'var(--primary-main)'}} />
+            รีวิวตามคะแนน
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={reviewsByRating}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="rating" stroke="rgba(255,255,255,0.5)" />
-              <YAxis stroke="rgba(255,255,255,0.5)" />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="rgba(0, 173, 181, 0.1)"
+              />
+              <XAxis dataKey="rating" stroke="var(--text-tertiary)" />
+              <YAxis stroke="var(--text-tertiary)" />
               <Tooltip />
-              <Bar dataKey="count" fill="#c084fc" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="count" fill="#00ADB5" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Hotels by Type */}
-        <div className="glass glass-lg">
-          <h3 className="text-xl font-bold mb-4 text-purple-300">Hotels by Type</h3>
+        {/* โรงแรมตามประเภท */}
+        <div style={{
+          backgroundColor: 'var(--bg-secondary)',
+          border: '1px solid rgba(0, 173, 181, 0.2)',
+          borderRadius: '0.5rem',
+          padding: '1.5rem'
+        }}>
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            color: 'var(--text-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Building2 size={24} style={{color: 'var(--primary-main)'}} />
+            โรงแรมตามประเภท
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -144,7 +252,9 @@ export const DashboardStats = () => {
                 {hotelsByType.map((_, index) => (
                   <Cell
                     key={index}
-                    fill={['#a855f7', '#c084fc', '#ec4899', '#f472b6'][index % 4]}
+                    fill={
+                      ["#00ADB5", "#00897B", "#009688", "#00796B"][index % 4]
+                    }
                   />
                 ))}
               </Pie>
@@ -157,28 +267,51 @@ export const DashboardStats = () => {
       {/* =========================
           Top Rated Hotels
       ========================= */}
-      <div className="glass glass-lg mb-8">
-        <h3 className="text-xl font-bold mb-4 text-purple-300">🏆 Top Rated Hotels</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-purple-500/20">
-              <tr>
-                <th className="px-4 py-2 text-left">Hotel Name</th>
-                <th className="px-4 py-2 text-left">Rating</th>
-                <th className="px-4 py-2 text-left">Price</th>
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        border: '1px solid rgba(0, 173, 181, 0.2)',
+        borderRadius: '0.5rem',
+        padding: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <h3 style={{
+          fontSize: '1.25rem',
+          fontWeight: 'bold',
+          marginBottom: '1rem',
+          color: 'var(--text-primary)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <Trophy size={24} style={{color: '#FFC107'}} />
+          โรงแรมที่มีคะแนนสูงสุด
+        </h3>
+        <div style={{overflowX: 'auto'}}>
+          <table style={{width: '100%', fontSize: '0.875rem'}}>
+            <thead style={{backgroundColor: 'rgba(0, 173, 181, 0.1)'}}>
+              <tr style={{borderBottom: '2px solid var(--primary-main)'}}>
+                <th style={{padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 'bold'}}>ชื่อโรงแรม</th>
+                <th style={{padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 'bold'}}>คะแนน</th>
+                <th style={{padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 'bold'}}>ราคา</th>
               </tr>
             </thead>
             <tbody>
               {topRatedHotels.map((hotel) => (
-                <tr key={hotel.id} className="border-b border-white/10">
-                  <td className="px-4 py-3">{hotel.name}</td>
-                  <td className="px-4 py-3 text-yellow-400">
-                    {'⭐'.repeat(Math.round(hotel.rating ?? 0))}{' '}
-                    <span className="text-gray-200 ml-1">
-                      {Number(hotel.rating ?? 0).toFixed(1)}
-                    </span>
+                <tr key={hotel.id} style={{borderBottom: '1px solid rgba(0, 173, 181, 0.1)'}}>
+                  <td style={{padding: '0.75rem 1rem', color: 'var(--text-primary)'}}>{hotel.name}</td>
+                  <td style={{padding: '0.75rem 1rem'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                      <div style={{display: 'flex', color: '#FFC107'}}>
+                        {[...Array(Math.round(hotel.rating ?? 0))].map((_, i) => (
+                          <Star key={i} size={16} fill="#FFC107" />
+                        ))}
+                      </div>
+                      <span style={{color: 'var(--text-secondary)', marginLeft: '0.5rem'}}>
+                        {Number(hotel.rating ?? 0).toFixed(1)}
+                      </span>
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-pink-300">
+                  <td style={{padding: '0.75rem 1rem', color: 'var(--primary-main)', fontWeight: 'bold'}}>
                     ฿{Number(hotel.price ?? 0).toLocaleString()}
                   </td>
                 </tr>
@@ -191,25 +324,45 @@ export const DashboardStats = () => {
       {/* =========================
           Most Favorited Hotels
       ========================= */}
-      <div className="glass glass-lg mb-8">
-        <h3 className="text-xl font-bold mb-4 text-purple-300">❤️ Most Favorited Hotels</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-purple-500/20">
-              <tr>
-                <th className="px-4 py-2 text-left">Hotel Name</th>
-                <th className="px-4 py-2 text-left">Favorites</th>
-                <th className="px-4 py-2 text-left">Price</th>
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        border: '1px solid rgba(0, 173, 181, 0.2)',
+        borderRadius: '0.5rem',
+        padding: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <h3 style={{
+          fontSize: '1.25rem',
+          fontWeight: 'bold',
+          marginBottom: '1rem',
+          color: 'var(--text-primary)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <Heart size={24} style={{color: '#E91E63', fill: '#E91E63'}} />
+          โรงแรมที่ถูกชื่นชอบมากที่สุด
+        </h3>
+        <div style={{overflowX: 'auto'}}>
+          <table style={{width: '100%', fontSize: '0.875rem'}}>
+            <thead style={{backgroundColor: 'rgba(0, 173, 181, 0.1)'}}>
+              <tr style={{borderBottom: '2px solid var(--primary-main)'}}>
+                <th style={{padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 'bold'}}>ชื่อโรงแรม</th>
+                <th style={{padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 'bold'}}>จำนวนรายการโปรด</th>
+                <th style={{padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', fontWeight: 'bold'}}>ราคา</th>
               </tr>
             </thead>
             <tbody>
               {mostFavoritedHotels.map((hotel) => (
-                <tr key={hotel.id} className="border-b border-white/10">
-                  <td className="px-4 py-3">{hotel.name}</td>
-                  <td className="px-4 py-3 text-red-400 font-semibold">
-                    {hotel.favoriteCount ?? 0} ❤️
+                <tr key={hotel.id} style={{borderBottom: '1px solid rgba(0, 173, 181, 0.1)'}}>
+                  <td style={{padding: '0.75rem 1rem', color: 'var(--text-primary)'}}>{hotel.name}</td>
+                  <td style={{padding: '0.75rem 1rem', fontWeight: 'bold', color: '#E91E63'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                      <Heart size={18} style={{color: '#E91E63', fill: '#E91E63'}} />
+                      {hotel.favoriteCount ?? 0}
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-pink-300">
+                  <td style={{padding: '0.75rem 1rem', color: 'var(--primary-main)', fontWeight: 'bold'}}>
                     ฿{Number(hotel.price ?? 0).toLocaleString()}
                   </td>
                 </tr>
@@ -222,25 +375,57 @@ export const DashboardStats = () => {
       {/* =========================
           Recent Reviews
       ========================= */}
-      <div className="glass glass-lg">
-        <h3 className="text-xl font-bold mb-4 text-purple-300">📝 Recent Reviews</h3>
-        <div className="space-y-4">
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        border: '1px solid rgba(0, 173, 181, 0.2)',
+        borderRadius: '0.5rem',
+        padding: '1.5rem'
+      }}>
+        <h3 style={{
+          fontSize: '1.25rem',
+          fontWeight: 'bold',
+          marginBottom: '1rem',
+          color: 'var(--text-primary)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <MessageCircle size={24} style={{color: 'var(--primary-main)'}} />
+          รีวิวล่าสุด
+        </h3>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
           {recentReviews.map((review) => (
-            <div key={review.id} className="border-b border-white/10 pb-4">
-              <div className="flex justify-between">
+            <div key={review.id} style={{
+              paddingBottom: '1rem',
+              borderBottom: '1px solid rgba(0, 173, 181, 0.1)'
+            }}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
                 <div>
-                  <p className="font-semibold text-gray-100">{review.user}</p>
-                  <p className="text-sm text-gray-300">{review.hotel}</p>
-                  <p className="text-yellow-400">{'⭐'.repeat(review.rating ?? 0)}</p>
+                  <p style={{fontWeight: 'bold', color: 'var(--text-primary)'}}>{review.user}</p>
+                  <p style={{fontSize: '0.875rem', color: 'var(--text-secondary)'}}>{review.hotel}</p>
+                  <div style={{display: 'flex', color: '#FFC107', marginTop: '0.25rem'}}>
+                    {[...Array(review.rating ?? 0)].map((_, i) => (
+                      <Star key={i} size={16} fill="#FFC107" />
+                    ))}
+                  </div>
                 </div>
-                <span className="text-xs text-gray-400">
+                <span style={{fontSize: '0.75rem', color: 'var(--text-tertiary)'}}>
                   {review.createdAt
-                    ? new Date(review.createdAt).toLocaleDateString()
-                    : ''}
+                    ? new Date(review.createdAt).toLocaleDateString('th-TH')
+                    : ""}
                 </span>
               </div>
               {review.comment && (
-                <p className="text-gray-200 mt-2 text-sm italic">
+                <p style={{
+                  marginTop: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontStyle: 'italic',
+                  color: 'var(--text-secondary)',
+                  backgroundColor: 'rgba(0, 173, 181, 0.05)',
+                  padding: '0.75rem',
+                  borderRadius: '0.375rem',
+                  borderLeft: '3px solid var(--primary-main)'
+                }}>
                   "{review.comment}"
                 </p>
               )}

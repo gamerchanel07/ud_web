@@ -6,7 +6,7 @@ const Favorite = require('./Favorite');
 const Announcement = require('./Announcement');
 const ActivityLog = require('./ActivityLog');
 
-// Initialize Announcement model
+// เริ่มต้นรูปแบบประกาศ
 const models = {
   User,
   Hotel,

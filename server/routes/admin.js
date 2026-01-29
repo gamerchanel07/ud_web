@@ -11,7 +11,7 @@ router.post('/hotels', authMiddleware, adminMiddleware, adminController.addHotel
 router.put('/hotels/:id', authMiddleware, adminMiddleware, adminController.updateHotel);
 router.delete('/hotels/:id', authMiddleware, adminMiddleware, adminController.deleteHotel);
 
-// User management routes
+// เส้นทางจัดการผู้ใช้
 router.post('/users', adminController.createUser);
 router.put('/users/:userId/username', protect, authorize('admin'), adminController.updateUserUsername);
 router.put('/users/:userId/password', protect, authorize('admin'), adminController.updateUserPassword);

@@ -1,6 +1,6 @@
 const { Favorite } = require('../models');
 
-// Add to favorites
+// เพิ่มไปยังไหน
 exports.addFavorite = async (req, res) => {
   try {
     const { hotelId } = req.body;
@@ -26,7 +26,7 @@ exports.addFavorite = async (req, res) => {
   }
 };
 
-// Remove from favorites
+// ลบออกจากไปยังไหน
 exports.removeFavorite = async (req, res) => {
   try {
     const { hotelId } = req.params;
@@ -47,7 +47,7 @@ exports.removeFavorite = async (req, res) => {
   }
 };
 
-// Get user favorites
+// ดึงโรงแรมที่ปฤกชอยผู้ใช้งาน
 exports.getFavorites = async (req, res) => {
   try {
     const favorites = await Favorite.findAll({

@@ -1,6 +1,6 @@
 const { Announcement } = require('../models');
 
-// Get all active announcements
+// ดึงประกาศทั้งหมดที่เปิดใช้งาน
 exports.getActive = async (req, res) => {
   try {
     const now = new Date();
@@ -22,7 +22,7 @@ exports.getActive = async (req, res) => {
   }
 };
 
-// Get all announcements (admin)
+// ดึงประกาศทั้งหมด (ผูดริิ่น)
 exports.getAll = async (req, res) => {
   try {
     const announcements = await Announcement.findAll({
@@ -35,7 +35,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Create announcement (admin)
+// สร้างประกาศ (ผูดริิ่น)
 exports.create = async (req, res) => {
   try {
     const { title, content, type, startDate, endDate } = req.body;
@@ -59,7 +59,7 @@ exports.create = async (req, res) => {
   }
 };
 
-// Update announcement (admin)
+// แก้ไขประกาศ (ผูดริิ่น)
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
@@ -85,7 +85,7 @@ exports.update = async (req, res) => {
   }
 };
 
-// Delete announcement (admin)
+// ลบประกาศ (ผูดริิ่น)
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;

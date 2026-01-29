@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Use MySQL for database
+// ใช้ MySQL สำหรับฐานข้อมูล
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'ud_hotels',
   process.env.DB_USER || 'root',
@@ -10,7 +10,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
-    logging: false // set to console.log for debugging
+    logging: false // ตั้งให้ console.log สำหรับการแก้ไข
   }
 );
 

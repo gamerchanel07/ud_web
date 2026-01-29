@@ -3,10 +3,10 @@ const router = express.Router();
 const announcementController = require('../controllers/announcementController');
 const { protect, authorize } = require('../middleware/auth');
 
-// Public routes
+// เส้นทางสาธารณะ
 router.get('/', announcementController.getActive);
 
-// Admin routes
+// เส้นทางผู้ดูแล
 router.get('/all', protect, authorize('admin'), announcementController.getAll);
 router.post('/', protect, authorize('admin'), announcementController.create);
 router.put('/:id', protect, authorize('admin'), announcementController.update);

@@ -1,7 +1,7 @@
 const { Hotel, Review, User, Favorite } = require('../models');
 const { Op } = require('sequelize');
 
-// Get dashboard statistics
+// ดึงสลวกแสงผลหำคำหนด
 exports.getDashboardStats = async (req, res) => {
   try {
     const [
@@ -48,7 +48,7 @@ exports.getDashboardStats = async (req, res) => {
       })
     ]);
 
-    // Get reviews by rating distribution
+    // ดึงรีวิวตามคะแนน
     const reviewsByRating = await Review.findAll({
       attributes: [
         'rating',
@@ -58,7 +58,7 @@ exports.getDashboardStats = async (req, res) => {
       raw: true
     });
 
-    // Get hotels by type
+    // ดึงโรงแรมตามประเภท
     const hotelsByType = await Hotel.findAll({
       attributes: [
         'hotelType',
@@ -68,7 +68,7 @@ exports.getDashboardStats = async (req, res) => {
       raw: true
     });
 
-    // Calculate average rating
+    // คำนวณคะแนนเฉลี่ย
     const avgRatingResult = await Review.findAll({
       attributes: [[require('sequelize').fn('AVG', require('sequelize').col('rating')), 'avgRating']],
       raw: true
@@ -111,7 +111,7 @@ exports.getDashboardStats = async (req, res) => {
   }
 };
 
-// Get recent activity
+// ดึงกิจกรรมที่เมื่อไม่
 exports.getRecentActivity = async (req, res) => {
   try {
     const activities = await Review.findAll({
@@ -136,7 +136,7 @@ exports.getRecentActivity = async (req, res) => {
   }
 };
 
-// Get hotel management data
+// ดึงข้อมูลการจัดการโรงแรม
 exports.getHotelManagement = async (req, res) => {
   try {
     const hotels = await Hotel.findAll({
@@ -164,7 +164,7 @@ exports.getHotelManagement = async (req, res) => {
   }
 };
 
-// Get user management data
+// ดึงข้อมูลการจัดการผู้ใช้
 exports.getUserManagement = async (req, res) => {
   try {
     const users = await User.findAll({

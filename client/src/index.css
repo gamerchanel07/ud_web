@@ -1,74 +1,152 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== CSS Variables สำหรับ Light Theme (Default) ===== */
 :root {
-  --text-main: rgba(255, 255, 255, 0.92);
-  --text-muted: rgba(255, 255, 255, 0.7);
-  --text-strong: #ffffff;
+  /* สีหลัก Light Theme */
+  --primary-light: #71C9CE;
+  --primary-main: #00ADB5;
+  --primary-lighter: #A6E3E9;
+  --secondary-light: #CBF1F5;
+  --secondary-main: #E3FDFD;
+  
+  /* สีเทา */
+  --gray-50: #E3FDFD;
+  --gray-100: #E8F8FA;
+  --gray-200: #CBF1F5;
+  --gray-300: #A6E3E9;
+  --gray-400: #71C9CE;
+  --gray-500: #00ADB5;
+  --gray-600: #009FA8;
+  --gray-700: #00878C;
+  --gray-800: #006F75;
+  --gray-900: #00575E;
 
-  --text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  /* ข้อความ Light Theme */
+  --text-primary: #71C9CE;
+  --text-secondary: #009FA8;
+  --text-tertiary: #00878C;
+  --text-light: #006F75;
+  
+  /* พื้นหลัง Light Theme */
+  --bg-primary: #E3FDFD;
+  --bg-secondary: #EBF9FB;
+  --bg-tertiary: #F3FCFD;
+  
+  /* Border Light Theme */
+  --border-light: #CBF1F5;
+  --border-main: #A6E3E9;
+  
+  /* Shadow Light Theme */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 173, 181, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 173, 181, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 173, 181, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 173, 181, 0.1);
 }
 
-/* สำหรับพื้นหลังสว่าง */
-.light-theme {
-  --text-main: rgba(15, 23, 42, 0.9);
-  --text-muted: rgba(15, 23, 42, 0.65);
-  --text-strong: #0f172a;
-
-  --text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+/* ===== Dark Theme ===== */
+[data-theme="dark"] {
+  --primary-light: #00ADB5;
+  --primary-main: #00ADB5;
+  --primary-lighter: #71C9CE;
+  --secondary-light: #393E46;
+  --secondary-main: #222831;
+  
+  /* ข้อความ Dark Theme */
+  --text-primary: #EEEEEE;
+  --text-secondary: #CBF1F5;
+  --text-tertiary: #A6E3E9;
+  --text-light: #71C9CE;
+  
+  /* พื้นหลัง Dark Theme */
+  --bg-primary: #222831;
+  --bg-secondary: #2B3039;
+  --bg-tertiary: #393E46;
+  
+  /* Border Dark Theme */
+  --border-light: #393E46;
+  --border-main: #4B5260;
+  
+  /* Shadow Dark Theme */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 173, 181, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 173, 181, 0.25);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 173, 181, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 173, 181, 0.4);
 }
-
-
 
 html, body {
-  min-height: 100vh;
-  background: linear-gradient(120deg, #5f7faa, #286896, #0F2A44, #0a3a52);
-  background-size: 400% 400%;
-  animation: gradientMove 20s ease-in-out infinite;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-
-
+/* Light Theme Background */
 body {
+  background-color: var(--bg-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--text-main);
-  text-shadow: var(--text-shadow);
+  color: var(--text-primary);
 }
 
-/* Luxury Glass (Glassmorphism) Effect */
+/* ===== Glass Effect - Light & Dark Theme ===== */
 .glass {
-  @apply backdrop-blur-md rounded-lg;
-  background: rgba(255, 255, 255, 0.15);
+  @apply rounded-lg;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(63, 169, 245, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(15, 42, 68, 0.3);
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .glass {
+  background: rgba(31, 41, 55, 0.7);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+}
+
+.glass:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-main);
 }
 
 .glass-lg {
-  @apply backdrop-blur-lg rounded-xl;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(63, 169, 245, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(15, 42, 68, 0.4);
+  @apply rounded-xl;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(15px);
+  transition: all 0.3s ease;
 }
 
-/* Ocean Glow Effect */
+[data-theme="dark"] .glass-lg {
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid var(--border-light);
+}
+
+.glass-lg:hover {
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-main);
+}
+
+/* ===== Glow Effects ===== */
 .glow {
-  box-shadow: 0 0 20px rgba(63, 169, 245, 0.4);
+  box-shadow: 0 0 20px rgba(63, 169, 245, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glow:hover {
+  box-shadow: 0 0 30px rgba(63, 169, 245, 0.5);
 }
 
 .glow-lg {
-  box-shadow: 0 0 40px rgba(63, 169, 245, 0.5);
+  box-shadow: 0 0 40px rgba(63, 169, 245, 0.4);
+}
+
+.glow-lg:hover {
+  box-shadow: 0 0 50px rgba(63, 169, 245, 0.6);
 }
 
 .leaflet-container {
@@ -77,55 +155,79 @@ body {
   background: rgba(5, 30, 62, 0.8) !important;
 }
 
-/* Leaflet Dark Theme */
+/* ธีมมืด Leaflet */
 .leaflet-tile {
   filter: invert(0.8) hue-rotate(180deg);
 }
 
-/* Hotel Card with Luxury Ocean Glass */
+/* ===== Hotel Card ===== */
 .hotel-card {
   @apply rounded-xl overflow-hidden cursor-pointer;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(63, 169, 245, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(63, 169, 245, 0.15);
-  transition: all 0.3s ease-in-out;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
 }
 
 .hotel-card:hover {
-  @apply shadow-2xl;
   transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 40px 0 rgba(63, 169, 245, 0.3);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-main);
 }
 
 .hotel-card img {
   @apply w-full h-48 object-cover;
   transition: transform 0.3s ease-in-out;
-  opacity: 0.9;
 }
 
 .hotel-card:hover img {
   transform: scale(1.05);
-  opacity: 1;
 }
 
 .hotel-info {
-  @apply p-4 text-white;
+  @apply p-4;
+  color: var(--text-primary);
 }
 
-/* Button Hover Effects */
+/* ===== Input & Form Elements ===== */
+input, textarea, select {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary-main);
+  box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
+  outline: none;
+}
+
+input::placeholder {
+  color: var(--text-light);
+}
+
+/* ===== Buttons ===== */
 button {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
 }
 
-/* Range Slider Styling */
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* ===== Range Slider ===== */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 8px;
-  background: linear-gradient(to right, rgba(63, 169, 245, 0.3), rgba(63, 169, 245, 0.8));
+  background: linear-gradient(to right, var(--primary-light), var(--primary-main));
   border-radius: 5px;
   outline: none;
 }
@@ -135,7 +237,7 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #3FA9F5;
+  background: var(--primary-main);
   cursor: pointer;
   border-radius: 50%;
   box-shadow: 0 0 10px rgba(63, 169, 245, 0.5);
@@ -151,7 +253,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 input[type="range"]::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: #3FA9F5;
+  background: var(--primary-main);
   cursor: pointer;
   border-radius: 50%;
   border: none;
@@ -176,57 +278,33 @@ input[type="range"]::-moz-range-thumb:hover {
   transform: translateY(-2px);
 }
 
-/* Smooth transitions */
-* {
-  @apply transition-colors duration-200;
-}
-
-/* Auto Text Color - adapts based on background */
-.auto-text {
-  color: rgba(255, 255, 255, 0.9);
-  transition: color 0.2s ease;
-}
-
-.auto-text-dark {
-  color: rgba(0, 0, 0, 0.8);
-}
-
-/* Light background uses dark text */
-.bg-light .auto-text,
-.bg-white .auto-text,
-.bg-gray-100 .auto-text {
-  color: rgba(0, 0, 0, 0.8);
-}
-
-/* Dark background uses light text */
-.bg-dark .auto-text,
-.bg-primary .auto-text,
-.bg-gray-900 .auto-text,
-.glass .auto-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Scrollbar Styling */
+/* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(26, 26, 46, 0.5);
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(168, 85, 247, 0.6);
+  background: var(--primary-main);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 85, 247, 0.8);
+  background: var(--primary-light);
 }
 
-/* ===== ANIMATIONS ===== */
+/* ===== Transitions ===== */
+* {
+  @apply transition-colors duration-300;
+}
 
-/* Fade In Animation */
+/* ===== แอนิเมชัน ===== */
+
+/* แอนิเมชั่นจางหายเข้า */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -236,7 +314,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Slide In From Top */
+/* เลื่อนเข้ามาจากด้านบน */
 @keyframes slideInDown {
   from {
     opacity: 0;
@@ -248,7 +326,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Slide In From Bottom */
+/* เลื่อนเข้ามาจากด้านล่าง */
 @keyframes slideInUp {
   from {
     opacity: 0;
@@ -260,7 +338,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Slide In From Left */
+/* เลื่อนเข้ามาจากด้านซ้าย */
 @keyframes slideInLeft {
   from {
     opacity: 0;
@@ -272,7 +350,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Slide In From Right */
+/* เลื่อนเข้ามาจากด้านขวา */
 @keyframes slideInRight {
   from {
     opacity: 0;
@@ -284,7 +362,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Scale In Animation */
+/* แอนิเมชั่นสเกลเข้า */
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -296,7 +374,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Bounce In Animation */
+/* แอนิเมชั่นกระเด้งเข้า */
 @keyframes bounceIn {
   0% {
     opacity: 0;
@@ -312,7 +390,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Pulse Animation */
+/* แอนิเมชั่นชีพจร */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -322,7 +400,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-/* Glow Pulse Animation */
+/* แอนิเมชั่นชีพจรแสง */
 @keyframes glowPulse {
   0%, 100% {
     box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
@@ -567,4 +645,53 @@ input[type="range"]::-moz-range-thumb:hover {
 
 .text-strong {
   color: var(--text-strong);
+}
+
+/* ===== UD Hotels ===== */
+.hero-title {
+  font-weight: 800;
+  letter-spacing: 0.08em;
+
+  background: linear-gradient(
+    90deg,
+    #f8fbff,
+    #cfe9ff,
+    #5ecbff
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  text-shadow:
+    0 0 12px rgba(180, 220, 255, 0.8),
+    0 0 28px rgba(94, 203, 255, 0.6);
+}
+
+.hero-title {
+  background: linear-gradient(135deg, #0F7FD8, #3FA9F5, #B7E7F7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  filter: drop-shadow(0 10px 20px rgba(63, 169, 245, 0.3));
+}
+
+[data-theme="dark"] .hero-title {
+  background: linear-gradient(135deg, #B7E7F7, #3FA9F5, #0F7FD8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-title:hover {
+  filter: drop-shadow(0 15px 30px rgba(63, 169, 245, 0.5));
+}
+
+.navbar-logo {
+  backdrop-filter: blur(6px);
+}
+select option {
+  background: #0F2A44;
+  color: white;
 }

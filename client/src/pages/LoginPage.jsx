@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { Building2 } from 'lucide-react';
+import { Building2, Lock, User, LogIn } from 'lucide-react';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -27,44 +27,96 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 animate-fade-in">
-      <div className="glass glass-lg p-6 md:p-8 w-full max-w-md card-enter">
-        <h1 className="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-ocean-300 to-blue-300 bg-clip-text text-transparent mb-6 animate-slide-in-down flex items-center justify-center gap-2">
-          <Building2 size={32} className="text-ocean-300" />
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      backgroundColor: 'var(--bg-primary)'
+    }} className="animate-fade-in">
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        borderRadius: '0.5rem',
+        padding: '2rem',
+        width: '100%',
+        maxWidth: '28rem',
+        border: '1px solid var(--border-light)'
+      }} className="card-enter">
+        <h1 style={{
+          fontSize: '1.875rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          color: 'var(--primary-main)',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem'
+        }} className="animate-slide-in-down">
+          <Building2 size={32} style={{color: 'var(--primary-main)'}} />
           {t('login.title')}
         </h1>
 
         {error && (
-          <div className="bg-red-500/30 text-red-200 p-3 rounded-lg mb-4 border border-red-500/50 animate-shake text-sm">
+          <div style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+            color: '#EF4444',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            marginBottom: '1rem',
+            border: '1px solid rgba(239, 68, 68, 0.5)',
+            fontSize: '0.875rem'
+          }} className="animate-shake">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="animate-stagger">
           <div className="mb-4 animate-slide-in-left">
-            <label className="block text-gray-200 font-bold mb-2 text-sm">{t('login.username')}</label>
+            <label style={{color: 'var(--text-primary)', fontSize: '0.875rem'}} className="block font-bold mb-2">{t('login.username')}</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 input-focus transition-all duration-300 text-sm"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.375rem',
+                color: 'var(--text-primary)',
+                fontSize: '0.875rem'
+              }}
               placeholder={t('login.username')}
               required
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
             />
           </div>
 
           <div className="mb-6 animate-slide-in-right">
-            <label className="block text-gray-200 font-bold mb-2 text-sm">{t('login.password')}</label>
+            <label style={{color: 'var(--text-primary)', fontSize: '0.875rem'}} className="block font-bold mb-2">{t('login.password')}</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-ocean-400 text-gray-100 placeholder-gray-400 input-focus transition-all duration-300 text-sm"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.375rem',
+                color: 'var(--text-primary)',
+                fontSize: '0.875rem'
+              }}
               placeholder={t('login.password')}
               required
+              onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
             />
-            <div className="text-right mt-2">
-              <Link to="/forgot-password" className="text-ocean-300 text-xs hover:text-ocean-200 transition-colors">
+            <div style={{textAlign: 'right', marginTop: '0.5rem'}}>
+              <Link to="/forgot-password" style={{color: 'var(--primary-main)', fontSize: '0.75rem', textDecoration: 'none'}} className="hover:underline">
                 {t('login.forgotPassword')}
               </Link>
             </div>
@@ -73,15 +125,29 @@ export const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-ocean-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-ocean-700 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 transition-all duration-300 glow hover:glow-lg text-sm"
+            style={{
+              width: '100%',
+              backgroundColor: loading ? 'rgba(107, 114, 128, 0.5)' : 'var(--primary-main)',
+              color: 'white',
+              paddingTop: '0.75rem',
+              paddingBottom: '0.75rem',
+              borderRadius: '0.375rem',
+              fontWeight: 'bold',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontSize: '0.875rem',
+              opacity: loading ? 0.7 : 1
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.opacity = '0.9')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.opacity = '1')}
           >
-            {loading ? t('common.loading') : t('login.title')}
+            {loading ? '⏳ ' + t('common.loading') : (<><LogIn size={16} /> {t('login.title')}</>)}
           </button>
         </form>
 
-        <p className="text-center mt-4 text-gray-300 text-sm">
+        <p style={{textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.875rem'}}>
           {t('login.dontHaveAccount')}{' '}
-          <Link to="/register" className="text-ocean-300 font-bold hover:text-ocean-200 transition-colors">
+          <Link to="/register" style={{color: 'var(--primary-main)', fontWeight: 'bold', textDecoration: 'none'}} className="hover:underline">
             {t('login.registerHere')}
           </Link>
         </p>

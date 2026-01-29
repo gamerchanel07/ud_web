@@ -13,12 +13,12 @@ export const AnnouncementPopup = () => {
 
   const loadAnnouncements = async () => {
     try {
-      // Check if announcements are hidden for today
+      // ตรวจสอบว่าปิดค่องประกาศว่ามิไดนว่าคนู็ได้หรือไม
       const lastHideDate = localStorage.getItem('announcementHideDate');
       const today = new Date().toDateString();
       
       if (lastHideDate === today) {
-        return; // Don't show if hidden today
+        return; // ห้ามิดว่าคนูแล้วว่ินคนี้
       }
 
       const response = await API.get('/announcements');
@@ -76,73 +76,197 @@ export const AnnouncementPopup = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] animate-fade-in">
-      <div className="glass glass-lg max-w-2xl w-full mx-4 card-enter relative overflow-hidden">
-        {/* Header with type color gradient */}
-        <div className={`bg-gradient-to-r ${typeColors[current.type]} p-6 text-white`}>
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-3">
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999
+    }} className="animate-fade-in">
+      <div style={{
+        backgroundColor: 'var(--bg-secondary)',
+        borderRadius: '0.5rem',
+        maxWidth: '42rem',
+        width: '100%',
+        margin: '1rem',
+        border: '2px solid var(--primary-main)',
+        overflow: 'hidden'
+      }} className="card-enter">
+        {/* หัว */}
+        <div style={{
+          background: `linear-gradient(135deg, var(--primary-main), rgba(0, 173, 181, 0.8))`,
+          padding: '1.5rem',
+          color: 'white',
+          position: 'relative'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: '1rem'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}>
               {typeIcons[current.type]}
-              <h2 className="text-3xl font-bold">{current.title}</h2>
+              <h2 style={{
+                fontSize: '1.875rem',
+                fontWeight: 'bold'
+              }}>{current.title}</h2>
             </div>
             <button
               onClick={handleClose}
-              className="text-white hover:scale-110 transition-transform hover:text-gray-200"
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               <X size={28} />
             </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-8">
-          <p className="text-gray-200 text-lg leading-relaxed mb-6 whitespace-pre-wrap">
+        {/* เนื้อหา */}
+        <div style={{
+          padding: '2rem'
+        }}>
+          <p style={{
+            color: 'var(--text-secondary)',
+            fontSize: '1.125rem',
+            lineHeight: '1.625',
+            marginBottom: '1.5rem',
+            whiteSpace: 'pre-wrap'
+          }}>
             {current.content}
           </p>
 
-          {/* Navigation */}
-          <div className="flex justify-between items-center gap-3 flex-col md:flex-row">
-            <div className="flex gap-2">
+          {/* การนำทาง */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
+            marginBottom: '1rem'
+          }}>
+            <div style={{
+              display: 'flex',
+              gap: '0.5rem'
+            }}>
               {announcements.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === currentIndex 
-                      ? 'bg-gradient-to-r from-purple-400 to-pink-400 w-8' 
-                      : 'bg-white/30 w-2 hover:bg-white/50'
-                  }`}
+                  style={{
+                    height: '0.5rem',
+                    borderRadius: '9999px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    backgroundColor: idx === currentIndex 
+                      ? 'var(--primary-main)' 
+                      : 'rgba(255, 255, 255, 0.3)',
+                    width: idx === currentIndex ? '2rem' : '0.5rem'
+                  }}
+                  onMouseEnter={(e) => !currentIndex && (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.5)')}
+                  onMouseLeave={(e) => !currentIndex && (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)')}
                 />
               ))}
             </div>
 
-            <div className="flex gap-3 flex-col md:flex-row w-full md:w-auto">
+            <div style={{
+              display: 'flex',
+              gap: '0.75rem',
+              flexWrap: 'wrap'
+            }}>
               <button
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
-                className="px-4 py-2 rounded-lg bg-white/20 text-gray-200 hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift text-sm md:text-base flex items-center justify-center gap-2"
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.375rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-light)',
+                  cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  opacity: currentIndex === 0 ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => !currentIndex && (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)')}
+                onMouseLeave={(e) => !currentIndex && (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)')}
               >
-                <ArrowLeft size={18} /> Previous
+                <ArrowLeft size={18} /> ก่อนหน้า
               </button>
               <button
                 onClick={handleNext}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover-lift glow text-sm md:text-base flex items-center justify-center gap-2"
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.375rem',
+                  backgroundColor: 'var(--primary-main)',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
               >
-                {currentIndex === announcements.length - 1 ? 'Close' : <>Next <ArrowRight size={18} /></>}
+                {currentIndex === announcements.length - 1 ? 'ปิด' : <>ต่อไป <ArrowRight size={18} /></>}
               </button>
             </div>
           </div>
 
-          {/* Counter */}
-          <div className="text-center mt-4 text-gray-400 text-sm">
+          {/* ตัวนับ */}
+          <div style={{
+            textAlign: 'center',
+            marginTop: '1rem',
+            color: 'var(--text-tertiary)',
+            fontSize: '0.875rem'
+          }}>
             {currentIndex + 1} / {announcements.length}
           </div>
 
-          {/* Don't show again today button */}
-          <div className="mt-6 pt-6 border-t border-white/20">
+          {/* ปุ่มไม่แสดงในวันนี้ */}
+          <div style={{
+            marginTop: '1.5rem',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid var(--border-light)'
+          }}>
             <button
               onClick={handleDontShowToday}
-              className="w-full px-4 py-2 rounded-lg bg-white/10 text-gray-300 hover:bg-white/20 transition-all duration-300 text-sm md:text-base flex items-center justify-center gap-2"
+              style={{
+                width: '100%',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.375rem',
+                backgroundColor: 'rgba(0, 173, 181, 0.1)',
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--primary-main)',
+                cursor: 'pointer',
+                fontWeight: '500',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.2)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 173, 181, 0.1)'}
             >
               <EyeOff size={18} /> ไม่แสดงประกาศในวันนี้
             </button>

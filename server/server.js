@@ -7,11 +7,11 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Middleware (ซอฟต์แวร์ระดับกลาง)
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 
-// Routes
+// เส้นทาง
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/hotels', require('./routes/hotels'));
 app.use('/api/reviews', require('./routes/reviews'));
@@ -21,17 +21,17 @@ app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/announcements', require('./routes/announcements'));
 app.use('/api/activity-logs', require('./routes/activityLogs'));
 
-// Health check
+// ตรวจสอบความเป็นส่วนตัวสำหรับระบบ
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Backend is running' });
 });
 
-// 404 handler
+// จัดการ 404
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Error handler
+// จัดการข้อผิดพลาด
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ message: 'Internal server error', error: err.message });

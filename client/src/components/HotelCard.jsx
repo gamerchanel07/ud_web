@@ -85,11 +85,11 @@ export const HotelCard = ({
       />
 
       <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-100">{hotel.name}</h3>
-        <p className="text-sm text-gray-400">{hotel.location}</p>
+        <h3 className="text-lg font-bold">{hotel.name}</h3>
+        <p className="text-sm">{hotel.location}</p>
 
         <div className="flex justify-between items-center my-2">
-          <span className="text-xl font-bold text-pink-400">
+          <span className="text-xl font-bold">
             ฿{Number(hotel.price ?? 0).toLocaleString()}
           </span>
 
@@ -109,7 +109,7 @@ export const HotelCard = ({
           </div>
         </div>
 
-        <div className="text-sm text-gray-300 space-y-1 mb-3">
+        <div className="text-sm space-y-1 mb-3">
           {distanceFromCollege && (
             <div className="flex gap-2">
               <MapPin size={16} /> {distanceFromCollege} km from Tech College
@@ -123,7 +123,7 @@ export const HotelCard = ({
         </div>
         <button
           onClick={() => navigate(`/hotel/${hotel.id}`)}
-          className="w-full bg-ocean-600 text-white py-2 rounded"
+          className="w-full bg-ocean-600 py-2 rounded"
         >
           View Details
         </button>
