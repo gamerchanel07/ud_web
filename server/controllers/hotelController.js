@@ -229,3 +229,23 @@ exports.filterHotels = async (req, res) => {
     res.status(500).json({ message: "Filter failed", error: err.message });
   }
 };
+
+// Increment hotel views
+exports.incrementViews = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const hotel = await Hotel.findByPk(id);
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel not found" });
+    }
+
+    // Increment views by 1
+    await hotel.increment('views');
+
+    res.json({ message: "View counted", views: hotel.views + 1 });
+  } catch (err) {
+    console.error("incrementViews error:", err);
+    res.status(500).json({ message: "Failed to count view", error: err.message });
+  }
+};

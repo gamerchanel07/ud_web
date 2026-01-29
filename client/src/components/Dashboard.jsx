@@ -84,6 +84,10 @@ export const DashboardStats = () => {
     ? stats.topRatedHotels
     : [];
 
+  const mostFavoritedHotels = Array.isArray(stats.mostFavoritedHotels)
+    ? stats.mostFavoritedHotels
+    : [];
+
   const recentReviews = Array.isArray(stats.recentReviews)
     ? stats.recentReviews
     : [];
@@ -173,6 +177,37 @@ export const DashboardStats = () => {
                     <span className="text-gray-200 ml-1">
                       {Number(hotel.rating ?? 0).toFixed(1)}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-pink-300">
+                    ฿{Number(hotel.price ?? 0).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* =========================
+          Most Favorited Hotels
+      ========================= */}
+      <div className="glass glass-lg mb-8">
+        <h3 className="text-xl font-bold mb-4 text-purple-300">❤️ Most Favorited Hotels</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-purple-500/20">
+              <tr>
+                <th className="px-4 py-2 text-left">Hotel Name</th>
+                <th className="px-4 py-2 text-left">Favorites</th>
+                <th className="px-4 py-2 text-left">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mostFavoritedHotels.map((hotel) => (
+                <tr key={hotel.id} className="border-b border-white/10">
+                  <td className="px-4 py-3">{hotel.name}</td>
+                  <td className="px-4 py-3 text-red-400 font-semibold">
+                    {hotel.favoriteCount ?? 0} ❤️
                   </td>
                   <td className="px-4 py-3 text-pink-300">
                     ฿{Number(hotel.price ?? 0).toLocaleString()}

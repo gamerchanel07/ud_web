@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { hotelService, favoriteService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -12,8 +12,8 @@ import { motion } from "framer-motion";
 export const HomePage = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
-
-  const [allHotels, setAllHotels] = useState([]); // ⭐ ฐานข้อมูลต้นฉบับ
+  const isFirstLoad = useRef(true);
+  const [allHotels, setAllHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,6 @@ export const HomePage = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [gpsLoading, setGpsLoading] = useState(false);
 
-  // 🔥 maxDistance เริ่มต้นต้องว่าง ไม่งั้นจะ auto filter ตั้งแต่เปิดหน้า
   const [filters, setFilters] = useState({
     minPrice: "",
     maxPrice: "",
@@ -120,14 +119,22 @@ export const HomePage = () => {
 
   // 🔥 Auto reset ตอนลบ keyword (UX ดีมาก)
   useEffect(() => {
+    // ❌ กันไม่ให้รันตอนเปิดหน้า
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+
+    // 🔥 รันเฉพาะตอน "ผู้ใช้ลบ keyword จริง ๆ"
     if (searchQuery === "") {
       const reloadAll = async () => {
         try {
           const response = await hotelService.getAll();
+
           setAllHotels(response.data);
           setFilteredHotels(response.data);
 
-          // 🔥 reset filter ทุกตัวด้วย
+          // reset filter ทุกตัว
           setFilters({
             minPrice: "",
             maxPrice: "",
@@ -140,7 +147,6 @@ export const HomePage = () => {
           console.error("Reload all hotels failed", err);
         }
       };
-
       reloadAll();
     }
   }, [searchQuery]);
@@ -169,20 +175,16 @@ export const HomePage = () => {
   };
 
   // ---------- AUTO DISTANCE FILTER (ลาก slider) ----------
-  useEffect(() => {
-    // ❌ ถ้า search ว่าง (กำลัง reset) → ห้าม auto filter
-    if (searchQuery === "") return;
-
-    if (!filters.maxDistance || Number(filters.maxDistance) === 0) {
-      return;
-    }
-
-    const timeout = setTimeout(() => {
-      handleAutoFilter();
-    }, 400);
-
-    return () => clearTimeout(timeout);
-  }, [filters.maxDistance, searchQuery]);
+  //useEffect(() => {
+  //if (searchQuery === "") return;
+  //if (!filters.maxDistance || Number(filters.maxDistance) === 0) {
+  //return;
+  //}
+  //const timeout = setTimeout(() => {
+  //    handleAutoFilter();
+  //   }, 400);
+  //   return () => clearTimeout(timeout);
+  // }, [filters.maxDistance, searchQuery]);
 
   const handleAutoFilter = async () => {
     try {
@@ -359,6 +361,9 @@ export const HomePage = () => {
             />
           </div>
         )}
+        <div className="text-white text-xl mb-4">
+        {filteredHotels.length} hotels
+        </div>
 
         {/* Hotel List */}
         {loading ? (
@@ -374,7 +379,6 @@ export const HomePage = () => {
           />
         )}
       </div>
-
       <Footer />
     </div>
   );

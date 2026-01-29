@@ -10,7 +10,8 @@ exports.getDashboardStats = async (req, res) => {
       totalUsers,
       totalFavorites,
       recentReviews,
-      topRatedHotels
+      topRatedHotels,
+      mostFavoritedHotels
     ] = await Promise.all([
       Hotel.count(),
       Review.count(),
@@ -28,6 +29,22 @@ exports.getDashboardStats = async (req, res) => {
         attributes: ['id', 'name', 'rating', 'price'],
         order: [['rating', 'DESC']],
         limit: 5
+      }),
+      Hotel.findAll({
+        attributes: [
+          'id',
+          'name',
+          'price',
+          [require('sequelize').fn('COUNT', require('sequelize').col('Favorites.id')), 'favoriteCount']
+        ],
+        include: [
+          { model: Favorite, attributes: [] }
+        ],
+        group: ['Hotel.id'],
+        subQuery: false,
+        order: [[require('sequelize').fn('COUNT', require('sequelize').col('Favorites.id')), 'DESC']],
+        limit: 5,
+        raw: true
       })
     ]);
 
@@ -79,6 +96,12 @@ exports.getDashboardStats = async (req, res) => {
         name: h.name,
         rating: h.rating,
         price: h.price
+      })),
+      mostFavoritedHotels: mostFavoritedHotels.map(h => ({
+        id: h.id,
+        name: h.name,
+        price: h.price,
+        favoriteCount: h.favoriteCount || 0
       })),
       reviewsByRating: reviewsByRating.sort((a, b) => a.rating - b.rating),
       hotelsByType

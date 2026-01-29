@@ -25,6 +25,13 @@ const grayIcon = new L.Icon({
   iconAnchor: [16, 32]
 });
 
+// User location marker (blue)
+const userIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32]
+});
+
 // วิทยาลัย (ศูนย์กลาง)
 const TECH_COLLEGE_LAT = 17.41604449545236;
 const TECH_COLLEGE_LNG = 102.78876831049472;
@@ -105,6 +112,16 @@ export const HotelMap = ({
       <Marker position={center}>
         <Popup>🎓 Udon Technical College</Popup>
       </Marker>
+
+      {/* User Location Marker */}
+      {userLocation && userLocation.lat && userLocation.lng && (
+        <Marker 
+          position={[userLocation.lat, userLocation.lng]}
+          icon={userIcon}
+        >
+          <Popup>📍 Your Location</Popup>
+        </Marker>
+      )}
 
       {/* โรงแรม */}
       {hotels.map(hotel => {

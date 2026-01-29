@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Star, MapPin, Edit2 } from "lucide-react";
+import { Heart, Star, MapPin, Edit2, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 
 const containerVariants = {
@@ -66,8 +66,8 @@ export const HotelCard = ({
     ? calculateDistance(
         userLocation.lat,
         userLocation.lng,
-        hotel.latitude,
-        hotel.longitude,
+        parseFloat(hotel.latitude),
+        parseFloat(hotel.longitude),
       )
     : null;
 
@@ -93,14 +93,20 @@ export const HotelCard = ({
             ฿{Number(hotel.price ?? 0).toLocaleString()}
           </span>
 
-          <button onClick={() => onFavoriteToggle(hotel.id)}>
-            <Heart
-              size={24}
-              className={
-                isFavorited ? "fill-red-500 text-red-500" : "text-gray-400"
-              }
-            />
-          </button>
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-1 text-gray-300 text-xs bg-white/10 px-2 py-1 rounded">
+              <Eye size={14} />
+              {hotel.views || 0}
+            </div>
+            <button onClick={() => onFavoriteToggle(hotel.id)}>
+              <Heart
+                size={24}
+                className={
+                  isFavorited ? "fill-red-500 text-red-500" : "text-gray-400"
+                }
+              />
+            </button>
+          </div>
         </div>
 
         <div className="text-sm text-gray-300 space-y-1 mb-3">
@@ -115,7 +121,6 @@ export const HotelCard = ({
             </div>
           )}
         </div>
-
         <button
           onClick={() => navigate(`/hotel/${hotel.id}`)}
           className="w-full bg-ocean-600 text-white py-2 rounded"
@@ -154,8 +159,7 @@ export const HotelList = ({
     <motion.div
       variants={containerVariants}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
+      animate="show"
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
     >
       {hotels.map((hotel) => (

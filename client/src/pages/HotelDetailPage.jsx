@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
@@ -18,6 +18,7 @@ L.Icon.Default.mergeOptions({
 export const HotelDetailPage = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const viewCountedRef = useRef(false);
 
   const [hotel, setHotel] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -26,7 +27,20 @@ export const HotelDetailPage = () => {
 
   useEffect(() => {
     loadHotel();
+    // Increment view count only once per page load
+    if (!viewCountedRef.current) {
+      incrementView();
+      viewCountedRef.current = true;
+    }
   }, [id]);
+
+  const incrementView = async () => {
+    try {
+      await hotelService.incrementViews(id);
+    } catch (err) {
+      console.error('Failed to increment view', err);
+    }
+  };
 
   const loadHotel = async () => {
     try {

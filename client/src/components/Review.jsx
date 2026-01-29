@@ -93,11 +93,14 @@ export const ReviewList = ({ reviews, onReviewDeleted }) => {
 
   const handleDelete = async (reviewId) => {
     if (confirm('Are you sure you want to delete this review?')) {
+      setDeletingId(reviewId);
       try {
         await reviewService.delete(reviewId);
         if (onReviewDeleted) onReviewDeleted();
       } catch (err) {
-        alert('Failed to delete review');
+        alert(err.response?.data?.message || 'Failed to delete review');
+      } finally {
+        setDeletingId(null);
       }
     }
   };
@@ -126,12 +129,13 @@ export const ReviewList = ({ reviews, onReviewDeleted }) => {
             </span>
           </div>
           <p className="text-gray-200 mb-3">{review.comment}</p>
-          {user && user.role === 'admin' && (
+          {user && (user.role === 'admin' || user.id === review.userId) && (
             <button
               onClick={() => handleDelete(review.id)}
-              className="text-red-400 text-sm hover:text-red-300 transition-colors"
+              disabled={deletingId === review.id}
+              className="text-red-400 hover:text-red-300 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              Delete Review
+              {deletingId === review.id ? 'Deleting...' : 'Delete Review'}
             </button>
           )}
         </div>

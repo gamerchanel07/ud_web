@@ -338,7 +338,7 @@ export const AdminPage = () => {
                     <div className="text-sm text-gray-300 mb-2">
                       📍 Latitude: {formData.latitude || '-'} | Longitude: {formData.longitude || '-'}
                     </div>
-                    <div className="text-sm text-gray-300">
+                    <div className="text-sm auto-text">
                       📏 Distance to Tech College: {formData.distanceToTechCollege ? `${formData.distanceToTechCollege} km` : 'Auto-calculated'}
                     </div>
                   </div>

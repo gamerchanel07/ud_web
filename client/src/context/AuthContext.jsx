@@ -29,23 +29,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (formData) => {
-    const response = await authService.register({
-      username: formData.username,
-      email: formData.email,
-      password: formData.password
-    });
-    localStorage.setItem('token', response.data.token);
-    setToken(response.data.token);
-    setUser(response.data.user);
-    return response.data;
+    try {
+      const response = await authService.register({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+      localStorage.setItem('token', response.data.token);
+      setToken(response.data.token);
+      setUser(response.data.user);
+      return response.data;
+    } catch (err) {
+      console.error('Registration error:', err);
+      throw err;
+    }
   };
 
   const login = async (username, password) => {
-    const response = await authService.login({ username, password });
-    localStorage.setItem('token', response.data.token);
-    setToken(response.data.token);
-    setUser(response.data.user);
-    return response.data;
+    try {
+      console.log('Attempting login for user:', username);
+      const response = await authService.login({ username, password });
+      console.log('Login response:', response.data);
+      localStorage.setItem('token', response.data.token);
+      setToken(response.data.token);
+      setUser(response.data.user);
+      return response.data;
+    } catch (err) {
+      console.error('Login error:', err.response?.data || err.message);
+      throw err;
+    }
   };
 
   const logout = () => {

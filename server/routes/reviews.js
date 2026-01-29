@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/', authMiddleware, reviewController.createReview);
 router.get('/hotel/:hotelId', reviewController.getReviewsByHotel);
 router.get('/my-reviews', authMiddleware, reviewController.getUserReviews);
-router.delete('/:reviewId', authMiddleware, adminMiddleware, reviewController.deleteReview);
+router.delete('/:reviewId', authMiddleware, reviewController.deleteReview);
 
 module.exports = router;

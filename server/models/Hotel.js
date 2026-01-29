@@ -59,6 +59,10 @@ const Hotel = sequelize.define('Hotel', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true
   },
+  views: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

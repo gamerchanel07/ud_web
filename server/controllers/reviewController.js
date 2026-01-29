@@ -71,14 +71,21 @@ exports.getUserReviews = async (req, res) => {
   }
 };
 
-// Delete review (admin only)
+// Delete review (user can delete own, admin can delete any)
 exports.deleteReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
+    const userId = req.userId;
+    const userRole = req.userRole;
 
     const review = await Review.findByPk(reviewId);
     if (!review) {
       return res.status(404).json({ message: 'Review not found' });
+    }
+
+    // Check if user is the owner or admin
+    if (review.userId !== userId && userRole !== 'admin') {
+      return res.status(403).json({ message: 'You can only delete your own reviews' });
     }
 
     const hotelId = review.hotelId;

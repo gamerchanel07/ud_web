@@ -2,11 +2,17 @@ import axios from 'axios';
 
 // ตรวจสอบ baseURL ตามสภาพแวดล้อม
 const getBaseURL = () => {
-  // ถ้าเป็น localhost ใช้ /api (ผ่าน proxy)
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  const hostname = window.location.hostname;
+  const isDevelopment = hostname === 'localhost' || hostname === '127.0.0.1';
+  
+  if (isDevelopment) {
+    // ในการพัฒนา ใช้ proxy ผ่าน /api
     return '/api';
   }
-  return `http://${window.location.hostname}:5000/api`;
+  
+  // ในการ production ใช้ port 5000 โดยตรง
+  const port = window.location.port;
+  return `http://${hostname}:5000/api`;
 };
 
 const API = axios.create({
@@ -22,11 +28,26 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle response errors
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // ถ้า token หมดอายุ ให้ logout
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const hotelService = {
   getAll: () => API.get('/hotels'),
   getById: (id) => API.get(`/hotels/${id}`),
   search: (query) => API.get(`/hotels/search?query=${query}`),
   filter: (params) => API.get('/hotels/filter', { params }),
+  incrementViews: (id) => API.post(`/hotels/${id}/view`),
 };
 
 export const reviewService = {
