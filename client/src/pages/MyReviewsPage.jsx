@@ -52,7 +52,8 @@ export const MyReviewsPage = () => {
             {reviews.map(review => (
               <div key={review.id} className="card hover:shadow-lg transition-all duration-300" style={{
                 backgroundColor: 'var(--bg-secondary)',
-                borderLeft: '4px solid var(--primary-main)'
+                borderLeft: '4px solid var(--primary-main)',
+                padding: 'var(--spacing-lg)'
               }}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 'var(--spacing-md)'}}>
                   <h3 style={{color: 'var(--text-primary)', fontSize: 'var(--text-lg)', fontWeight: 'var(--font-bold)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)'}}>

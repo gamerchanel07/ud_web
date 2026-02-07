@@ -18,7 +18,9 @@ import {
   Plus,
   X,
   Trash2,
-} from "lucide-react";
+  Edit2,
+}
+ from "lucide-react";
 import { HotelList } from "../components/HotelCard";
 
 const TECH_COLLEGE_LAT = 17.41604449545236;
@@ -138,7 +140,7 @@ export const AdminPage = () => {
               className={`px-3 md:px-6 py-2 md:py-3 font-bold text-xs md:text-base transition-colors whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "dashboard"
                   ? " border-b-2 border-cyan-400"
-                  : " hover:text-gray-100"
+                  : " hover:text-black"
               }`}
             >
               <BarChart3 size={20} />{" "}
@@ -149,7 +151,7 @@ export const AdminPage = () => {
               className={`px-3 md:px-6 py-2 md:py-3 font-bold text-xs md:text-base transition-colors whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "hotels"
                   ? "border-b-2 border-cyan-400"
-                  : " hover:text-gray-100"
+                  : " hover:text-black"
               }`}
             >
               <Building2 size={20} />{" "}
@@ -160,7 +162,7 @@ export const AdminPage = () => {
               className={`px-3 md:px-6 py-2 md:py-3 font-bold text-xs md:text-base transition-colors whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "users"
                   ? " border-b-2 border-cyan-400"
-                  : " hover:text-gray-100"
+                  : " hover:text-black"
               }`}
             >
               <Users size={20} />{" "}
@@ -171,7 +173,7 @@ export const AdminPage = () => {
               className={`px-3 md:px-6 py-2 md:py-3 font-bold text-xs md:text-base transition-colors whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "announcements"
                   ? " border-b-2 border-cyan-400"
-                  : " hover:text-gray-100"
+                  : " hover:text-black"
               }`}
             >
               <Megaphone size={20} />{" "}
@@ -182,7 +184,7 @@ export const AdminPage = () => {
               className={`px-3 md:px-6 py-2 md:py-3 font-bold text-xs md:text-base transition-colors whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "activity-logs"
                   ? " border-b-2 border-cyan-400"
-                  : " hover:text-gray-100"
+                  : " hover:text-black"
               }`}
             >
               <Clipboard size={20} />{" "}
@@ -252,7 +254,21 @@ export const AdminPage = () => {
                     className="card hover:shadow-lg transition-all duration-300"
                     style={{
                       backgroundColor: 'var(--bg-secondary)',
-                      overflow: 'hidden'
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%'
+                    }}
+                    onClick={() => navigate(`/hotel/${hotel.id}`)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 173, 181, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '';
                     }}
                   >
                     {hotel.imageUrl && (
@@ -269,7 +285,7 @@ export const AdminPage = () => {
                       </div>
                     )}
 
-                    <div style={{padding: 'var(--spacing-md)'}}>
+                    <div style={{padding: 'var(--spacing-md)', flex: 1}}>
                       <h3 style={{
                         fontSize: 'var(--text-lg)',
                         fontWeight: 'var(--font-bold)',
@@ -295,77 +311,98 @@ export const AdminPage = () => {
                       }}>
                         ฿{Number(hotel.price).toLocaleString()}
                       </p>
+                    </div>
 
-                      <div style={{display: 'flex', gap: 'var(--spacing-sm)'}}>
-                        <button
-                          onClick={() => navigate(`/hotel/${hotel.id}`)}
-                          className="btn btn-primary"
-                          style={{flex: 1}}
-                        >
-                          View
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setEditingHotel(hotel);
-                            setFormData({
-                              name: hotel.name || "",
-                              description: hotel.description || "",
-                              price: hotel.price ?? "",
-                              location: hotel.location || "",
-                              latitude: hotel.latitude ?? "",
-                              longitude: hotel.longitude ?? "",
-                              imageUrl: hotel.imageUrl || "",
-                              galleryImages: hotel.galleryImages || [],
-                              hotelType: hotel.hotelType || "Standard Hotel",
-                              distanceToTechCollege:
-                                hotel.distanceToTechCollege ?? "",
-                              amenities: hotel.amenities || [],
-                              nearbyPlaces: hotel.nearbyPlaces || [],
-                              phone: hotel.phone || "",
-                              facebookUrl: hotel.facebookUrl || "",
-                              lineId: hotel.lineId || "",
-                            });
-                            setShowForm(true);
-                          }}
-                          style={{
-                            padding: 'var(--spacing-sm) var(--spacing-md)',
-                            backgroundColor: '#FFA500',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: 'var(--radius-md)',
-                            cursor: 'pointer',
-                            fontSize: 'var(--text-sm)',
-                            fontWeight: 'var(--font-bold)',
-                            transition: 'all 0.2s',
-                            flex: 1
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FF8C00'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFA500'}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          onClick={() => handleDeleteHotel(hotel.id)}
-                          style={{
-                            padding: 'var(--spacing-sm) var(--spacing-md)',
-                            backgroundColor: 'var(--color-error)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: 'var(--radius-md)',
-                            cursor: 'pointer',
-                            fontSize: 'var(--text-sm)',
-                            fontWeight: 'var(--font-bold)',
-                            transition: 'all 0.2s',
-                            flex: 1
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
-                          onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                        >
-                          Delete
-                        </button>
-                      </div>
+                    <div style={{display: 'flex', gap: 'var(--spacing-sm)', padding: 'var(--spacing-md)', paddingTop: 0}}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingHotel(hotel);
+                          setFormData({
+                            name: hotel.name || "",
+                            description: hotel.description || "",
+                            price: hotel.price ?? "",
+                            location: hotel.location || "",
+                            latitude: hotel.latitude ?? "",
+                            longitude: hotel.longitude ?? "",
+                            imageUrl: hotel.imageUrl || "",
+                            galleryImages: hotel.galleryImages || [],
+                            hotelType: hotel.hotelType || "Standard Hotel",
+                            distanceToTechCollege:
+                              hotel.distanceToTechCollege ?? "",
+                            amenities: hotel.amenities || [],
+                            nearbyPlaces: hotel.nearbyPlaces || [],
+                            phone: hotel.phone || "",
+                            facebookUrl: hotel.facebookUrl || "",
+                            lineId: hotel.lineId || "",
+                          });
+                          setShowForm(true);
+                        }}
+                        style={{
+                          padding: 'var(--spacing-md) var(--spacing-lg)',
+                          backgroundColor: 'var(--primary-main)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 'var(--radius-md)',
+                          cursor: 'pointer',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 'var(--font-bold)',
+                          transition: 'all 0.3s ease',
+                          flex: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 'var(--spacing-xs)',
+                          boxShadow: '0 4px 12px rgba(0, 173, 181, 0.2)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#006d74';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 173, 181, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--primary-main)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 173, 181, 0.2)';
+                        }}
+                      >
+                        <Edit2 size={16} /> แก้ไข
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteHotel(hotel.id);
+                        }}
+                        style={{
+                          padding: 'var(--spacing-md) var(--spacing-lg)',
+                          backgroundColor: '#EF4444',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 'var(--radius-md)',
+                          cursor: 'pointer',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 'var(--font-bold)',
+                          transition: 'all 0.3s ease',
+                          flex: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 'var(--spacing-xs)',
+                          boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#DC2626';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(239, 68, 68, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#EF4444';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.2)';
+                        }}
+                      >
+                        <Trash2 size={16} /> ลบ
+                      </button>
                     </div>
                   </div>
                 ))

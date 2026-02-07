@@ -52,7 +52,8 @@ export const ReviewForm = ({ hotelId, onReviewAdded }) => {
   return (
     <form onSubmit={handleSubmit} className="card" style={{
       backgroundColor: 'var(--bg-secondary)',
-      marginBottom: 'var(--spacing-lg)'
+      marginBottom: 'var(--spacing-lg)',
+      padding: 'var(--spacing-lg)'
     }}>
       <h3 style={{
         color: 'var(--text-primary)',
@@ -159,7 +160,8 @@ export const ReviewList = ({ reviews, onReviewDeleted }) => {
       {reviews.map(review => (
         <div key={review.id} className="card" style={{
           backgroundColor: 'var(--bg-secondary)',
-          borderLeft: '4px solid var(--primary-main)'
+          borderLeft: '4px solid var(--primary-main)',
+          padding: 'var(--spacing-lg)'
         }}>
           <div style={{
             display: 'flex',

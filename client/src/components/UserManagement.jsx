@@ -390,12 +390,11 @@ export const UserManagement = () => {
               {/* Role */}
               <div>
                 <label style={{
-                  display: 'block',
+                  display: 'flex',
                   fontSize: '0.875rem',
                   fontWeight: 'bold',
                   color: 'var(--text-primary)',
                   marginBottom: '0.5rem',
-                  display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem'
                 }}>
@@ -578,9 +577,8 @@ export const UserManagement = () => {
                   textAlign: 'left',
                   fontWeight: 'bold',
                   color: 'var(--text-primary)',
-                  display: 'none',
-                  '@media (min-width: 768px)': { display: 'table-cell' }
-                }}>
+                  display: 'none'
+                }} className="md:table-cell">
                   อีเมล
                 </th>
                 <th style={{
@@ -596,9 +594,8 @@ export const UserManagement = () => {
                   textAlign: 'left',
                   fontWeight: 'bold',
                   color: 'var(--text-primary)',
-                  display: 'none',
-                  '@media (min-width: 1024px)': { display: 'table-cell' }
-                }}>
+                  display: 'none'
+                }} className="lg:table-cell">
                   วันเข้าร่วม
                 </th>
                 <th style={{
@@ -608,6 +605,14 @@ export const UserManagement = () => {
                   color: 'var(--text-primary)'
                 }}>
                   แก้ไข
+                </th>
+                <th style={{
+                  padding: '1rem',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  color: 'var(--text-primary)'
+                }}>
+                  ลบ
                 </th>
               </tr>
             </thead>
@@ -635,9 +640,8 @@ export const UserManagement = () => {
                   <td style={{
                     padding: '1rem',
                     color: 'var(--text-secondary)',
-                    display: 'none',
-                    '@media (min-width: 768px)': { display: 'table-cell' }
-                  }}>
+                    display: 'none'
+                  }} className="md:table-cell">
                     {user.email}
                   </td>
                   <td style={{
@@ -661,9 +665,8 @@ export const UserManagement = () => {
                     padding: '1rem',
                     color: 'var(--text-tertiary)',
                     fontSize: '0.75rem',
-                    display: 'none',
-                    '@media (min-width: 1024px)': { display: 'table-cell' }
-                  }}>
+                    display: 'none'
+                  }} className="lg:table-cell">
                     {new Date(user.createdAt).toLocaleDateString('th-TH')}
                   </td>
                   <td style={{
@@ -707,6 +710,34 @@ export const UserManagement = () => {
                     >
                       <Edit2 size={14} />
                       แก้ไข
+                    </button>
+                    <button
+                      onClick={() => handleDeleteUser(user.id)}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '0.375rem',
+                        backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                        color: '#FCA5A5',
+                        border: '1px solid #FCA5A5',
+                        fontWeight: 'bold',
+                        fontSize: '0.75rem',
+                        transition: 'all 0.3s',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        marginLeft: '0.5rem'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.25)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                      }}
+                      title="ลบผู้ใช้"
+                    >
+                      <Trash2 size={14} />
+                      ลบ
                     </button>
                   </td>
                 </tr>

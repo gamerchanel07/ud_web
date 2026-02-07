@@ -41,12 +41,16 @@ const safeParse = (value, fallback = []) => {
 exports.getAllHotels = async (req, res) => {
   try {
     const hotels = await Hotel.findAll({
-      include: [{ model: Review, attributes: ["id", "rating"] }],
+      include: [
+        { model: Review, attributes: ["id", "rating"] },
+        { model: require('../models').Favorite, attributes: ["id"], required: false }
+      ],
     });
 
     const result = hotels.map((hotel) => {
       const data = hotel.toJSON();
       const reviews = data.Reviews || [];
+      const favorites = data.Favorites || [];
       const avgRating = reviews.length
         ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
         : 0;
@@ -56,6 +60,9 @@ exports.getAllHotels = async (req, res) => {
         galleryImages: safeParse(data.galleryImages),
         amenities: safeParse(data.amenities),
         nearbyPlaces: safeParse(data.nearbyPlaces),
+        favoritesCount: favorites.length,
+        Reviews: undefined,
+        Favorites: undefined
       };
     });
 

@@ -81,31 +81,17 @@ export const HotelMap = ({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* 🌊 วงรัศมีแบบ PULSE */}
+      {/* วงรัศมี */}
       {radiusKm > 0 && (
-        <>
-          {/* วงหลัก */}
-          <Circle
-            center={center}
-            radius={radiusKm * 1000}
-            pathOptions={{
-              color: "#6495ED",
-              fillColor: "#6495ED",
-              fillOpacity: 0.2
-            }}
-          />
-
-          {/* วง pulse */}
-          <Circle
-            center={center}
-            radius={radiusKm * 1000}
-            pathOptions={{
-              color: "#6495ED",
-              fillOpacity: 0
-            }}
-            className="pulse-circle"
-          />
-        </>
+        <Circle
+          center={center}
+          radius={radiusKm * 1000}
+          pathOptions={{
+            color: "#6495ED",
+            fillColor: "#6495ED",
+            fillOpacity: 0.2
+          }}
+        />
       )}
 
       {/* Marker วิทยาลัย */}

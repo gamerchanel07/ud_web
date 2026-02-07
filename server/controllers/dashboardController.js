@@ -171,15 +171,6 @@ exports.getUserManagement = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-      include: [
-        {
-          model: Review,
-          attributes: ['id'],
-          required: false
-        }
-      ],
-      raw: true,
-      subQuery: false,
       order: [['createdAt', 'DESC']]
     });
 

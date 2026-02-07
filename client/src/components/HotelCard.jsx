@@ -81,7 +81,18 @@ export const HotelCard = ({
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease'
+      }}
+      onClick={() => navigate(`/hotel/${hotel.id}`)}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 173, 181, 0.2)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '';
       }}
     >
       {/* Image Container */}
@@ -137,8 +148,36 @@ export const HotelCard = ({
           e.currentTarget.style.transform = 'scale(1)';
           e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 173, 181, 0.4)';
         }}>
-          <Eye size={16} style={{color: 'white'}} />
-          {hotel.views || 0}
+          <Star size={16} style={{color: 'white'}} fill="white" />
+          {hotel.rating?.toFixed(1) || 'N/A'}
+        </div>
+
+        {/* Stats badges */}
+        <div style={{
+          position: 'absolute',
+          bottom: 'var(--spacing-sm)',
+          right: 'var(--spacing-sm)',
+          display: 'flex',
+          gap: 'var(--spacing-sm)',
+          zIndex: 5
+        }}>
+          {/* Views badge */}
+          <div style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(8px)',
+            padding: 'var(--spacing-xs) var(--spacing-sm)',
+            borderRadius: 'var(--radius-full)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--font-bold)',
+            color: 'white',
+            border: '1px solid rgba(255, 255, 255, 0.2)'
+          }}>
+            <Eye size={14} />
+            {hotel.views || 0}
+          </div>
         </div>
       </div>
 
@@ -170,26 +209,44 @@ export const HotelCard = ({
             </p>
           </div>
           
-          <button 
-            onClick={() => onFavoriteToggle(hotel.id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <Heart
-              size={24}
-              style={{
-                color: isFavorited ? 'var(--color-error)' : 'var(--text-tertiary)',
-                fill: isFavorited ? 'var(--color-error)' : 'none'
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'var(--spacing-xs)'
+          }}>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onFavoriteToggle(hotel.id);
               }}
-            />
-          </button>
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <Heart
+                size={24}
+                style={{
+                  color: isFavorited ? 'var(--color-error)' : 'var(--text-tertiary)',
+                  fill: isFavorited ? 'var(--color-error)' : 'none'
+                }}
+              />
+            </button>
+            {/* Favorites count */}
+            <span style={{
+              fontSize: 'var(--text-xs)',
+              color: 'var(--text-secondary)',
+              fontWeight: 'bold'
+            }}>
+              {hotel.favoritesCount || 0}
+            </span>
+          </div>
         </div>
 
         {/* Distance Info - Top */}
@@ -255,18 +312,13 @@ export const HotelCard = ({
         paddingTop: 'var(--spacing-sm)',
         borderTop: '1px solid var(--border-light)'
       }}>
-        <button
-          onClick={() => navigate(`/hotel/${hotel.id}`)}
-          className="btn btn-primary"
-          style={{ width: '100%' }}
-        >
-          <Eye size={16} /> View Details
-        </button>
-
         {/* Edit button - Admin only */}
         {onEdit && (
           <button
-            onClick={() => onEdit(hotel)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(hotel);
+            }}
             className="btn btn-secondary"
             style={{ width: '100%' }}
           >

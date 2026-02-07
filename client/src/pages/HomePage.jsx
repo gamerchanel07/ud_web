@@ -3,10 +3,10 @@ import { hotelService, favoriteService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import { HotelMap } from "../components/HotelMap";
-import { HotelList } from "../components/HotelCard";
+import { HotelList, HotelCard } from "../components/HotelCard";
 import { AnnouncementPopup } from "../components/AnnouncementPopup";
 import { Footer } from "../components/Footer";
-import { MapPin, Building2, Search, Zap, Filter } from "lucide-react";
+import { MapPin, Building2, Search, Zap, Filter, Smile, MapPinCheck, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const HomePage = () => {
@@ -47,6 +47,7 @@ export const HomePage = () => {
     "ที่พักดี ราคาโดนใจ ใกล้คุณที่สุด",
   ];
   const [index, setIndex] = useState(0);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -222,29 +223,76 @@ export const HomePage = () => {
 
       {/* ส่วนหัว */}
       <div style={{
-        background: 'linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 173, 181, 0.1) 100%)',
-        paddingTop: '2rem',
-        paddingBottom: '3rem',
-        borderBottom: '2px solid var(--primary-main)'
+        color: 'white',
+        paddingTop: 'var(--spacing-2xl)',
+        paddingBottom: 'var(--spacing-2xl)',
+        position: 'relative',
+        overflow: 'hidden',
+        minHeight: '500px'
       }} className="animate-slide-in-down">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+        {/* Background Image */}
+        <img
+          src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Hotel Background"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: 0
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto px-4 py-12 relative z-10 text-center">
+          {/* Decorative Icons */}
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '40px',
+            opacity: 0.2
+          }}>
+            <MapPinCheck size={40} />
+          </div>
+          <div style={{
+            position: 'absolute',
+            top: '80px',
+            right: '60px',
+            opacity: 0.2
+          }}>
+            <Star size={32} />
+          </div>
+          <div style={{
+            position: 'absolute',
+            bottom: '60px',
+            left: '80px',
+            opacity: 0.2
+          }}>
+            <Smile size={36} />
+          </div>
+
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             style={{
-              color: 'var(--primary-main)',
-              fontSize: '3.75rem',
-              fontWeight: 'bold',
-              letterSpacing: '0.05em',
+              fontSize: '3.5rem',
+              fontWeight: '700',
+              fontFamily: '"Playfair Display", "Georgia", "Garamond", serif',
+              letterSpacing: '-0.02em',
+              lineHeight: '1.1',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem'
+              gap: 'var(--spacing-md)',
+              marginBottom: 'var(--spacing-md)',
+              marginTop: 0,
+              textShadow: '0 4px 20px rgba(0, 0, 0, 0.2)'
             }}
             className="md:text-6xl"
           >
-            <Building2 size={56} /> UD Hotels
+            <Building2 size={80} style={{color: 'white'}} /> UD Hotels
           </motion.h1>
 
           <motion.p
@@ -253,15 +301,16 @@ export const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             style={{
-              color: 'var(--text-primary)',
-              marginTop: '1rem',
-              fontSize: '1.125rem',
-              fontWeight: '500',
+              marginTop: 'var(--spacing-md)',
+              fontSize: '1.375rem',
+              fontWeight: '600',
               letterSpacing: '0.02em',
+              lineHeight: '1.6',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem'
+              gap: 'var(--spacing-sm)',
+              minHeight: '28px'
             }}
           >
             <Zap size={20} /> {texts[index]}
@@ -269,10 +318,28 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* หลัก */}
-      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8 animate-slide-in-up" style={{backgroundColor: 'var(--bg-primary)', paddingTop: 0, paddingBottom: 0, marginTop: 0}}>
-        {/* ค้นหา + ตัวกรอง */}
-        <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 mb-6" style={{padding: '1.5rem 0'}}>
+      {/* Main Content */}
+      <div style={{backgroundColor: 'var(--bg-primary)', minHeight: '100vh'}}>
+        <div className="max-w-7xl mx-auto px-4 py-8 md:py-12 animate-slide-in-up">
+        
+          {/* Search & Filter Section */}
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 'var(--spacing-xl)',
+            marginBottom: 'var(--spacing-2xl)',
+            boxShadow: '0 10px 30px rgba(0, 173, 181, 0.1)',
+            border: '1px solid var(--border-light)'
+          }} className="animate-fade-in">
+            <h2 style={{
+              fontSize: 'var(--text-2xl)',
+              fontWeight: 'var(--font-bold)',
+              color: 'var(--text-primary)',
+              marginBottom: 'var(--spacing-lg)',
+              marginTop: 0
+            }}>ค้นหาที่พักของคุณ</h2>
+
+            <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 mb-6" style={{}}>
           {/* ค้นหา */}
           <form onSubmit={handleSearch} className="lg:col-span-3">
             <div className="flex gap-1 items-center">
@@ -283,16 +350,23 @@ export const HomePage = () => {
                 placeholder="ค้นหาโรงแรม, สถานที่..."
                 style={{
                   width: '100%',
-                  padding: '0.5rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.875rem',
+                  padding: 'var(--spacing-sm)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: 'var(--text-base)',
                   color: 'var(--text-primary)',
-                  backgroundColor: 'var(--bg-secondary)',
-                  border: '1px solid var(--border-light)',
-                  height: '2.25rem'
+                  backgroundColor: 'var(--bg-primary)',
+                  border: '2px solid var(--border-light)',
+                  height: '2.75rem',
+                  transition: 'all 0.3s'
                 }}
-                onFocus={(e) => e.target.style.borderColor = 'var(--primary-main)'}
-                onBlur={(e) => e.target.style.borderColor = 'var(--border-light)'}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary-main)';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(0, 173, 181, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'var(--border-light)';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
               <button
                 type="submit"
@@ -429,7 +503,7 @@ export const HomePage = () => {
 
         {/* แผนที่ */}
         {filteredHotels.length > 0 && (
-          <div className="mb-12 animate-fade-in">
+          <div style={{marginBottom: 'var(--spacing-2xl)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)'}} className="animate-fade-in">
             <HotelMap
               hotels={filteredHotels}
               userLocation={userLocation}
@@ -439,14 +513,45 @@ export const HomePage = () => {
             />
           </div>
         )}
-<div className="text-xl mb-4">
-          {filteredHotels.length} hotels
+
+        {/* Hotel Results Header */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 'var(--spacing-lg)',
+          paddingBottom: 'var(--spacing-md)',
+          borderBottom: '2px solid var(--border-light)'
+        }}>
+          <h2 style={{
+            fontSize: 'var(--text-2xl)',
+            fontWeight: 'var(--font-bold)',
+            color: 'var(--text-primary)',
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-sm)'
+          }}>
+            <Building2 size={28} style={{color: 'var(--primary-main)'}} />
+            {filteredHotels.length} โรงแรม
+          </h2>
         </div>
 
         {/* รายการโรงแรม */}
         {loading ? (
-          <div className="text-center py-8 text-gray-200">
-            Loading hotels...
+          <div style={{textAlign: 'center', paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)', color: 'var(--text-secondary)'}}>
+            <div style={{display: 'inline-block', fontSize: 'var(--text-lg)'}}>
+              กำลังโหลดโรงแรม...
+            </div>
+          </div>
+        ) : filteredHotels.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            paddingTop: 'var(--spacing-2xl)',
+            paddingBottom: 'var(--spacing-2xl)'
+          }}>
+            <Building2 size={60} style={{margin: '0 auto', marginBottom: 'var(--spacing-md)', color: 'var(--text-tertiary)', opacity: 0.5}} />
+            <p style={{color: 'var(--text-secondary)', fontSize: 'var(--text-lg)'}}>ไม่พบโรงแรมที่ตรงกับการค้นหา</p>
           </div>
         ) : (
           <HotelList
@@ -455,7 +560,7 @@ export const HomePage = () => {
             favorites={favorites}
             userLocation={userLocation}
           />
-        )}
+        )}        </div>        </div>
       </div>
       <Footer />
     </div>
